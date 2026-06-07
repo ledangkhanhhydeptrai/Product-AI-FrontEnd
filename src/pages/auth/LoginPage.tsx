@@ -1,7 +1,8 @@
 import React from "react";
+import LoginContainer from "../../features/auth/login/LoginContainer";
 
 const LoginPage: React.FC = () => {
-  return <div />;
+  return <LoginContainer />;
 };
 
 export default LoginPage;

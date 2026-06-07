@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.3.0",
+    "lucide-react": "^1.17.0",
     "react": "^19.2.6",
     "react-dom": "^19.2.6",
     "tailwindcss": "^4.3.0"
@@ -29,6 +30,7 @@
     "@types/node": "^24.13.0",
     "@types/react": "^19.2.16",
     "@types/react-dom": "^19.2.3",
+    "@types/redux-saga": "^0.10.5",
     "@vitejs/plugin-react": "^6.0.1",
     "antd": "^6.4.3",
     "axios": "^1.17.0",
