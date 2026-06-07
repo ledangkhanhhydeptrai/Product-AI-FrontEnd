@@ -1,42 +1,57 @@
-import type { LoginRequest, UserRole } from "./authApi";
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
+import type { LoginRequest, UserRole } from "./authApi";
 interface AuthState {
   loading: boolean;
-  user: UserRole | null;
-  error: string | null;
+  token: string | null;
   isAuthenticated: boolean;
+  role: UserRole | null;
+  userId: string | null;
+  error: string | null;
 }
 const initialState: AuthState = {
   loading: false,
-  user: null,
-  error: null,
-  isAuthenticated: false
+  token: null,
+  isAuthenticated: false,
+  role: null,
+  userId: null,
+  error: null
 };
 
 const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    loginRequest(state, action: PayloadAction<LoginRequest>) {
+    loginRequest(state, _action: PayloadAction<LoginRequest>) {
       state.loading = true;
       state.error = null;
-      console.log("Login:", action.payload);
     },
-    loginSuccess(state, action: PayloadAction<UserRole>) {
+
+    loginSuccess(
+      state,
+      action: PayloadAction<{
+        token: string;
+        role: UserRole;
+        userId: string;
+      }>
+    ) {
       state.loading = false;
-      state.error = null;
-      state.user = action.payload;
+      state.token = action.payload.token;
+      state.role = action.payload.role;
+      state.userId = action.payload.userId;
       state.isAuthenticated = true;
     },
+
     loginFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
     },
+
     logout(state) {
-      state.user = null;
-      state.loading = false;
-      state.error = null;
+      state.token = null;
+      state.role = null;
+      state.userId = null;
+      state.isAuthenticated = false;
     }
   }
 });

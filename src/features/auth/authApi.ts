@@ -13,6 +13,15 @@ export interface TokenResponse {
   token: string;
   role: UserRole;
 }
+export interface MeResponse {
+  token: string;
+  authenticated: boolean;
+  user: {
+    sub: string;
+    role: UserRole;
+    exp: number;
+  };
+}
 export interface LoginResponse {
   status: number;
   message: string;
@@ -29,4 +38,9 @@ export const LoginAPI = async ({ email, password }: LoginRequest) => {
     const errors = error as AxiosError;
     return errors;
   }
+};
+export const fetchMe = async () => {
+    return fetchBaseResponse("/debug/me", {
+    method: "GET",
+  });
 };

@@ -11,6 +11,7 @@ const API = axios.create({
 console.log("API URL:", import.meta.env.VITE_API_URL);
 API.interceptors.request.use(
   (config) => {
+    config.withCredentials = true;
     return config;
   },
   (error) => {
