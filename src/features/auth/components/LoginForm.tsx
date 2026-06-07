@@ -2,20 +2,19 @@ import React from "react";
 import {
   User,
   Lock,
-  Phone,
   AlertCircle,
   Eye,
   EyeOff,
+  Bot,
+  Cpu,
+  BrainCircuit,
   Sparkles,
-  Shield,
-  Zap,
-  Star,
-  TrendingUp,
-  Award
+  BarChart3,
+  Package,
+  Tag
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
-// Props interface
 interface Props {
   onSubmit: (username: string, password: string) => void;
   loading: boolean;
@@ -29,78 +28,182 @@ export default function LoginForm({ onSubmit, loading, error }: Props) {
   const [showPassword, setShowPassword] = React.useState<boolean>(false);
   const [focusedField, setFocusedField] = React.useState<string | null>(null);
   const router = useNavigate();
+
   const handleSubmit = () => {
     if (!email || !password) return;
     onSubmit(email, password);
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
-    if (e.key === "Enter") {
-      handleSubmit();
-    }
+    if (e.key === "Enter") handleSubmit();
   };
 
-  const features = [
-    { icon: Shield, text: "Bảo mật tuyệt đối", color: "text-blue-400" },
-    { icon: Zap, text: "Trải nghiệm mượt mà", color: "text-yellow-400" },
-    { icon: Star, text: "Chất lượng 5 sao", color: "text-purple-400" },
-    { icon: Award, text: "Uy tín hàng đầu", color: "text-green-400" }
+  const capabilities = [
+    {
+      icon: BrainCircuit,
+      label: "AI Recommendations",
+      desc: "Gợi ý sản phẩm thông minh"
+    },
+    {
+      icon: BarChart3,
+      label: "Smart Analytics",
+      desc: "Phân tích xu hướng real-time"
+    },
+    { icon: Package, label: "Auto Inventory", desc: "Quản lý kho tự động" },
+    { icon: Tag, label: "Dynamic Pricing", desc: "Định giá thông minh" }
   ];
 
   return (
-    <div className="min-h-screen flex">
-      {/* LEFT SIDE - Login Form */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-8 bg-linear-to-br from-gray-50 to-gray-100 relative overflow-hidden">
-        {/* Decorative elements */}
-        <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-30">
-          <div className="absolute -top-24 -left-24 w-96 h-96 bg-indigo-200 rounded-full blur-3xl"></div>
-          <div className="absolute -bottom-24 -right-24 w-96 h-96 bg-purple-200 rounded-full blur-3xl"></div>
+    <div className="min-h-screen flex bg-[#09090f]" onKeyPress={handleKeyPress}>
+      {/* LEFT — AI Feature Panel */}
+      <div className="hidden lg:flex lg:w-[52%] relative overflow-hidden flex-col justify-between p-14">
+        {/* Grid texture background */}
+        <div className="absolute inset-0 opacity-[0.04]" />
+
+        {/* Glow orbs */}
+        <div className="absolute top-1/4 left-1/3 w-125 h-125 rounded-full opacity-10 blur-[120px]" />
+        <div className="absolute bottom-10 right-0 w-75 h-75 rounded-full opacity-10 blur-[100px]" />
+
+        {/* Top — Logo */}
+        <div className="relative z-10">
+          <div className="flex items-center gap-3">
+            <div className="relative p-2.5 rounded-xl border border-violet-500/30 bg-violet-950/60">
+              <Bot className="w-6 h-6 text-violet-400" />
+              <span className="absolute -top-1 -right-1 w-2.5 h-2.5 bg-emerald-400 rounded-full border-2 border-[#09090f]" />
+            </div>
+            <div>
+              <p className="text-white font-bold text-lg tracking-tight leading-none">
+                Product AI
+              </p>
+              <p className="text-violet-400/70 text-xs tracking-[0.15em] uppercase">
+                Ecommerce Platform
+              </p>
+            </div>
+          </div>
         </div>
 
-        <div className="w-full max-w-md relative z-10">
-          {/* Logo */}
-          <div className="mb-8">
-            <div className="inline-flex items-center gap-2 mb-6">
-              <div className="relative">
-                <div className="absolute inset-0 bg-linear-to-br from-indigo-600 to-purple-600 rounded-2xl blur-lg opacity-60"></div>
-                <div className="relative bg-linear-to-br from-indigo-600 to-purple-600 p-3 rounded-2xl">
-                  <Phone className="w-8 h-8 text-white" />
-                </div>
-              </div>
-              <span className="text-3xl font-bold bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                Phone Sale
+        {/* Center — Headline + Feature Grid */}
+        <div className="relative z-10 space-y-10">
+          <div>
+            <div className="inline-flex items-center gap-2 bg-violet-950/60 border border-violet-500/20 rounded-full px-4 py-1.5 mb-6">
+              <Sparkles className="w-3.5 h-3.5 text-violet-400" />
+              <span className="text-violet-300 text-xs font-medium tracking-wide">
+                Powered by Generative AI
               </span>
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-3">
-              Chào mừng trở lại! 👋
-            </h1>
-            <p className="text-gray-600 text-lg">
-              Đăng nhập để tiếp tục hành trình của bạn
+            <h2 className="text-5xl font-extrabold text-white leading-tight tracking-tight mb-4">
+              Bán hàng thông minh
+              <br />
+              <span className="text-transparent bg-clip-text">
+                với trí tuệ nhân tạo
+              </span>
+            </h2>
+            <p className="text-slate-400 text-base leading-relaxed max-w-md">
+              Nền tảng thương mại điện tử được hỗ trợ bởi AI — tối ưu doanh thu,
+              dự đoán hành vi khách hàng và tự động hóa vận hành.
             </p>
           </div>
 
-          {/* Error Alert */}
+          {/* Feature Cards */}
+          <div className="grid grid-cols-2 gap-4">
+            {capabilities.map((item, i) => (
+              <div
+                key={i}
+                className="group relative p-5 rounded-2xl border border-white/5 bg-white/3 hover:bg-white/6 hover:border-violet-500/20 transition-all duration-300 cursor-default overflow-hidden"
+              >
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 blur-2xl -z-10" />
+                <item.icon className="w-5 h-5 text-violet-400 mb-3" />
+                <p className="text-white text-sm font-semibold mb-1">
+                  {item.label}
+                </p>
+                <p className="text-slate-500 text-xs leading-relaxed">
+                  {item.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Stats Row */}
+          <div className="flex items-center gap-8 pt-2 border-t border-white/5">
+            {[
+              ["50K+", "Sản phẩm AI"],
+              ["98%", "Chính xác"],
+              ["3x", "Tăng trưởng"]
+            ].map(([val, label], i) => (
+              <div key={i}>
+                <p className="text-white text-2xl font-bold leading-none mb-1">
+                  {val}
+                </p>
+                <p className="text-slate-500 text-xs">{label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Bottom — Testimonial */}
+        <div className="relative z-10 p-5 rounded-2xl border border-white/5 bg-white/2">
+          <p className="text-slate-400 text-sm leading-relaxed mb-3">
+            "Product AI đã giúp chúng tôi tăng 3x doanh thu trong 6 tháng nhờ hệ
+            thống gợi ý sản phẩm tự động."
+          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-8 h-8 rounded-full bg-linear-to-br from-violet-500 to-blue-500 flex items-center justify-center text-white text-xs font-bold">
+              NQ
+            </div>
+            <div>
+              <p className="text-white text-sm font-medium">Nguyễn Quốc Anh</p>
+              <p className="text-slate-500 text-xs">CEO, TechShop Vietnam</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* RIGHT — Login Form */}
+      <div className="w-full lg:w-[48%] flex items-center justify-center p-8 relative">
+        {/* Subtle right-side glow */}
+        <div className="absolute inset-0 opacity-5 blur-3xl pointer-events-none" />
+
+        <div className="w-full max-w-100 relative z-10">
+          {/* Mobile logo */}
+          <div className="lg:hidden flex items-center gap-2 mb-8">
+            <div className="p-2 rounded-xl border border-violet-500/30 bg-violet-950/60">
+              <Bot className="w-5 h-5 text-violet-400" />
+            </div>
+            <span className="text-white font-bold text-lg">Product AI</span>
+          </div>
+
+          {/* Header */}
+          <div className="mb-8">
+            <div className="inline-flex items-center gap-1.5 text-xs font-medium text-violet-400 bg-violet-950/50 border border-violet-500/20 rounded-full px-3 py-1 mb-4">
+              <span className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />
+              Hệ thống đang hoạt động
+            </div>
+            <h1 className="text-3xl font-bold text-white mb-2 tracking-tight">
+              Đăng nhập
+            </h1>
+            <p className="text-slate-400 text-sm">
+              Tiếp tục quản lý cửa hàng với AI
+            </p>
+          </div>
+
+          {/* Error */}
           {error && (
-            <div className="mb-6 bg-red-50 border-l-4 border-red-500 rounded-lg p-4 flex items-start gap-3 animate-slideDown">
-              <AlertCircle className="w-5 h-5 text-red-500 shrink-0 mt-0.5" />
-              <p className="text-red-700 text-sm font-medium">{error}</p>
+            <div className="mb-5 flex items-start gap-3 p-4 rounded-xl border border-red-500/20 bg-red-950/20">
+              <AlertCircle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
+              <p className="text-red-300 text-sm">{error}</p>
             </div>
           )}
 
           {/* Form */}
-          <div className="space-y-5" onKeyPress={handleKeyPress}>
-            {/* Username Input */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">
-                Mail đăng nhập <span className="text-red-500">*</span>
+          <div className="space-y-4">
+            {/* Email */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">
+                Email
               </label>
-              <div className="relative group">
+              <div className="relative">
                 <User
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${
-                    focusedField === "username"
-                      ? "text-indigo-600"
-                      : "text-gray-400"
-                  }`}
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-200 ${focusedField === "email" ? "text-violet-400" : "text-slate-600"}`}
                 />
                 <input
                   type="text"
@@ -108,31 +211,29 @@ export default function LoginForm({ onSubmit, loading, error }: Props) {
                   onChange={(e) => setEmail(e.target.value)}
                   onFocus={() => setFocusedField("email")}
                   onBlur={() => setFocusedField(null)}
-                  className={`w-full pl-12 pr-4 py-3.5 rounded-xl border-2 transition-all duration-200 focus:outline-none text-gray-900 font-medium ${
-                    error
-                      ? "border-red-300 focus:border-red-500"
-                      : focusedField === "email"
-                        ? "border-indigo-500 shadow-lg shadow-indigo-100"
-                        : "border-gray-200"
-                  } hover:border-indigo-300 bg-white`}
-                  placeholder="Nhập tên đăng nhập"
                   disabled={loading}
+                  placeholder="you@example.com"
+                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/4 border text-white text-sm placeholder:text-slate-600 focus:outline-none transition-all duration-200 disabled:opacity-50"
                 />
               </div>
             </div>
 
-            {/* Password Input */}
-            <div className="space-y-2">
-              <label className="text-sm font-semibold text-gray-700">
-                Mật khẩu <span className="text-red-500">*</span>
-              </label>
-              <div className="relative group">
+            {/* Password */}
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <label className="text-xs font-medium text-slate-400 uppercase tracking-widest">
+                  Mật khẩu
+                </label>
+                <a
+                  href="#"
+                  className="text-xs text-violet-400 hover:text-violet-300 transition-colors"
+                >
+                  Quên mật khẩu?
+                </a>
+              </div>
+              <div className="relative">
                 <Lock
-                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 transition-colors ${
-                    focusedField === "password"
-                      ? "text-indigo-600"
-                      : "text-gray-400"
-                  }`}
+                  className={`absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 transition-colors duration-200 ${focusedField === "password" ? "text-violet-400" : "text-slate-600"}`}
                 />
                 <input
                   type={showPassword ? "text" : "password"}
@@ -140,63 +241,71 @@ export default function LoginForm({ onSubmit, loading, error }: Props) {
                   onChange={(e) => setPassword(e.target.value)}
                   onFocus={() => setFocusedField("password")}
                   onBlur={() => setFocusedField(null)}
-                  className={`w-full pl-12 pr-12 py-3.5 rounded-xl border-2 transition-all duration-200 focus:outline-none text-gray-900 font-medium ${
-                    error
-                      ? "border-red-300 focus:border-red-500"
-                      : focusedField === "password"
-                        ? "border-indigo-500 shadow-lg shadow-indigo-100"
-                        : "border-gray-200"
-                  } hover:border-indigo-300 bg-white`}
-                  placeholder="Nhập mật khẩu"
                   disabled={loading}
+                  placeholder="••••••••"
+                  className="w-full pl-11 pr-12 py-3 rounded-xl bg-white/4 border text-white text-sm placeholder:text-slate-600 focus:outline-none transition-all duration-200 disabled:opacity-50"
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400 hover:text-indigo-600 transition-colors"
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-600 hover:text-slate-300 transition-colors"
                 >
                   {showPassword ? (
-                    <EyeOff className="w-5 h-5" />
+                    <EyeOff className="w-4 h-4" />
                   ) : (
-                    <Eye className="w-5 h-5" />
+                    <Eye className="w-4 h-4" />
                   )}
                 </button>
               </div>
             </div>
 
-            {/* Remember Me & Forgot Password */}
-            <div className="flex items-center justify-between">
-              <label className="flex items-center gap-2 cursor-pointer group">
+            {/* Remember Me */}
+            <label className="flex items-center gap-2.5 cursor-pointer group w-fit">
+              <div className="relative">
                 <input
                   type="checkbox"
                   checked={rememberMe}
                   onChange={(e) => setRememberMe(e.target.checked)}
-                  className="w-4 h-4 rounded border-gray-300 text-indigo-600 focus:ring-2 focus:ring-indigo-500 cursor-pointer"
                   disabled={loading}
+                  className="sr-only"
                 />
-                <span className="text-sm font-medium text-gray-700 group-hover:text-indigo-600 transition-colors">
-                  Ghi nhớ đăng nhập
-                </span>
-              </label>
-              <a
-                href="#"
-                className="text-sm font-semibold text-indigo-600 hover:text-indigo-700 transition-colors"
-              >
-                Quên mật khẩu?
-              </a>
-            </div>
+                <div
+                  className={`w-4 h-4 rounded border flex items-center justify-center transition-all duration-200 ${rememberMe ? "bg-violet-600 border-violet-600" : "bg-transparent border-slate-600"}`}
+                >
+                  {rememberMe && (
+                    <svg
+                      className="w-2.5 h-2.5 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      strokeWidth={3}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  )}
+                </div>
+              </div>
+              <span className="text-sm text-slate-400 group-hover:text-slate-300 transition-colors">
+                Ghi nhớ đăng nhập
+              </span>
+            </label>
 
-            {/* Login Button */}
+            {/* Submit Button */}
             <button
               onClick={handleSubmit}
               disabled={loading || !email || !password}
-              className="w-full bg-linear-to-r from-indigo-600 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-4 rounded-xl shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none relative overflow-hidden group"
+              className="w-full relative py-3.5 rounded-xl font-semibold text-sm text-white transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed overflow-hidden group mt-2"
             >
-              <div className="absolute inset-0 bg-linear-to-r from-transparent via-white to-transparent opacity-0 group-hover:opacity-20 transform -translate-x-full group-hover:translate-x-full transition-all duration-700"></div>
+              {/* Shimmer */}
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               <span className="relative flex items-center justify-center gap-2">
                 {loading ? (
                   <>
-                    <svg className="animate-spin h-5 w-5" viewBox="0 0 24 24">
+                    <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
                       <circle
                         className="opacity-25"
                         cx="12"
@@ -205,165 +314,57 @@ export default function LoginForm({ onSubmit, loading, error }: Props) {
                         stroke="currentColor"
                         strokeWidth="4"
                         fill="none"
-                      ></circle>
+                      />
                       <path
                         className="opacity-75"
                         fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                      />
                     </svg>
-                    Đang xử lý...
+                    Đang xác thực...
                   </>
                 ) : (
-                  "Đăng nhập ngay →"
+                  <>
+                    Đăng nhập
+                    <Cpu className="w-4 h-4" />
+                  </>
                 )}
               </span>
             </button>
 
             {/* Divider */}
-            <div className="relative">
+            <div className="relative py-1">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-gray-200"></div>
+                <div className="w-full border-t border-white/5" />
               </div>
-              <div className="relative flex justify-center text-sm">
-                <span className="px-4 bg-gray-50 text-gray-500 font-medium">
-                  Hoặc
+              <div className="relative flex justify-center">
+                <span className="px-3 bg-[#09090f] text-slate-600 text-xs">
+                  hoặc
                 </span>
               </div>
             </div>
 
-            {/* Sign Up Link */}
+            {/* Register Button */}
             <button
               onClick={() => router("/auth/register")}
               disabled={loading}
-              className="w-full bg-white border-2 border-gray-200 hover:border-indigo-500 hover:bg-indigo-50 text-gray-700 hover:text-indigo-600 font-semibold py-3.5 rounded-xl transition-all duration-200 transform hover:-translate-y-0.5 active:translate-y-0"
+              className="w-full py-3.5 rounded-xl text-sm font-medium text-slate-400 hover:text-white border border-white/7 hover:border-white/15 bg-white/2 hover:bg-white/5 transition-all duration-200 disabled:opacity-40"
             >
-              Đăng ký tài khoản mới ✨
+              Tạo tài khoản mới
             </button>
           </div>
 
           {/* Footer */}
-          <p className="text-center text-gray-500 text-sm mt-8">
-            © 2025 Phone Sale. All rights reserved.
+          <p className="text-center text-slate-700 text-xs mt-8">
+            © 2025 Product AI Ecommerce. All rights reserved.
           </p>
-        </div>
-      </div>
-
-      {/* RIGHT SIDE - Illustration & Info */}
-      <div className="hidden lg:flex lg:w-1/2 bg-linear-to-br from-indigo-600 via-purple-600 to-pink-600 relative overflow-hidden">
-        {/* Animated background */}
-        <div className="absolute inset-0">
-          <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-white/10 rounded-full blur-3xl animate-pulse"></div>
-          <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-blue-400/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
-          <div className="absolute top-1/2 left-1/2 w-96 h-96 bg-purple-400/10 rounded-full blur-3xl animate-pulse delay-2000"></div>
-        </div>
-
-        <div className="relative z-10 flex flex-col items-center justify-center p-12 text-white">
-          {/* Main Illustration */}
-          <div className="mb-12 relative">
-            <div className="relative">
-              <div className="absolute inset-0 bg-white/20 rounded-3xl blur-2xl"></div>
-              <div className="relative bg-white/10 backdrop-blur-xl rounded-3xl p-12 border border-white/20">
-                <Phone className="w-32 h-32 text-white animate-float" />
-                <Sparkles className="absolute top-4 right-4 w-8 h-8 text-yellow-300 animate-pulse" />
-                <TrendingUp className="absolute bottom-4 left-4 w-8 h-8 text-green-300 animate-bounce" />
-              </div>
-            </div>
-          </div>
-
-          {/* Heading */}
-          <h2 className="text-4xl font-bold mb-4 text-center">
-            Trải nghiệm mua sắm <br />
-            thế hệ mới
-          </h2>
-          <p className="text-xl text-white/90 mb-12 text-center max-w-md">
-            Khám phá hàng nghìn sản phẩm chính hãng với giá tốt nhất thị trường
-          </p>
-
-          {/* Features */}
-          <div className="grid grid-cols-2 gap-6 w-full max-w-xl">
-            {features.map((feature, index) => (
-              <div
-                key={index}
-                className="bg-white/10 backdrop-blur-xl rounded-2xl p-6 border border-white/20 hover:bg-white/20 transition-all duration-300 hover:scale-105 group animate-slideUp"
-              >
-                <feature.icon
-                  className={`w-10 h-10 ${feature.color} mb-3 group-hover:scale-110 transition-transform`}
-                />
-                <p className="font-semibold text-lg">{feature.text}</p>
-              </div>
-            ))}
-          </div>
-
-          {/* Stats */}
-          <div className="mt-12 grid grid-cols-3 gap-8 w-full max-w-xl">
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">10K+</div>
-              <div className="text-white/80 text-sm">Người dùng</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">5K+</div>
-              <div className="text-white/80 text-sm">Sản phẩm</div>
-            </div>
-            <div className="text-center">
-              <div className="text-4xl font-bold mb-2">99%</div>
-              <div className="text-white/80 text-sm">Hài lòng</div>
-            </div>
-          </div>
         </div>
       </div>
 
       <style>{`
-        @keyframes slideDown {
-          from {
-            opacity: 0;
-            transform: translateY(-10px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes slideUp {
-          from {
-            opacity: 0;
-            transform: translateY(20px);
-          }
-          to {
-            opacity: 1;
-            transform: translateY(0);
-          }
-        }
-
-        @keyframes float {
-          0%,
-          100% {
-            transform: translateY(0px);
-          }
-          50% {
-            transform: translateY(-20px);
-          }
-        }
-
-        .animate-slideDown {
-          animation: slideDown 0.3s ease-out;
-        }
-
-        .animate-slideUp {
-          animation: slideUp 0.6s ease-out both;
-        }
-
-        .animate-float {
-          animation: float 3s ease-in-out infinite;
-        }
-
-        .delay-1000 {
-          animation-delay: 1s;
-        }
-
-        .delay-2000 {
-          animation-delay: 2s;
+        @keyframes shimmer {
+          0% { transform: translateX(-100%); }
+          100% { transform: translateX(200%); }
         }
       `}</style>
     </div>

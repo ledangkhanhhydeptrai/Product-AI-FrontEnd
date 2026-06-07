@@ -1,10 +1,14 @@
 // features/auth/store/authSaga.ts
 import { call, put, takeLatest } from "redux-saga/effects";
 import { loginRequest, loginSuccess, loginFailure } from "./authSlice";
-import type { AxiosError, AxiosResponse } from "axios";
-import { LoginAPI, type TokenResponse } from "./authApi";
-import { getUsernameFromToken } from "./utils/JWTPayload";
-import { decodeJwt } from "./types/jwt";
+import type { PayloadAction } from "@reduxjs/toolkit";
+import {
+  fetchMe,
+  LoginAPI,
+  type LoginRequest,
+  type LoginResponse,
+  type MeResponse
+} from "./authApi";
 
 export interface ApiResponse<T> {
   status: number;
@@ -18,45 +22,31 @@ export interface ApiErrorResponse {
   data: null;
 }
 
-function* handleLogin(
-  action: ReturnType<typeof loginRequest>
-): Generator<unknown, void, AxiosResponse<ApiResponse<TokenResponse>>> {
+function* handleLogin(action: PayloadAction<LoginRequest>) {
   try {
     const { email, password } = action.payload;
 
-    const response = yield call(LoginAPI, {
+    const loginRes: { data: LoginResponse } = yield call(LoginAPI, {
       email,
       password
     });
-    const { token, role } = response.data.data;
-    const decodedUsername = getUsernameFromToken(token);
-    localStorage.setItem("username", decodedUsername ?? "");
-    const payload = decodeJwt(token);
-    if (!payload) {
-      throw new Error("Invalid token");
-    }
-    // response.data là ApiResponse<TokenResponse>
-    // loginSuccess expects the user role, so pass role only
-    yield put(loginSuccess(role));
+
+    const me: { data: MeResponse } = yield call(fetchMe);
+
+    const { user } = me.data;
+
+    yield put(
+      loginSuccess({
+        token: loginRes.data.data.token,
+        role: user.role,
+        userId: user.sub
+      })
+    );
   } catch (error) {
-    let message = "Login failed";
-
-    if (error && (error as AxiosError).isAxiosError) {
-      const err = error as AxiosError<ApiErrorResponse>;
-
-      if (
-        err.response &&
-        err.response.data &&
-        typeof err.response.data.message === "string"
-      ) {
-        message = err.response.data.message;
-      }
-    }
-
-    yield put(loginFailure(message));
+    console.log("Error:", error);
+    yield put(loginFailure("Login failed"));
   }
 }
-
 export default function* authSaga() {
   yield takeLatest(loginRequest.type, handleLogin);
 }
