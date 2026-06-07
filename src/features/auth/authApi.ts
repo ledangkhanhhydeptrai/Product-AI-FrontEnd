@@ -9,23 +9,25 @@ export interface LoginRequest {
   email: string;
   password: string;
 }
-export interface TokenResponse {
-  token: string;
-  role: UserRole;
-}
-export interface MeResponse {
-  token: string;
+export interface UserResponse {
   authenticated: boolean;
   user: {
-    sub: string;
+    id: string;
     role: UserRole;
-    exp: number;
+    email: string;
   };
+}
+export interface MeResponse {
+  id: string;
+  fullName: string;
+  email: string;
+  avatarUrl: string;
+  role: UserRole;
 }
 export interface LoginResponse {
   status: number;
   message: string;
-  data: TokenResponse;
+  data: UserResponse;
 }
 export const LoginAPI = async ({ email, password }: LoginRequest) => {
   try {
@@ -40,7 +42,11 @@ export const LoginAPI = async ({ email, password }: LoginRequest) => {
   }
 };
 export const fetchMe = async () => {
-    return fetchBaseResponse("/debug/me", {
+  const res = await fetchBaseResponse("/me", {
     method: "GET",
   });
+
+  console.log("FETCH ME RESULT:", res);
+
+  return res;
 };

@@ -6,12 +6,11 @@ import axios, {
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
   timeout: 15000,
-  withCredentials: true,
+  withCredentials: true
 });
 console.log("API URL:", import.meta.env.VITE_API_URL);
 API.interceptors.request.use(
   (config) => {
-    config.withCredentials = true;
     return config;
   },
   (error) => {
@@ -34,6 +33,8 @@ export async function fetchBaseResponse<T = unknown>(
   console.log("Axios config:", config);
   try {
     const response: AxiosResponse = await API(url, config);
+    console.log("SUCCESS URL:", url);
+    console.log("SUCCESS STATUS:", response.status);
     console.log("Axios response:", response);
     const raw = response.data;
     console.log("Raw response data:", raw);
@@ -64,6 +65,9 @@ export async function fetchBaseResponse<T = unknown>(
     };
   } catch (error) {
     const errors = error as AxiosError<BaseResponse<T>>;
+    console.log("FAILED URL:", url);
+    console.log("FAILED STATUS:", errors.response?.status);
+    console.log("FAILED DATA:", errors.response?.data);
     if (errors.response) {
       const raw = errors.response.data;
       console.log("Axios error response data:", raw);
