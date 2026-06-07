@@ -146,15 +146,6 @@ export default function LoginForm({ onSubmit, loading, error }: Props) {
             "Product AI đã giúp chúng tôi tăng 3x doanh thu trong 6 tháng nhờ hệ
             thống gợi ý sản phẩm tự động."
           </p>
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-linear-to-br from-violet-500 to-blue-500 flex items-center justify-center text-white text-xs font-bold">
-              NQ
-            </div>
-            <div>
-              <p className="text-white text-sm font-medium">Nguyễn Quốc Anh</p>
-              <p className="text-slate-500 text-xs">CEO, TechShop Vietnam</p>
-            </div>
-          </div>
         </div>
       </div>
 

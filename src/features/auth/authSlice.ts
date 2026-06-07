@@ -1,20 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { LoginRequest, UserRole } from "./authApi";
+interface User {
+  id: string;
+  fullName: string;
+  email: string;
+  avatarUrl: string;
+}
 interface AuthState {
   loading: boolean;
   token: string | null;
   isAuthenticated: boolean;
   role: UserRole | null;
-  userId: string | null;
+  user: User | null;
   error: string | null;
 }
 const initialState: AuthState = {
   loading: false,
   token: null,
+  user: null,
   isAuthenticated: false,
   role: null,
-  userId: null,
   error: null
 };
 
@@ -30,16 +36,19 @@ const authSlice = createSlice({
     loginSuccess(
       state,
       action: PayloadAction<{
-        token: string;
-        role: UserRole;
-        userId: string;
+        user: {
+          id: string;
+          fullName: string;
+          email: string;
+          avatarUrl: string;
+          role: UserRole;
+        };
       }>
     ) {
       state.loading = false;
-      state.token = action.payload.token;
-      state.role = action.payload.role;
-      state.userId = action.payload.userId;
+      state.role = action.payload.user.role;
       state.isAuthenticated = true;
+      state.user = action.payload.user;
     },
 
     loginFailure(state, action: PayloadAction<string>) {
@@ -50,7 +59,7 @@ const authSlice = createSlice({
     logout(state) {
       state.token = null;
       state.role = null;
-      state.userId = null;
+      state.user = null;
       state.isAuthenticated = false;
     }
   }

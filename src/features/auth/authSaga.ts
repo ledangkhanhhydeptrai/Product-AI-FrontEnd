@@ -6,7 +6,6 @@ import {
   fetchMe,
   LoginAPI,
   type LoginRequest,
-  type LoginResponse,
   type MeResponse
 } from "./authApi";
 
@@ -26,20 +25,27 @@ function* handleLogin(action: PayloadAction<LoginRequest>) {
   try {
     const { email, password } = action.payload;
 
-    const loginRes: { data: LoginResponse } = yield call(LoginAPI, {
+    yield call(LoginAPI, {
       email,
       password
     });
 
     const me: { data: MeResponse } = yield call(fetchMe);
-
-    const { user } = me.data;
-
+    console.log("ME =", JSON.stringify(me, null, 2));
+    console.log("ME:", me);
+    if (!me || !me.data) {
+      yield put(loginFailure("Cannot get profile"));
+      return;
+    }
     yield put(
       loginSuccess({
-        token: loginRes.data.data.token,
-        role: user.role,
-        userId: user.sub
+        user: {
+          id: me.data.id,
+          fullName: me.data.fullName,
+          email: me.data.email,
+          avatarUrl: me.data.avatarUrl,
+          role: me.data.role
+        }
       })
     );
   } catch (error) {
