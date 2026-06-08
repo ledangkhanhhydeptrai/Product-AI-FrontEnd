@@ -20,6 +20,7 @@ import {
   LogoutAPI,
   type LoginRequest
 } from "./authApi";
+import { showNotification } from "../notification/notificationSlice";
 
 export interface ApiResponse<T> {
   status: number;
@@ -81,7 +82,12 @@ function* handleRegister(action: PayloadAction<CreateProps>): Generator {
     console.log("IS FILE INSTANCE:", action.payload.file instanceof File);
 
     yield call(CreateFormAPI, action.payload);
-
+    yield put(
+      showNotification({
+        message: "Đăng ký thành công",
+        severity: "success"
+      })
+    );
     yield put(registerSuccess());
   } catch (error) {
     console.log("Register Error:", error);

@@ -14,6 +14,7 @@ interface AuthState {
   role: UserRole | null;
   user: User | null;
   error: string | null;
+  registered: boolean;
 }
 const initialState: AuthState = {
   loading: false,
@@ -21,7 +22,8 @@ const initialState: AuthState = {
   user: null,
   isAuthenticated: false,
   role: null,
-  error: null
+  error: null,
+  registered: false
 };
 
 const authSlice = createSlice({
@@ -70,15 +72,18 @@ const authSlice = createSlice({
     registerRequest(state, _action: PayloadAction<CreateProps>) {
       state.loading = true;
       state.error = null;
+      state.registered = false;
     },
 
     registerSuccess(state) {
       state.loading = false;
+      state.registered = true;
     },
 
     registerFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+      state.registered = false;
     }
   }
 });
