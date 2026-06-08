@@ -5,11 +5,21 @@ import {
   loginSuccess,
   loginFailure,
   logoutRequest as logoutAction,
-  logoutSuccess
+  logoutSuccess,
+  registerSuccess,
+  registerFailure,
+  registerRequest
 } from "./authSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
-import { fetchMe, LoginAPI, LogoutAPI, type LoginRequest } from "./authApi";
+import {
+  CreateFormAPI,
+  CreateProps,
+  fetchMe,
+  LoginAPI,
+  LogoutAPI,
+  type LoginRequest
+} from "./authApi";
 
 export interface ApiResponse<T> {
   status: number;
@@ -65,9 +75,22 @@ function* handleLogout(): Generator {
     yield put(logoutSuccess());
   }
 }
+function* handleRegister(action: PayloadAction<CreateProps>): Generator {
+  try {
+    console.log("PAYLOAD FILE:", action.payload.file);
+    console.log("IS FILE INSTANCE:", action.payload.file instanceof File);
 
+    yield call(CreateFormAPI, action.payload);
+
+    yield put(registerSuccess());
+  } catch (error) {
+    console.log("Register Error:", error);
+    yield put(registerFailure("Register failed"));
+  }
+}
 // WATCHER
 export default function* authSaga() {
   yield takeLatest(loginRequest.type, handleLogin);
   yield takeLatest(logoutAction.type, handleLogout);
+  yield takeLatest(registerRequest.type, handleRegister);
 }

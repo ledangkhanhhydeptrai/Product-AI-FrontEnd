@@ -9,7 +9,10 @@ const sagaMiddleware = createSagaMiddleware();
 export const store = configureStore({
   reducer: rootReducer,
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({ thunk: false }).concat(sagaMiddleware)
+    getDefaultMiddleware({
+      thunk: false, // optional
+      serializableCheck: false // nếu bạn đang upload file
+    }).concat(sagaMiddleware) // 🔥 QUAN TRỌNG
 });
 
 sagaMiddleware.run(rootSaga);
