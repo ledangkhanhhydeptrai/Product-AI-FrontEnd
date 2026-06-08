@@ -57,3 +57,36 @@ export const LogoutAPI = async (): Promise<ApiResponse<void>> => {
   });
   return res.data;
 };
+export interface CreateProps {
+  fullname: string;
+  email: string;
+  password: string;
+  phone: string;
+  file: File | null;
+}
+export const CreateFormAPI = async (
+  data: CreateProps
+): Promise<ApiResponse<void>> => {
+  const formData = new FormData();
+
+  formData.append("fullname", data.fullname);
+  formData.append("email", data.email);
+  formData.append("password", data.password);
+  formData.append("phone", data.phone);
+
+  if (!data.file) {
+    throw new Error("File is required");
+  }
+
+  formData.append("file", data.file);
+
+  const response = await fetchBaseResponse<ApiResponse<void>>(
+    "/auth/register",
+    {
+      method: "POST",
+      data: formData
+    }
+  );
+
+  return response.data;
+};

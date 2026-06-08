@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
-import type { LoginRequest, UserRole } from "./authApi";
+import type { CreateProps, LoginRequest, UserRole } from "./authApi";
 interface User {
   id: string;
   fullName: string;
@@ -66,6 +66,19 @@ const authSlice = createSlice({
       state.isAuthenticated = false;
       state.token = null;
       state.error = null;
+    },
+    registerRequest(state, _action: PayloadAction<CreateProps>) {
+      state.loading = true;
+      state.error = null;
+    },
+
+    registerSuccess(state) {
+      state.loading = false;
+    },
+
+    registerFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -74,6 +87,9 @@ export const {
   loginSuccess,
   loginFailure,
   logoutRequest,
-  logoutSuccess
+  logoutSuccess,
+  registerRequest,
+  registerSuccess,
+  registerFailure
 } = authSlice.actions;
 export default authSlice.reducer;
