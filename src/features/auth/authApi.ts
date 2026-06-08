@@ -1,5 +1,6 @@
 import type { AxiosError } from "axios";
 import { fetchBaseResponse } from "../../config/fetchBaseResponse";
+import type { ApiResponse } from "../../types/api";
 export enum UserRole {
   USER = "user",
   STAFF = "staff",
@@ -41,12 +42,12 @@ export const LoginAPI = async ({ email, password }: LoginRequest) => {
     return errors;
   }
 };
-export const fetchMe = async () => {
-  const res = await fetchBaseResponse("/me", {
+export const fetchMe = async ():Promise<ApiResponse<MeResponse>> => {
+  const res = await fetchBaseResponse<ApiResponse<MeResponse>>("/me", {
     method: "GET",
   });
 
   console.log("FETCH ME RESULT:", res);
 
-  return res;
+  return res.data;
 };
