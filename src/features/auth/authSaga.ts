@@ -6,7 +6,6 @@ import {
   fetchMe,
   LoginAPI,
   type LoginRequest,
-  type MeResponse
 } from "./authApi";
 
 export interface ApiResponse<T> {
@@ -21,7 +20,7 @@ export interface ApiErrorResponse {
   data: null;
 }
 
-function* handleLogin(action: PayloadAction<LoginRequest>) {
+function* handleLogin(action: PayloadAction<LoginRequest>): Generator {
   try {
     const { email, password } = action.payload;
 
@@ -30,7 +29,7 @@ function* handleLogin(action: PayloadAction<LoginRequest>) {
       password
     });
 
-    const me: { data: MeResponse } = yield call(fetchMe);
+    const me = yield call(fetchMe);
     console.log("ME =", JSON.stringify(me, null, 2));
     console.log("ME:", me);
     if (!me || !me.data) {
