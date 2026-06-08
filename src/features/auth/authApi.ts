@@ -42,12 +42,18 @@ export const LoginAPI = async ({ email, password }: LoginRequest) => {
     return errors;
   }
 };
-export const fetchMe = async ():Promise<ApiResponse<MeResponse>> => {
+export const fetchMe = async (): Promise<ApiResponse<MeResponse>> => {
   const res = await fetchBaseResponse<ApiResponse<MeResponse>>("/me", {
-    method: "GET",
+    method: "GET"
   });
 
   console.log("FETCH ME RESULT:", res);
 
+  return res.data;
+};
+export const LogoutAPI = async (): Promise<ApiResponse<void>> => {
+  const res = await fetchBaseResponse<ApiResponse<void>>("/auth/logout", {
+    method: "POST"
+  });
   return res.data;
 };

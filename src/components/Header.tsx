@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import type { RootState } from "../app/store";
-import { logout } from "../features/auth/authSlice";
+import { logoutRequest } from "../features/auth/authSlice";
 
 interface NavbarProps {
   cartCount: number;
@@ -17,14 +17,13 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
   const dispatch = useDispatch();
 
   const user = useSelector((state: RootState) => state.auth.user);
+  const isAuthenticated = useSelector(
+    (state: RootState) => state.auth.isAuthenticated
+  );
+
   const userName = user ? user.fullName : "";
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const handleSearchSubmit = () => {
-    onSearchSubmit(searchValue);
-  };
-
-  // initials fallback
   const getInitials = (fullName: string) => {
     if (!fullName) return "U";
     return fullName
@@ -35,7 +34,7 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
       .toUpperCase();
   };
 
-  // click outside to close dropdown
+  // click outside dropdown
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -50,122 +49,175 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  // LOGOUT
   const handleLogout = () => {
-    dispatch(logout());
-    navigate("/login");
+    dispatch(logoutRequest());
+    setIsUserDropdownOpen(false);
   };
 
   return (
-    <nav className="bg-white border-b border-gray-100 px-8 h-16 flex items-center justify-between gap-5 sticky top-0 z-50">
+    <nav className="bg-white border-b border-gray-100 px-7 h-16 flex items-center justify-between gap-4 sticky top-0 z-50">
       {/* LOGO */}
-      <div className="flex items-center gap-2 shrink-0">
-        <div className="w-8.5 h-8.5 bg-linear-to-br from-indigo-500 to-violet-500 rounded-xl flex items-center justify-center text-lg">
+      <div
+        className="flex items-center gap-2.5 shrink-0 cursor-pointer"
+        onClick={() => navigate("/")}
+      >
+        <div className="w-9 h-9 bg-indigo-500 rounded-[10px] flex items-center justify-center text-white text-lg">
           🛍️
         </div>
-        <span className="font-playfair font-bold text-xl text-[#1A1A2E] tracking-tight">
-          Aura
-          <span className="bg-linear-to-r from-indigo-500 to-violet-500 bg-clip-text text-transparent">
-            AI
-          </span>
+        <span className="text-[19px] font-semibold text-[#1A1A2E] tracking-tight">
+          Aura<span className="text-indigo-500">AI</span>
         </span>
       </div>
 
       {/* SEARCH */}
-      <div className="flex items-center bg-white border border-gray-200 rounded-full px-4 gap-2.5 flex-1 max-w-130 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
-        <span className="text-gray-400 text-base">🔍</span>
-
+      <div className="flex items-center gap-2.5 flex-1 max-w-115 h-10.5 bg-gray-50 border border-gray-200 rounded-full px-4 focus-within:border-indigo-400 focus-within:ring-2 focus-within:ring-indigo-100 transition-all">
+        <span className="text-gray-400 text-[17px]">🔍</span>
         <input
           type="text"
           placeholder="Search products, brands, categories…"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && handleSearchSubmit()}
-          className="border-none outline-none bg-transparent text-sm h-11.5 flex-1 text-[#1A1A2E] placeholder-gray-400"
+          onKeyDown={(e) => e.key === "Enter" && onSearchSubmit(searchValue)}
+          className="flex-1 outline-none bg-transparent text-sm text-[#1A1A2E] placeholder-gray-400"
         />
-
         <button
-          onClick={handleSearchSubmit}
-          className="bg-linear-to-br from-indigo-500 to-violet-500 text-white rounded-full px-3 py-1 text-xs font-semibold hover:opacity-90 transition-opacity"
+          onClick={() => onSearchSubmit(searchValue)}
+          className="flex items-center gap-1.5 bg-indigo-500 hover:opacity-85 text-white rounded-full h-7.5 px-3.5 text-xs font-medium transition-opacity shrink-0"
         >
           ✦ AI
         </button>
       </div>
 
-      {/* ICONS */}
-      <div className="flex items-center gap-2.5 shrink-0">
+      {/* RIGHT */}
+      <div className="flex items-center gap-2 shrink-0">
         {/* WISHLIST */}
         <button
           onClick={() => navigate("/wishlist")}
-          className="bg-white border border-gray-200 rounded-full w-11 h-11 flex items-center justify-center text-lg hover:border-indigo-400 transition-colors"
+          aria-label="Wishlist"
+          className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full text-gray-500 hover:border-gray-300 hover:bg-gray-50 transition-all text-lg"
         >
           ♡
         </button>
 
-        {/* NOTIFICATION */}
+        {/* NOTIFICATIONS */}
         <button
           onClick={() => navigate("/notifications")}
-          className="relative bg-white border border-gray-200 rounded-full w-11 h-11 flex items-center justify-center text-lg hover:border-indigo-400 transition-colors"
+          aria-label="Notifications"
+          className="relative w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full text-gray-500 hover:border-gray-300 hover:bg-gray-50 transition-all text-lg"
         >
           🔔
-          <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-red-500 rounded-full border-2 border-white" />
+          <span className="absolute top-2 right-2 w-1.75 h-1.75 bg-red-500 rounded-full border-2 border-white" />
         </button>
 
         {/* CART */}
         <button
           onClick={() => navigate("/cart")}
-          className="relative bg-white border border-gray-200 rounded-full w-11 h-11 flex items-center justify-center text-lg hover:border-indigo-400 transition-colors"
+          aria-label="Cart"
+          className="relative w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full text-gray-500 hover:border-gray-300 hover:bg-gray-50 transition-all text-lg"
         >
           🛒
           {cartCount > 0 && (
-            <span className="absolute -top-1 -right-1 bg-indigo-500 text-white text-[10px] font-bold w-4.5 h-4.5 rounded-full flex items-center justify-center border-2 border-white">
+            <span className="absolute -top-1 -right-1 min-w-4.5 h-4.5 bg-indigo-500 text-white text-[10px] font-medium rounded-full flex items-center justify-center px-1 border-2 border-white">
               {cartCount}
             </span>
           )}
         </button>
 
-        {/* USER AVATAR */}
-        <div className="relative" ref={dropdownRef}>
-          <div
-            onClick={() => setIsUserDropdownOpen((prev) => !prev)}
-            className="w-9 h-9 bg-linear-to-br from-indigo-500 to-violet-500 rounded-full flex items-center justify-center text-white text-sm font-semibold cursor-pointer overflow-hidden"
-          >
-            {user && user.avatarUrl ? (
-              <img
-                src={user.avatarUrl}
-                className="w-full h-full object-cover"
-                title="Input image"
-              />
-            ) : (
-              getInitials(userName)
+        {/* DIVIDER */}
+        <div className="w-px h-6 bg-gray-200 mx-1" />
+
+        {/* AUTH */}
+        {isAuthenticated && user ? (
+          <div className="relative" ref={dropdownRef}>
+            {/* USER PILL */}
+            <div
+              onClick={() => setIsUserDropdownOpen((p) => !p)}
+              className="flex items-center gap-2 pl-1 pr-2.5 py-1 border border-gray-200 rounded-full cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all"
+            >
+              <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-medium shrink-0 overflow-hidden">
+                {user.avatarUrl ? (
+                  <img
+                    src={user.avatarUrl}
+                    className="w-full h-full object-cover"
+                    alt="avatar"
+                  />
+                ) : (
+                  getInitials(userName)
+                )}
+              </div>
+              <span className="text-[13px] font-medium text-[#1A1A2E] whitespace-nowrap max-w-27.5 truncate">
+                {userName}
+              </span>
+              <svg
+                className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${isUserDropdownOpen ? "rotate-180" : ""}`}
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                strokeWidth={2}
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  d="M19 9l-7 7-7-7"
+                />
+              </svg>
+            </div>
+
+            {/* DROPDOWN */}
+            {isUserDropdownOpen && (
+              <div className="absolute right-0 top-[calc(100%+8px)] w-52 bg-white border border-gray-200 rounded-xl overflow-hidden z-50 shadow-sm animate-in fade-in slide-in-from-top-1 duration-150">
+                <div className="px-3.5 py-3 border-b border-gray-100">
+                  <p className="text-sm font-medium text-[#1A1A2E]">
+                    {userName}
+                  </p>
+                  <p className="text-xs text-gray-400 mt-0.5">{user.email}</p>
+                </div>
+                <div className="p-1.5">
+                  {[
+                    { label: "Profile", icon: "👤", path: "/profile" },
+                    { label: "Orders", icon: "📦", path: "/orders" }
+                  ].map(({ label, icon, path }) => (
+                    <button
+                      key={path}
+                      onClick={() => {
+                        navigate(path);
+                        setIsUserDropdownOpen(false);
+                      }}
+                      className="w-full flex items-center gap-2.5 px-2.5 py-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                    >
+                      <span>{icon}</span>
+                      {label}
+                    </button>
+                  ))}
+                  <div className="h-px bg-gray-100 my-1" />
+                  <button
+                    onClick={handleLogout}
+                    className="w-full flex items-center gap-2.5 px-2.5 py-2.5 text-sm text-red-500 rounded-lg hover:bg-red-50 transition-colors"
+                  >
+                    <span>🚪</span>Logout
+                  </button>
+                </div>
+              </div>
             )}
           </div>
-
-          {/* DROPDOWN */}
-          {isUserDropdownOpen && (
-            <div className="absolute right-0 top-12 w-48 bg-white border border-gray-100 shadow-lg rounded-xl py-2 z-50">
-              <button
-                onClick={() => navigate("/profile")}
-                className="w-full text-left px-4 py-2 hover:bg-gray-50"
-              >
-                Profile
-              </button>
-
-              <button
-                onClick={() => navigate("/orders")}
-                className="w-full text-left px-4 py-2 hover:bg-gray-50"
-              >
-                Orders
-              </button>
-
-              <button
-                onClick={handleLogout}
-                className="w-full text-left px-4 py-2 hover:bg-red-50 text-red-500"
-              >
-                Logout
-              </button>
-            </div>
-          )}
-        </div>
+        ) : (
+          /* GUEST */
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => navigate("/login")}
+              className="h-9 px-4 text-sm font-medium text-indigo-500 border border-gray-200 rounded-full hover:bg-gray-50 transition-colors"
+            >
+              Đăng nhập
+            </button>
+            <button
+              onClick={() => navigate("/register")}
+              className="h-9 px-4 text-sm font-medium text-white bg-indigo-500 rounded-full hover:opacity-85 transition-opacity"
+            >
+              Đăng ký
+            </button>
+          </div>
+        )}
       </div>
     </nav>
   );

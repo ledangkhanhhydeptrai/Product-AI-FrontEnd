@@ -1,12 +1,15 @@
 // features/auth/store/authSaga.ts
 import { call, put, takeLatest } from "redux-saga/effects";
-import { loginRequest, loginSuccess, loginFailure } from "./authSlice";
-import type { PayloadAction } from "@reduxjs/toolkit";
 import {
-  fetchMe,
-  LoginAPI,
-  type LoginRequest,
-} from "./authApi";
+  loginRequest,
+  loginSuccess,
+  loginFailure,
+  logoutRequest as logoutAction,
+  logoutSuccess
+} from "./authSlice";
+import type { PayloadAction } from "@reduxjs/toolkit";
+
+import { fetchMe, LoginAPI, LogoutAPI, type LoginRequest } from "./authApi";
 
 export interface ApiResponse<T> {
   status: number;
@@ -20,22 +23,20 @@ export interface ApiErrorResponse {
   data: null;
 }
 
+// LOGIN
 function* handleLogin(action: PayloadAction<LoginRequest>): Generator {
   try {
     const { email, password } = action.payload;
 
-    yield call(LoginAPI, {
-      email,
-      password
-    });
+    yield call(LoginAPI, { email, password });
 
     const me = yield call(fetchMe);
-    console.log("ME =", JSON.stringify(me, null, 2));
-    console.log("ME:", me);
+
     if (!me || !me.data) {
       yield put(loginFailure("Cannot get profile"));
       return;
     }
+
     yield put(
       loginSuccess({
         user: {
@@ -48,10 +49,25 @@ function* handleLogin(action: PayloadAction<LoginRequest>): Generator {
       })
     );
   } catch (error) {
-    console.log("Error:", error);
+    console.log("Login Error:", error);
     yield put(loginFailure("Login failed"));
   }
 }
+
+// LOGOUT
+function* handleLogout(): Generator {
+  try {
+    yield call(LogoutAPI);
+  } catch (error) {
+    console.log("Logout error:", error);
+  } finally {
+    // 🔥 QUAN TRỌNG: clear redux state
+    yield put(logoutSuccess());
+  }
+}
+
+// WATCHER
 export default function* authSaga() {
   yield takeLatest(loginRequest.type, handleLogin);
+  yield takeLatest(logoutAction.type, handleLogout);
 }
