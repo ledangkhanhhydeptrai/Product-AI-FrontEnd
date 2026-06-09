@@ -1,8 +1,11 @@
 import HomePage from "../../pages/home/home";
 
-export const homeRoutes = [
+
+const homeRoutes = [
   {
     path: "/",
-    element: <HomePage />
-  }
+    element: <HomePage cartCount={0} onSearchSubmit={() => {}} />,
+  },
 ];
+
+export default homeRoutes;
