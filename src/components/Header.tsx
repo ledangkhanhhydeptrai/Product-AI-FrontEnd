@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import type { RootState } from "../app/store";
 import { logoutRequest } from "../features/auth/authSlice";
 
-interface NavbarProps {
+export interface NavbarProps {
   cartCount: number;
   onSearchSubmit: (value: string) => void;
 }
