@@ -3,8 +3,8 @@ import React from "react";
 interface Category {
   id: string;
   name: string;
-  icon: string;
-  count: string;
+  icon?: React.ReactNode;
+  count?: string;
 }
 
 interface Props {
@@ -16,47 +16,60 @@ export default function CategorySection({
   categories,
   onCategoryChange
 }: Props) {
-  const [activeCategory, setActiveCategory] = React.useState<string>("all");
+  const [activeCategory, setActiveCategory] = React.useState("all");
 
-  const handleSelect = (categoryId: string) => {
-    setActiveCategory(categoryId);
-    onCategoryChange?.(categoryId);
+  const handleSelect = (id: string) => {
+    setActiveCategory(id);
+    onCategoryChange?.(id);
   };
 
-  const allCategories = [
-    { id: "all", name: "All", icon: "", count: "" },
-    ...categories
-  ];
+  const allCategories = [{ id: "all", name: "All" }, ...categories];
 
   return (
-    <section className="mb-10">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-[17px] font-semibold text-gray-900">
-          Browse Categories
+    <section className="mb-8">
+      <div className="flex items-center justify-between mb-3">
+        <h2 className="text-[15px] font-medium text-gray-900">
+          Browse categories
         </h2>
-        <button className="text-sm text-indigo-500 hover:text-indigo-700 font-medium transition-colors">
-          View all →
-        </button>
+        <a
+          href="#"
+          className="flex items-center gap-1 text-[13px] text-indigo-500 hover:text-indigo-700 transition-colors"
+        >
+          View all
+          <svg
+            className="w-3.5 h-3.5"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+            strokeWidth={2}
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M9 5l7 7-7 7"
+            />
+          </svg>
+        </a>
       </div>
 
-      <div className="flex gap-2 overflow-x-auto pb-1.5 scrollbar-none">
+      <div className="flex gap-2 overflow-x-auto pb-1 scrollbar-none">
         {allCategories.map((cat) => {
           const isActive = activeCategory === cat.id;
           return (
             <button
               key={cat.id}
               onClick={() => handleSelect(cat.id)}
-              className={`shrink-0 rounded-full px-4 py-2 text-sm font-medium whitespace-nowrap transition-all border ${
+              className={`shrink-0 flex items-center gap-1.5 rounded-full px-4 py-1.75 text-[13px] font-medium whitespace-nowrap border transition-all ${
                 isActive
-                  ? "bg-gray-900 text-white border-gray-900"
-                  : "bg-white text-gray-600 border-gray-200 hover:border-gray-400 hover:text-gray-900"
+                  ? "bg-[#1E1B4B] text-indigo-100 border-transparent"
+                  : "bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-800"
               }`}
             >
-              {cat.icon && <span className="mr-1.5">{cat.icon}</span>}
+              {cat.icon && <span className="text-[14px]">{cat.icon}</span>}
               {cat.name}
               {cat.count && (
                 <span
-                  className={`ml-1.5 text-[11px] ${isActive ? "text-white/50" : "text-gray-400"}`}
+                  className={`text-[11px] ${isActive ? "opacity-50" : "text-gray-400"}`}
                 >
                   {cat.count}
                 </span>

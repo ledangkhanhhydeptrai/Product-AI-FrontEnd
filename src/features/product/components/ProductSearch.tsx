@@ -13,20 +13,20 @@ const ProductSearch: React.FC<Props> = ({ onSearch }) => {
   };
 
   return (
-    <div className="flex flex-1 border border-gray-200 rounded-xl overflow-hidden hover:border-gray-300 transition-colors">
+    <div className="flex flex-1 border border-gray-200 focus-within:border-indigo-500 rounded-xl overflow-hidden bg-white transition-colors">
       <input
         type="text"
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
         onKeyDown={handleKeyDown}
         placeholder="Tìm sản phẩm..."
-        className="flex-1 px-4 py-2.5 text-sm text-gray-700 outline-none bg-white placeholder-gray-400"
+        className="flex-1 px-4 py-2.5 text-[13px] text-gray-700 outline-none bg-transparent placeholder-gray-400"
       />
       <button
         onClick={() => onSearch(keyword)}
-        className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-4 py-2.5 text-sm transition-colors"
+        className="flex items-center gap-2 bg-[#1E1B4B] hover:bg-indigo-900 text-indigo-100 px-4 py-2.5 text-[13px] font-medium transition-colors"
       >
-        <Search size={16} />
+        <Search size={15} />
         Tìm kiếm
       </button>
     </div>
