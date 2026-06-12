@@ -8,13 +8,12 @@ interface Props {
 
 const ProductSection: React.FC<Props> = ({ products }) => {
   return (
-    <section>
-      <div className="flex items-center justify-between mb-5">
-        <h2 className="text-[17px] font-semibold text-gray-900">
-          Recommended for You
+    <section className="mb-8">
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="text-[15px] font-medium text-gray-900">
+          Recommended for you
         </h2>
       </div>
-
       <ProductCard product={products} />
     </section>
   );

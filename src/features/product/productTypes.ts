@@ -3,6 +3,7 @@ export interface ProductProps {
   name: string;
   price: number;
   thumbnail: string;
+  image_url: string;
 }
 export interface ProductPropsForAdmin {
   id: string;
@@ -18,4 +19,5 @@ export interface ProductPropsForAdmin {
   created_at: string;
   updated_at: string;
   has_embedding: boolean;
+  image_url: string;
 }
