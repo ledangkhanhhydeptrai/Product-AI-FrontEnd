@@ -1,14 +1,22 @@
+import AuthLayout from "../../layouts/AuthLayout";
 import LoginPage from "../../pages/auth/LoginPage";
 import RegisterPage from "../../pages/auth/RegisterPage";
-
 
 export const authRoutes = [
   {
     path: "/login",
-    element: <LoginPage />,
+    element: (
+      <AuthLayout>
+        <LoginPage />
+      </AuthLayout>
+    ),
   },
   {
     path: "/register",
-    element: <RegisterPage />,
+    element: (
+      <AuthLayout>
+        <RegisterPage />
+      </AuthLayout>
+    ),
   },
 ];

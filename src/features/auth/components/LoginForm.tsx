@@ -504,7 +504,7 @@ export default function LoginForm({ onSubmit, loading, error }: Props) {
 
               {/* Register */}
               <button
-                onClick={() => router("/auth/register")}
+                onClick={() => router("/register")}
                 disabled={loading}
                 className="register-btn w-full py-3.5 rounded-xl text-[13px] font-medium text-white/45 hover:text-white/70 transition-all duration-200 disabled:opacity-40"
               >

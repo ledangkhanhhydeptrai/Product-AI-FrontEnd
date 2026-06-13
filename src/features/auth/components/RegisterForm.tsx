@@ -468,7 +468,7 @@ export default function RegisterForm({ onSubmit, loading, error }: Props) {
             Đã có tài khoản?{" "}
             <a
               className="foot-link cursor-pointer"
-              onClick={() => router("/auth/login")}
+              onClick={() => router("/login")}
             >
               Đăng nhập
             </a>
