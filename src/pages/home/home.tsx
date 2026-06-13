@@ -5,6 +5,8 @@ import CategorySection from "./components/CategorySection";
 import AiAssistantBanner from "./components/AiAssistantBanner";
 import FlashDealBanner from "./components/FlashDealBanner";
 import ProductContainer from "../../features/product/productContainer/ProductContainer";
+import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 const categories = [
   { id: "electronics", name: "Electronics", icon: "⚡", count: "1.2k" },
@@ -39,6 +41,13 @@ const HomePage: React.FC<NavbarProps> = () => {
             <h2 className="text-[15px] font-medium text-gray-900">
               Recommended for you
             </h2>
+            <Link
+              to="/productAll"
+              className="flex items-center gap-1 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+            >
+              View All
+              <ArrowRight size={16} />
+            </Link>
           </div>
           <ProductContainer />
         </div>

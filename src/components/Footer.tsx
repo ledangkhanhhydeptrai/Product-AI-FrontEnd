@@ -19,7 +19,7 @@ import {
 import { FaInstagram, FaGithub, FaYoutube } from "react-icons/fa";
 const Footer: React.FC = () => {
   return (
-    <footer className="bg-[#1E1B4B] rounded-2xl px-9 pt-10 pb-6">
+    <footer className="mt-10 bg-[#1E1B4B] px-9 pt-10 pb-6">
       {/* Top grid */}
       <div className="grid grid-cols-4 gap-8 pb-7 border-b border-white/[0.07] mb-5">
         {/* Brand */}
