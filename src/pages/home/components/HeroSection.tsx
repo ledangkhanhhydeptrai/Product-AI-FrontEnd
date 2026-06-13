@@ -12,7 +12,7 @@ const valueColors = ["text-indigo-300", "text-emerald-300", "text-pink-300"];
 
 export default function HeroSection({ insights }: Props) {
   return (
-    <section className="relative overflow-hidden rounded-2xl bg-[#1E1B4B] px-10 py-12 flex items-center justify-between gap-8">
+    <section className="relative overflow-hidden bg-[#1E1B4B] px-10 py-12 flex items-center justify-between gap-8">
       {/* Decorative rings */}
       <div className="pointer-events-none absolute -top-16 right-20 w-48 h-48 rounded-full border-40 border-indigo-500/10" />
       <div className="pointer-events-none absolute -bottom-8 right-52 w-28 h-28 rounded-full border-24 border-indigo-300/[0.07]" />
