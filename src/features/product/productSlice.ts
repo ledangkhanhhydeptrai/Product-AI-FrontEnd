@@ -5,11 +5,13 @@ interface ProductState {
   loading: boolean;
   error: string | null;
   data: ProductProps[] | [];
+  product: ProductProps | null;
 }
 const initialState: ProductState = {
   loading: false,
   error: null,
-  data: []
+  data: [],
+  product: null
 };
 const productSlice = createSlice({
   name: "productCustomer",
@@ -27,9 +29,28 @@ const productSlice = createSlice({
     productFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    productRequestById(state, _action: PayloadAction<string>) {
+      state.loading = true;
+      state.error = null;
+    },
+    productSuccessById(state, _action: PayloadAction<ProductProps>) {
+      state.loading = false;
+      state.error = null;
+      state.product = _action.payload;
+    },
+    productFailureById(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
-export const { productRequest, productSuccess, productFailure } =
-  productSlice.actions;
+export const {
+  productRequest,
+  productSuccess,
+  productFailure,
+  productRequestById,
+  productSuccessById,
+  productFailureById
+} = productSlice.actions;
 export default productSlice.reducer;
