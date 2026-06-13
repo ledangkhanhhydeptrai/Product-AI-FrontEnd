@@ -9,7 +9,7 @@ const MainLayout: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header cartCount={0} onSearchSubmit={() => {}} />
-      <main className="px-6 py-6">
+      <main className="">
         <Outlet />
       </main>
       <Footer />
