@@ -1,6 +1,5 @@
 import React from "react";
-import Header, { NavbarProps } from "../../components/Header";
-import Footer from "../../components/Footer";
+import { NavbarProps } from "../../components/Header";
 import HeroSection from "./components/HeroSection";
 import CategorySection from "./components/CategorySection";
 import AiAssistantBanner from "./components/AiAssistantBanner";
@@ -19,11 +18,9 @@ const insights = [
   { label: "Trending now", value: "38", sub: "in your style" }
 ];
 
-const HomePage: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
+const HomePage: React.FC<NavbarProps> = () => {
   return (
     <div className="min-h-screen bg-[#f7f7f9]">
-      <Header cartCount={cartCount} onSearchSubmit={onSearchSubmit} />
-
       <main className="flex flex-col gap-9">
         {/* Hero — insights merged inside */}
         <HeroSection insights={insights} />
@@ -49,10 +46,6 @@ const HomePage: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
         {/* Flash deals */}
         <FlashDealBanner />
       </main>
-
-      <div className="mt-10">
-        <Footer />
-      </div>
     </div>
   );
 };
