@@ -1,17 +1,16 @@
 // src/layouts/MainLayout.tsx
 
 import React from "react";
-import { Outlet } from "react-router-dom";
+
 import Header from "../components/Header";
 import Footer from "../components/Footer";
+import { ChildrenProps } from "./AuthLayout";
 
-const MainLayout: React.FC = () => {
+const MainLayout: React.FC<ChildrenProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-gray-50">
       <Header cartCount={0} onSearchSubmit={() => {}} />
-      <main className="">
-        <Outlet />
-      </main>
+      <main className="">{children}</main>
       <Footer />
     </div>
   );
