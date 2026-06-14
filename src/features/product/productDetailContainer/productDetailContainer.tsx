@@ -67,7 +67,7 @@ const ProductDetailContainer: React.FC = () => {
         </Link>
         <span className="text-slate-300">/</span>
         <Link
-          to="/products"
+          to="/productAll"
           className="text-slate-500 hover:text-violet-600 transition"
         >
           Sản phẩm
