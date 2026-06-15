@@ -1,7 +1,8 @@
 import React from "react";
+import BrandContainer from "../../features/brands/brandContainer/brandContainerAll";
 
 const BrandPage: React.FC = () => {
-  return <div />;
+  return <BrandContainer/>;
 };
 
 export default BrandPage;

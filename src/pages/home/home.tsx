@@ -11,6 +11,7 @@ import CategoryContainer from "../../features/categories/categoryContainer/Categ
 import AiAssistantBanner from "./components/AiAssistantBanner";
 import FlashDealBanner from "./components/FlashDealBanner";
 import ProductContainer from "../../features/product/productContainer/ProductContainer";
+import BrandContainer from "../../features/brands/brandContainer/brandContainer";
 
 const insights = [
   { label: "Perfect for you", value: "94%", sub: "match score" },
@@ -20,7 +21,6 @@ const insights = [
 
 const HomePage: React.FC<NavbarProps> = () => {
   const categories = useSelector((state: RootState) => state.category.data);
-
   return (
     <div className="min-h-screen bg-[#f7f7f9]">
       <main className="flex flex-col gap-9">
@@ -54,7 +54,10 @@ const HomePage: React.FC<NavbarProps> = () => {
             </div>
           </div>
         </div>
-
+        {/* Brands */}
+        <div className="bg-white rounded-2xl border border-gray-100 p-6">
+          <BrandContainer />
+        </div>
         {/* AI Banner */}
         <AiAssistantBanner />
 

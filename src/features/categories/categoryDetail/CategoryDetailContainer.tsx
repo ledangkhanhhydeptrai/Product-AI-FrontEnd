@@ -10,11 +10,12 @@ import {
   Hash,
   TrendingUp,
   Eye,
-  Box
+  Box,
+  ArrowLeft
 } from "lucide-react";
 import { RootState } from "../../../app/store";
 import { categoryDetailRequest } from "../categorySlice";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
 // Mock activity data — thay bằng data thật từ API nếu có
 const MONTHS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
@@ -34,7 +35,7 @@ function ActivityBar({ values }: { values: number[] }) {
           const barWidth = 8;
           const gap = 2;
           const x = i * (barWidth + gap);
-          const height = v / max * 34;
+          const height = (v / max) * 34;
           const y = 38 - height;
 
           return (
@@ -60,11 +61,11 @@ function ActivityBar({ values }: { values: number[] }) {
         })}
       </svg>
       <div className="flex gap-0.5 mt-1">
-        {MONTHS.map(m =>
+        {MONTHS.map((m) => (
           <div key={m} className="flex-1 text-center text-[9px] text-gray-400">
             {m}
           </div>
-        )}
+        ))}
       </div>
     </div>
   );
@@ -72,17 +73,15 @@ function ActivityBar({ values }: { values: number[] }) {
 
 const CategoryDetailContainer: React.FC = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { id } = useParams();
   const { categories, loading, error } = useSelector(
     (state: RootState) => state.category
   );
 
-  React.useEffect(
-    () => {
-      if (id) dispatch(categoryDetailRequest(id));
-    },
-    [dispatch, id]
-  );
+  React.useEffect(() => {
+    if (id) dispatch(categoryDetailRequest(id));
+  }, [dispatch, id]);
 
   if (loading) {
     return (
@@ -125,12 +124,22 @@ const CategoryDetailContainer: React.FC = () => {
 
             {/* Top row */}
             <div className="relative flex items-start justify-between gap-3">
-              <div className="relative">
-                <div className="w-13 h-13 rounded-[14px] bg-white/10 border border-white/20 flex items-center justify-center">
-                  <FolderOpen size={24} className="text-white" />
+              <div className="flex items-center gap-3">
+                <button
+                  title="Button back"
+                  onClick={() => navigate(-1)}
+                  className="w-10 h-10 rounded-xl bg-white/10 border border-white/15 flex items-center justify-center text-white hover:bg-white/15 transition-colors"
+                >
+                  <ArrowLeft size={18} />
+                </button>
+
+                <div className="relative">
+                  <div className="w-13 h-13 rounded-[14px] bg-white/10 border border-white/20 flex items-center justify-center">
+                    <FolderOpen size={24} className="text-white" />
+                  </div>
+
+                  <div className="absolute -inset-1 rounded-[18px] border border-indigo-300/20 pointer-events-none" />
                 </div>
-                {/* Ring */}
-                <div className="absolute -inset-1 rounded-[18px] border border-indigo-300/20 pointer-events-none" />
               </div>
               <div className="flex flex-col items-end gap-1.5">
                 <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-medium bg-emerald-400/12 border border-emerald-400/30 text-emerald-300">
@@ -153,12 +162,12 @@ const CategoryDetailContainer: React.FC = () => {
             {/* Separator */}
             <div className="relative mt-5 flex items-center gap-2">
               <div className="flex-1 h-px bg-white/10" />
-              {[0, 1, 2].map(i =>
+              {[0, 1, 2].map((i) => (
                 <div
                   key={i}
                   className="w-1 h-1 rounded-full bg-indigo-400/30"
                 />
-              )}
+              ))}
               <div className="flex-1 h-px bg-white/10" />
             </div>
 
@@ -167,25 +176,25 @@ const CategoryDetailContainer: React.FC = () => {
               {[
                 {
                   icon: CalendarDays,
-                  val: new Date(
-                    categories.created_at
-                  ).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric"
-                  }),
+                  val: new Date(categories.created_at).toLocaleDateString(
+                    "en-US",
+                    {
+                      month: "short",
+                      day: "numeric",
+                      year: "numeric"
+                    }
+                  ),
                   lbl: "Created"
                 },
                 { icon: Box, val: "342", lbl: "Products" },
                 { icon: Eye, val: "18.4k", lbl: "Views" },
                 { icon: TrendingUp, val: "+12%", lbl: "This month" }
-              ].map(({ icon: Icon, val, lbl }, i, arr) =>
+              ].map(({ icon: Icon, val, lbl }, i, arr) => (
                 <div
                   key={lbl}
-                  className={`flex-1 flex flex-col items-center gap-1 py-3.5 cursor-default hover:bg-white/3 transition-colors ${i <
-                  arr.length - 1
-                    ? "border-r border-white/7"
-                    : ""}`}
+                  className={`flex-1 flex flex-col items-center gap-1 py-3.5 cursor-default hover:bg-white/3 transition-colors ${
+                    i < arr.length - 1 ? "border-r border-white/7" : ""
+                  }`}
                 >
                   <Icon size={13} className="text-indigo-400" />
                   <span className="text-xs font-semibold text-indigo-200">
@@ -195,7 +204,7 @@ const CategoryDetailContainer: React.FC = () => {
                     {lbl}
                   </span>
                 </div>
-              )}
+              ))}
             </div>
           </div>
 
@@ -257,13 +266,14 @@ const CategoryDetailContainer: React.FC = () => {
                     </span>
                   </div>
                   <p className="text-sm font-medium text-gray-800">
-                    {new Date(
-                      categories.created_at
-                    ).toLocaleDateString("en-US", {
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric"
-                    })}
+                    {new Date(categories.created_at).toLocaleDateString(
+                      "en-US",
+                      {
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric"
+                      }
+                    )}
                   </p>
                 </div>
               </div>
