@@ -1,50 +1,26 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Loader2, AlertCircle } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 import { RootState } from "../../../app/store";
 import { getBrandRequest } from "../brandSlice";
 
 const ACCENT_COLORS = [
-  {
-    bar: "#7C3AED",
-    bg: "bg-[#EDE9FE]",
-    text: "text-[#5B21B6]",
-    link: "text-[#5B21B6]"
-  },
-  {
-    bar: "#1D9E75",
-    bg: "bg-[#E1F5EE]",
-    text: "text-[#0F6E56]",
-    link: "text-[#0F6E56]"
-  },
-  {
-    bar: "#D85A30",
-    bg: "bg-[#FAECE7]",
-    text: "text-[#993C1D]",
-    link: "text-[#993C1D]"
-  },
-  {
-    bar: "#BA7517",
-    bg: "bg-[#FAEEDA]",
-    text: "text-[#854F0B]",
-    link: "text-[#854F0B]"
-  },
-  {
-    bar: "#D4537E",
-    bg: "bg-[#FBEAF0]",
-    text: "text-[#993556]",
-    link: "text-[#993556]"
-  },
-  {
-    bar: "#378ADD",
-    bg: "bg-[#E6F1FB]",
-    text: "text-[#185FA5]",
-    link: "text-[#185FA5]"
-  }
+  { bar: "#7C3AED", bg: "#EDE9FE", text: "#5B21B6" },
+  { bar: "#D4537E", bg: "#FBEAF0", text: "#993556" },
+  { bar: "#1D9E75", bg: "#E1F5EE", text: "#0F6E56" },
+  { bar: "#D85A30", bg: "#FAECE7", text: "#993C1D" },
+  { bar: "#BA7517", bg: "#FAEEDA", text: "#854F0B" },
+  { bar: "#378ADD", bg: "#E6F1FB", text: "#185FA5" }
 ];
 
-const BrandContainerAll: React.FC = () => {
+interface Props {
+  filterBrandId?: string;
+}
+
+const BrandContainerAll: React.FC<Props> = ({ filterBrandId }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { data, loading, error } = useSelector(
     (state: RootState) => state.brand
   );
@@ -52,6 +28,11 @@ const BrandContainerAll: React.FC = () => {
   React.useEffect(() => {
     dispatch(getBrandRequest());
   }, [dispatch]);
+
+  const filtered =
+    filterBrandId && filterBrandId !== "all"
+      ? data.filter((b) => b.id === filterBrandId)
+      : data;
 
   if (loading) {
     return (
@@ -74,27 +55,31 @@ const BrandContainerAll: React.FC = () => {
   return (
     <div className="bg-[#F8F7FF] min-h-screen">
       <div className="p-6">
+        {/* Back button */}
+        <button
+          onClick={() => navigate(-1)}
+          className="inline-flex items-center gap-1.5 text-sm font-medium text-violet-700 bg-white border border-violet-200 rounded-xl px-3.5 py-1.5 mb-5 hover:bg-violet-50 transition-colors"
+        >
+          <ArrowLeft size={14} /> Quay lại
+        </button>
+
         {/* Header */}
-        <div className="mb-5">
-          <p className="text-[10px] font-bold uppercase tracking-[.14em] text-violet-600 mb-1">
-            Catalog
-          </p>
-          <h1 className="text-2xl font-semibold text-gray-900">All Brands</h1>
-          <p className="text-sm text-gray-500 mt-1">
-            Browse available brands in the marketplace
-          </p>
-        </div>
+        <p className="text-[10px] font-bold uppercase tracking-[.14em] text-violet-600 mb-1">
+          Catalog
+        </p>
+        <h1 className="text-2xl font-semibold text-gray-900">All Brands</h1>
+        <p className="text-sm text-gray-500 mt-1 mb-5">
+          Browse available brands in the marketplace
+        </p>
 
         {/* Hero banner */}
-        <div className="relative rounded-2xl overflow-hidden mb-5 bg-linear-to-br from-[#2E1065] via-[#4C1D95] to-[#5B21B6]">
-          <div className="absolute -top-12 -right-12 w-52 h-52 rounded-full bg-violet-400/20 blur-2xl pointer-events-none" />
-          <div className="absolute -bottom-8 left-[10%] w-40 h-40 rounded-full bg-purple-500/15 blur-[30px] pointer-events-none" />
-          <div className="relative flex items-center justify-between gap-4 px-6 py-5 flex-wrap">
+        <div className="rounded-2xl overflow-hidden mb-5 bg-[#3B0764]">
+          <div className="flex items-center justify-between gap-4 px-6 py-5 flex-wrap">
             <div>
-              <p className="text-[11px] font-medium text-violet-300 tracking-wide mb-1">
+              <p className="text-[11px] font-medium text-violet-300 mb-1">
                 Total brands
               </p>
-              <p className="text-5xl font-bold text-white tracking-tight leading-none">
+              <p className="text-5xl font-bold text-white leading-none">
                 {data.length}
               </p>
               <p className="text-xs text-violet-500 mt-1.5">
@@ -114,14 +99,14 @@ const BrandContainerAll: React.FC = () => {
           </div>
         </div>
 
-        {/* Grid — no search, render all */}
-        {data.length === 0 ? (
+        {/* Grid */}
+        {filtered.length === 0 ? (
           <div className="text-center py-16 text-sm text-gray-400">
             No brands found
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-2.5">
-            {data.map((brand, i) => {
+            {filtered.map((brand, i) => {
               const color = ACCENT_COLORS[i % ACCENT_COLORS.length];
               const initials = brand.name.slice(0, 2).toUpperCase();
               return (
@@ -129,24 +114,35 @@ const BrandContainerAll: React.FC = () => {
                   key={brand.id}
                   className="bg-white border border-gray-100 rounded-2xl overflow-hidden hover:border-violet-200 hover:shadow-[0_2px_12px_rgba(109,40,217,0.08)] transition-all cursor-pointer"
                 >
-                  <div className={`h-0.5 w-full bg-${color.bar}`} />
-                  <div className="p-5">
+                  {/* Image / placeholder */}
+                  {brand.logo ? (
+                    <img
+                      src={brand.logo}
+                      alt={brand.name}
+                      className="w-full h-24 object-cover"
+                    />
+                  ) : (
                     <div
-                      className={`w-10 h-10 rounded-xl flex items-center justify-center mb-3 text-sm font-bold ${color.bg} ${color.text}`}
+                      className={`w-full h-24 flex items-center justify-center text-3xl font-bold tracking-wider bg-${color.bar} text-${color.text}`}
                     >
                       {initials}
                     </div>
+                  )}
+                  <div className={`h-0.5 w-full bg-${color.bar}`} />
+                  <div className="p-4">
                     <h3 className="text-sm font-semibold text-gray-900 mb-1">
                       {brand.name}
                     </h3>
                     <p className="text-xs text-gray-500 line-clamp-2 leading-relaxed min-h-8">
                       {brand.description || "No description"}
                     </p>
-                    <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
+                    <div className="flex items-center justify-between mt-3 pt-2.5 border-t border-gray-100">
                       <span className="font-mono text-[10px] text-gray-400">
                         {brand.id}
                       </span>
-                      <span className={`text-xs font-semibold ${color.link}`}>
+                      <span
+                        className={`text-xs font-semibold text-${color.text}`}
+                      >
                         View →
                       </span>
                     </div>
