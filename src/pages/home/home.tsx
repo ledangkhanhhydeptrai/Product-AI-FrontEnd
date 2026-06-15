@@ -11,7 +11,7 @@ import CategoryContainer from "../../features/categories/categoryContainer/Categ
 import AiAssistantBanner from "./components/AiAssistantBanner";
 import FlashDealBanner from "./components/FlashDealBanner";
 import ProductContainer from "../../features/product/productContainer/ProductContainer";
-import BrandContainer from "../../features/brands/brandContainer/brandContainer";
+import HomeBrandSection from "./components/BrandSection";
 
 const insights = [
   { label: "Perfect for you", value: "94%", sub: "match score" },
@@ -56,7 +56,7 @@ const HomePage: React.FC<NavbarProps> = () => {
         </div>
         {/* Brands */}
         <div className="bg-white rounded-2xl border border-gray-100 p-6">
-          <BrandContainer />
+          <HomeBrandSection />
         </div>
         {/* AI Banner */}
         <AiAssistantBanner />

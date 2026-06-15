@@ -59,7 +59,7 @@ export default function BrandContainer() {
         </div>
 
         <button
-          onClick={() => navigate("/brandsAll")}
+          onClick={() => navigate("/brandAll")}
           className="flex items-center gap-1 text-[12px] font-medium text-[#534AB7] hover:text-[#3C3489] transition-colors"
         >
           View all
