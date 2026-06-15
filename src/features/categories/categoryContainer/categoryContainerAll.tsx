@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Search, Grid3X3, LayoutList, Folder, Box } from "lucide-react";
+import { Search, Grid3X3, LayoutList, Folder, Box, ArrowLeft } from "lucide-react";
 
 import type { RootState } from "../../../app/store";
 import { categoryRequest } from "../categorySlice";
@@ -83,12 +83,22 @@ export default function CategoryContainerAll() {
         {/* Header */}
         <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-5">
           <div>
+            <button
+              onClick={() => navigate(-1)}
+              className="mb-3 flex items-center gap-2 text-sm font-medium text-indigo-600 hover:text-indigo-700 transition-colors"
+            >
+              <ArrowLeft size={16} />
+              Back
+            </button>
+
             <p className="text-[10px] font-semibold tracking-[.12em] uppercase text-[#7F77DD] mb-1">
               Browse
             </p>
+
             <h1 className="text-2xl font-semibold text-gray-900">
               All Categories
             </h1>
+
             <p className="text-sm text-gray-500 mt-1">
               Explore and discover products by category
             </p>

@@ -3,10 +3,12 @@ import authReducer from "../features/auth/authSlice";
 import notificationReducer from "../features/notification/notificationSlice";
 import ProductReducer from "../features/product/productSlice";
 import CategoryReducer from "../features/categories/categorySlice";
+import BrandReducer from "../features/brands/brandSlice";
 const rootReducer = combineReducers({
   auth: authReducer,
   notification: notificationReducer,
   product: ProductReducer,
-  category: CategoryReducer
+  category: CategoryReducer,
+  brand: BrandReducer
 });
 export default rootReducer;
