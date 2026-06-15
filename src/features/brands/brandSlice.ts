@@ -5,11 +5,13 @@ interface BrandState {
   loading: boolean;
   error: string | null;
   data: BrandProps[] | [];
+  brands: BrandProps | null;
 }
 const initialState: BrandState = {
   loading: false,
   error: null,
-  data: []
+  data: [],
+  brands: null
 };
 const BrandSlice = createSlice({
   name: "brand",
@@ -27,9 +29,28 @@ const BrandSlice = createSlice({
     getBrandFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    getBrandIdRequest(state, _action: PayloadAction<string>) {
+      state.loading = true;
+      state.error = null;
+    },
+    getBrandIdSuccess(state, action: PayloadAction<BrandProps | null>) {
+      state.loading = false;
+      state.error = null;
+      state.brands = action.payload;
+    },
+    getBrandIdFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
-export const { getBrandRequest, getBrandSuccess, getBrandFailure } =
-  BrandSlice.actions;
+export const {
+  getBrandRequest,
+  getBrandSuccess,
+  getBrandFailure,
+  getBrandIdRequest,
+  getBrandIdSuccess,
+  getBrandIdFailure
+} = BrandSlice.actions;
 export default BrandSlice.reducer;
