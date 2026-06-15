@@ -24,3 +24,26 @@ export const getAllCategory = async (): Promise<ApiResponse<CategoryProps>> => {
     throw errors;
   }
 };
+export const getCategoryById = async (
+  id: string
+): Promise<ApiResponse<CategoryProps>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<CategoryProps>>(
+      `/public/category/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    if (response.status !== 200) {
+      throw new Error(`HTTP Status:${response.status}`);
+    }
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    console.log("Error:", errors);
+    throw errors;
+  }
+};
