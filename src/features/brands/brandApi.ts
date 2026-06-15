@@ -28,3 +28,22 @@ export const getAllBrand = async (): Promise<ApiResponse<BrandProps>> => {
     throw errors;
   }
 };
+export const getBrandById = async (
+  id: string
+): Promise<ApiResponse<BrandProps>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<BrandProps>>(
+      `/brands/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    throw errors;
+  }
+};

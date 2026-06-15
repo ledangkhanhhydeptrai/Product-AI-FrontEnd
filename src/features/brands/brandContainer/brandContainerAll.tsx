@@ -15,7 +15,7 @@ const ACCENT_COLORS = [
 ];
 
 interface Props {
-  filterBrandId?: string;
+  filterBrandId: string;
 }
 
 const BrandContainerAll: React.FC<Props> = ({ filterBrandId }) => {
@@ -141,6 +141,7 @@ const BrandContainerAll: React.FC<Props> = ({ filterBrandId }) => {
                         {brand.id}
                       </span>
                       <span
+                        onClick={() => navigate(`/brands/${brand.id}`)}
                         className={`text-xs font-semibold text-${color.text}`}
                       >
                         View →
