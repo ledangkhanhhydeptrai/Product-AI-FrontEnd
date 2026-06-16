@@ -4,12 +4,14 @@ import productSaga from "../features/product/productSaga";
 import categorySaga from "../features/categories/categorySaga";
 import brandSaga from "../features/brands/brandSaga";
 import CartSaga from "../features/cart/CartSaga";
+import profileSaga from "../features/profile/profileSaga";
 export default function* rootSaga() {
   yield all([
     authSaga(),
     productSaga(),
     categorySaga(),
     brandSaga(),
-    CartSaga()
+    CartSaga(),
+    profileSaga()
   ]);
 }
