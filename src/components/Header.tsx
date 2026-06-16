@@ -1,7 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-
 import { useNavigate } from "react-router-dom";
-import type { RootState } from "../app/store";
 import { logoutRequest } from "../features/auth/authSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useAppSelector } from "../hooks/useAppSelector";
@@ -16,15 +14,16 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();;
+  const dispatch = useAppDispatch();
 
-  const user = useAppSelector((state: RootState) => state.auth.user);
-  const isAuthenticated = useAppSelector(
-    (state: RootState) => state.auth.isAuthenticated
-  );
+  // STATE
+  const user = useAppSelector((state) => state.profile.user);
+  const loading = useAppSelector((state) => state.profile.loading);
+  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
 
-  const userName = user ? user.fullName : "";
   const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const userName = user?.fullName || "";
 
   const getInitials = (fullName: string) => {
     if (!fullName) return "U";
@@ -51,7 +50,7 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // LOGOUT
+  // logout
   const handleLogout = () => {
     dispatch(logoutRequest());
     setIsUserDropdownOpen(false);
@@ -96,7 +95,6 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
         {/* WISHLIST */}
         <button
           onClick={() => navigate("/wishlist")}
-          aria-label="Wishlist"
           className="w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full text-gray-500 hover:border-gray-300 hover:bg-gray-50 transition-all text-lg"
         >
           ♡
@@ -105,17 +103,14 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
         {/* NOTIFICATIONS */}
         <button
           onClick={() => navigate("/notifications")}
-          aria-label="Notifications"
           className="relative w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full text-gray-500 hover:border-gray-300 hover:bg-gray-50 transition-all text-lg"
         >
           🔔
-          <span className="absolute top-2 right-2 w-1.75 h-1.75 bg-red-500 rounded-full border-2 border-white" />
         </button>
 
         {/* CART */}
         <button
           onClick={() => navigate("/cart")}
-          aria-label="Cart"
           className="relative w-10 h-10 flex items-center justify-center border border-gray-200 rounded-full text-gray-500 hover:border-gray-300 hover:bg-gray-50 transition-all text-lg"
         >
           🛒
@@ -137,22 +132,31 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
               onClick={() => setIsUserDropdownOpen((p) => !p)}
               className="flex items-center gap-2 pl-1 pr-2.5 py-1 border border-gray-200 rounded-full cursor-pointer hover:border-gray-300 hover:bg-gray-50 transition-all"
             >
-              <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-medium shrink-0 overflow-hidden">
-                {user.avatarUrl ? (
+              {/* AVATAR */}
+              <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-medium overflow-hidden">
+                {loading ? (
+                  <div className="w-full h-full bg-gray-200 animate-pulse" />
+                ) : user?.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
-                    className="w-full h-full object-cover"
                     alt="avatar"
+                    className="w-full h-full object-cover"
                   />
                 ) : (
                   getInitials(userName)
                 )}
               </div>
+
+              {/* NAME */}
               <span className="text-[13px] font-medium text-[#1A1A2E] whitespace-nowrap max-w-27.5 truncate">
-                {userName}
+                {userName || "User"}
               </span>
+
+              {/* ARROW */}
               <svg
-                className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${isUserDropdownOpen ? "rotate-180" : ""}`}
+                className={`w-3.5 h-3.5 text-gray-400 transition-transform duration-200 ${
+                  isUserDropdownOpen ? "rotate-180" : ""
+                }`}
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -168,13 +172,14 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
 
             {/* DROPDOWN */}
             {isUserDropdownOpen && (
-              <div className="absolute right-0 top-[calc(100%+8px)] w-52 bg-white border border-gray-200 rounded-xl overflow-hidden z-50 shadow-sm animate-in fade-in slide-in-from-top-1 duration-150">
+              <div className="absolute right-0 top-[calc(100%+8px)] w-52 bg-white border border-gray-200 rounded-xl overflow-hidden z-50 shadow-sm">
                 <div className="px-3.5 py-3 border-b border-gray-100">
                   <p className="text-sm font-medium text-[#1A1A2E]">
                     {userName}
                   </p>
-                  <p className="text-xs text-gray-400 mt-0.5">{user.email}</p>
+                  <p className="text-xs text-gray-400 mt-0.5">{user?.email}</p>
                 </div>
+
                 <div className="p-1.5">
                   {[
                     { label: "Profile", icon: "👤", path: "/profile" },
@@ -192,12 +197,15 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
                       {label}
                     </button>
                   ))}
+
                   <div className="h-px bg-gray-100 my-1" />
+
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-2.5 px-2.5 py-2.5 text-sm text-red-500 rounded-lg hover:bg-red-50 transition-colors"
                   >
-                    <span>🚪</span>Logout
+                    <span>🚪</span>
+                    Logout
                   </button>
                 </div>
               </div>
@@ -212,6 +220,7 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
             >
               Đăng nhập
             </button>
+
             <button
               onClick={() => navigate("/register")}
               className="h-9 px-4 text-sm font-medium text-white bg-indigo-500 rounded-full hover:opacity-85 transition-opacity"

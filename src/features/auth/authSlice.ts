@@ -1,11 +1,12 @@
 import { createSlice } from "@reduxjs/toolkit";
 import type { PayloadAction } from "@reduxjs/toolkit";
 import type { CreateProps, LoginRequest, UserRole } from "./authApi";
-interface User {
+export interface User {
   id: string;
   fullName: string;
   email: string;
   avatarUrl: string;
+  role: UserRole;
 }
 interface AuthState {
   loading: boolean;
@@ -37,20 +38,12 @@ const authSlice = createSlice({
 
     loginSuccess(
       state,
-      action: PayloadAction<{
-        user: {
-          id: string;
-          fullName: string;
-          email: string;
-          avatarUrl: string;
-          role: UserRole;
-        };
-      }>
+      action: PayloadAction<User>
     ) {
       state.loading = false;
-      state.role = action.payload.user.role;
+      state.role = action.payload.role;
       state.isAuthenticated = true;
-      state.user = action.payload.user;
+      state.user = action.payload;
     },
 
     loginFailure(state, action: PayloadAction<string>) {
@@ -84,32 +77,6 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
       state.registered = false;
-    },
-    getMeRequest(state) {
-      state.loading = true;
-    },
-
-    getMeSuccess(
-      state,
-      action: PayloadAction<{
-        id: string;
-        fullName: string;
-        email: string;
-        avatarUrl: string;
-        role: UserRole;
-      }>
-    ) {
-      state.loading = false;
-      state.user = action.payload;
-      state.role = action.payload.role;
-      state.isAuthenticated = true;
-    },
-
-    getMeFailure(state) {
-      state.loading = false;
-      state.user = null;
-      state.role = null;
-      state.isAuthenticated = false;
     }
   }
 });
@@ -121,9 +88,6 @@ export const {
   logoutSuccess,
   registerRequest,
   registerSuccess,
-  registerFailure,
-  getMeRequest,
-  getMeSuccess,
-  getMeFailure
+  registerFailure
 } = authSlice.actions;
 export default authSlice.reducer;

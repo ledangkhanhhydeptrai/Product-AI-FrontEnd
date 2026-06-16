@@ -18,13 +18,7 @@ export interface UserResponse {
     email: string;
   };
 }
-export interface MeResponse {
-  id: string;
-  fullName: string;
-  email: string;
-  avatarUrl: string;
-  role: UserRole;
-}
+
 export interface LoginResponse {
   status: number;
   message: string;
@@ -42,15 +36,7 @@ export const LoginAPI = async ({ email, password }: LoginRequest) => {
     return errors;
   }
 };
-export const fetchMe = async (): Promise<ApiResponse<MeResponse>> => {
-  const res = await fetchBaseResponse<ApiResponse<MeResponse>>("/me", {
-    method: "GET"
-  });
 
-  console.log("FETCH ME RESULT:", res);
-
-  return res.data;
-};
 export const LogoutAPI = async (): Promise<ApiResponse<void>> => {
   const res = await fetchBaseResponse<ApiResponse<void>>("/auth/logout", {
     method: "POST"

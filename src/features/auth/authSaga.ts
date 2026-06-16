@@ -8,22 +8,19 @@ import {
   logoutSuccess,
   registerSuccess,
   registerFailure,
-  registerRequest,
-  getMeSuccess,
-  getMeFailure,
-  getMeRequest
+  registerRequest
 } from "./authSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
 import {
   CreateFormAPI,
   CreateProps,
-  fetchMe,
   LoginAPI,
   LogoutAPI,
   type LoginRequest
 } from "./authApi";
 import { showNotification } from "../notification/notificationSlice";
+import { profileAPI } from "../profile/profileAPI";
 
 export interface ApiErrorResponse {
   status: number;
@@ -38,7 +35,7 @@ function* handleLogin(action: PayloadAction<LoginRequest>): Generator {
 
     yield call(LoginAPI, { email, password });
 
-    const me = yield call(fetchMe);
+    const me = yield call(profileAPI);
 
     if (!me || !me.data) {
       yield put(loginFailure("Cannot get profile"));
@@ -47,13 +44,11 @@ function* handleLogin(action: PayloadAction<LoginRequest>): Generator {
 
     yield put(
       loginSuccess({
-        user: {
-          id: me.data.id,
-          fullName: me.data.fullName,
-          email: me.data.email,
-          avatarUrl: me.data.avatarUrl,
-          role: me.data.role
-        }
+        id: me.data.id,
+        fullName: me.data.fullName,
+        email: me.data.email,
+        avatarUrl: me.data.avatarUrl,
+        role: me.data.role
       })
     );
   } catch (error) {
@@ -91,19 +86,10 @@ function* handleRegister(action: PayloadAction<CreateProps>): Generator {
     yield put(registerFailure("Register failed"));
   }
 }
-function* handleGetMe(): Generator {
-  try {
-    const response = yield call(fetchMe);
 
-    yield put(getMeSuccess(response.data));
-  } catch {
-    yield put(getMeFailure());
-  }
-}
 // WATCHER
 export default function* authSaga() {
   yield takeLatest(loginRequest.type, handleLogin);
   yield takeLatest(logoutAction.type, handleLogout);
   yield takeLatest(registerRequest.type, handleRegister);
-  yield takeLatest(getMeRequest.type, handleGetMe);
 }
