@@ -1,16 +1,16 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import type { RootState } from "../../../app/store";
 import { loginRequest } from "../authSlice";
 import LoginForm from "../components/LoginForm";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 export default function LoginContainer() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { loading, error, isAuthenticated } = useSelector(
-    (state: RootState) => state.auth
+  const { loading, error, isAuthenticated } = useAppSelector(
+    (state) => state.auth
   );
   console.log(isAuthenticated);
   const handleLogin = (email: string, password: string) => {

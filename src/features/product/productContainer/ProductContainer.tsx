@@ -1,19 +1,16 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { AlertCircle, PackageSearch } from "lucide-react";
 
-import type { RootState } from "../../../app/store";
 import ProductCard from "../components/ProductCard";
 import ProductSearch from "../components/ProductSearch";
 import ProductFilter from "../components/ProductFilter";
 import { productRequest } from "../productSlice";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 export default function ProductContainer() {
-  const dispatch = useDispatch();
-  const { data, loading, error } = useSelector(
-    (state: RootState) => state.product
-  );
-
+  const dispatch = useAppDispatch();
+  const { data, loading, error } = useAppSelector((state) => state.product);
   const [keyword, setKeyword] = useState("");
   const [filterValue, setFilterValue] = useState("");
 

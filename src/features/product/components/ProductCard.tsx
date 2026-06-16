@@ -49,7 +49,10 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
             </span>
           </div>
 
-          <button className="flex items-center gap-1.5 bg-violet-600 hover:bg-violet-700 text-white text-[12px] font-medium rounded-lg px-3 py-1.5 transition-colors">
+          <button
+            onClick={() => navigate("/cart")}
+            className="flex items-center gap-1.5 bg-violet-600 hover:bg-violet-700 text-white text-[12px] font-medium rounded-lg px-3 py-1.5 transition-colors"
+          >
             <ShoppingBag size={13} />
             Thêm
           </button>

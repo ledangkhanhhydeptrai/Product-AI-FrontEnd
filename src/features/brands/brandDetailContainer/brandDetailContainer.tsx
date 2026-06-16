@@ -1,16 +1,14 @@
 import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useParams } from "react-router-dom";
-import { RootState } from "../../../app/store";
 import { getBrandIdRequest } from "../brandSlice";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 const BrandDetailContainer: React.FC = () => {
   const { id } = useParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { brands, loading, error } = useSelector(
-    (state: RootState) => state.brand
-  );
+  const { brands, loading, error } = useAppSelector((state) => state.brand);
 
   useEffect(() => {
     if (id) dispatch(getBrandIdRequest(id));

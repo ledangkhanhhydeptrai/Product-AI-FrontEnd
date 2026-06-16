@@ -1,17 +1,16 @@
 import React, { useCallback, useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+
 import { Loader2 } from "lucide-react";
 
-import type { RootState } from "../../../app/store";
 import { categoryRequest } from "../categorySlice";
 import CategorySection from "../../../pages/home/components/CategorySection";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 const CategoryContainer: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { data, loading, error } = useSelector(
-    (state: RootState) => state.category
-  );
+  const { data, loading, error } = useAppSelector((state) => state.category);
 
   useEffect(() => {
     dispatch(categoryRequest());

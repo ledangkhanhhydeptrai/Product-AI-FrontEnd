@@ -1,8 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+
 import { useNavigate } from "react-router-dom";
 import type { RootState } from "../app/store";
 import { logoutRequest } from "../features/auth/authSlice";
+import { useAppDispatch } from "../hooks/useAppDispatch";
+import { useAppSelector } from "../hooks/useAppSelector";
 
 export interface NavbarProps {
   cartCount: number;
@@ -14,10 +16,10 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false);
 
   const navigate = useNavigate();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();;
 
-  const user = useSelector((state: RootState) => state.auth.user);
-  const isAuthenticated = useSelector(
+  const user = useAppSelector((state: RootState) => state.auth.user);
+  const isAuthenticated = useAppSelector(
     (state: RootState) => state.auth.isAuthenticated
   );
 

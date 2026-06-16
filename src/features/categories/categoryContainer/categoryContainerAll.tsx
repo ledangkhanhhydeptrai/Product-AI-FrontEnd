@@ -1,10 +1,10 @@
-import React, { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React from "react";
 import { Search, Grid3X3, LayoutList, Folder, Box, ArrowLeft } from "lucide-react";
 
-import type { RootState } from "../../../app/store";
 import { categoryRequest } from "../categorySlice";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 const ACCENT_COLORS = [
   {
@@ -40,16 +40,16 @@ const ACCENT_COLORS = [
 ];
 
 export default function CategoryContainerAll() {
-  const dispatch = useDispatch();
-  const [search, setSearch] = useState("");
-  const [isGrid, setIsGrid] = useState(true);
+  const dispatch = useAppDispatch();;
+  const [search, setSearch] = React.useState("");
+  const [isGrid, setIsGrid] = React.useState(true);
 
   const {
     data: categories,
     loading,
     error
-  } = useSelector((state: RootState) => state.category);
-  const { data } = useSelector((state: RootState) => state.product);
+  } = useAppSelector((state) => state.category);
+  const { data } = useAppSelector((state) => state.product);
 
   React.useEffect(() => {
     if (!categories.length) {

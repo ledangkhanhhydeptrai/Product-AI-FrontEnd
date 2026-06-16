@@ -84,6 +84,32 @@ const authSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
       state.registered = false;
+    },
+    getMeRequest(state) {
+      state.loading = true;
+    },
+
+    getMeSuccess(
+      state,
+      action: PayloadAction<{
+        id: string;
+        fullName: string;
+        email: string;
+        avatarUrl: string;
+        role: UserRole;
+      }>
+    ) {
+      state.loading = false;
+      state.user = action.payload;
+      state.role = action.payload.role;
+      state.isAuthenticated = true;
+    },
+
+    getMeFailure(state) {
+      state.loading = false;
+      state.user = null;
+      state.role = null;
+      state.isAuthenticated = false;
     }
   }
 });
@@ -95,6 +121,9 @@ export const {
   logoutSuccess,
   registerRequest,
   registerSuccess,
-  registerFailure
+  registerFailure,
+  getMeRequest,
+  getMeSuccess,
+  getMeFailure
 } = authSlice.actions;
 export default authSlice.reducer;

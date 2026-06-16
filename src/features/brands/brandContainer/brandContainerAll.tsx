@@ -1,9 +1,10 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+
 import { useNavigate } from "react-router-dom";
 import { Loader2, AlertCircle, ArrowLeft } from "lucide-react";
-import { RootState } from "../../../app/store";
 import { getBrandRequest } from "../brandSlice";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 const ACCENT_COLORS = [
   { bar: "#7C3AED", bg: "#EDE9FE", text: "#5B21B6" },
@@ -19,11 +20,9 @@ interface Props {
 }
 
 const BrandContainerAll: React.FC<Props> = ({ filterBrandId }) => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { data, loading, error } = useSelector(
-    (state: RootState) => state.brand
-  );
+  const { data, loading, error } = useAppSelector((state) => state.brand);
 
   React.useEffect(() => {
     dispatch(getBrandRequest());

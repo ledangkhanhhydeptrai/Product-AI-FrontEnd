@@ -1,12 +1,14 @@
 // import React from "react";
 import { ArrowRight } from "lucide-react";
-import { useDispatch, useSelector } from "react-redux";
+
 import { useNavigate } from "react-router-dom";
-import { RootState } from "../../../app/store";
+
 import { getBrandRequest } from "../../../features/brands/brandSlice";
 
 import React from "react";
 import BrandContainerAll from "./brandContainerAll";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 const DOT_COLORS = [
   "#7F77DD",
@@ -18,9 +20,9 @@ const DOT_COLORS = [
 ];
 
 export default function BrandContainer() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { data: brands } = useSelector((state: RootState) => state.brand);
+  const { data: brands } = useAppSelector((state) => state.brand);
   const [activeBrand, setActiveBrand] = React.useState("all");
 
   React.useEffect(() => {
@@ -74,7 +76,9 @@ export default function BrandContainer() {
                 }`}
               >
                 <span
-                  className={`w-1.5 h-1.5 rounded-full shrink-0 bg-${isActive ? "#A5B4FC" : dot}`}
+                  className={`w-1.5 h-1.5 rounded-full shrink-0 bg-${
+                    isActive ? "#A5B4FC" : dot
+                  }`}
                 />
                 {brand.name}
               </button>

@@ -1,15 +1,15 @@
 import { Snackbar, Alert } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
 
-import type { RootState } from "../../app/store";
 import { hideNotification } from "./notificationSlice";
 import SlideTransitions from "../../slideTransition/SlideTransition";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { useAppSelector } from "../../hooks/useAppSelector";
 
 export default function GlobalSnackbar() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
 
-  const { open, message, severity } = useSelector(
-    (state: RootState) => state.notification
+  const { open, message, severity } = useAppSelector(
+    (state) => state.notification
   );
 
   const handleClose = () => {

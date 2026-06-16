@@ -1,5 +1,5 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
+
 import {
   FolderOpen,
   CalendarDays,
@@ -13,70 +13,20 @@ import {
   Box,
   ArrowLeft
 } from "lucide-react";
-import { RootState } from "../../../app/store";
 import { categoryDetailRequest } from "../categorySlice";
 import { useNavigate, useParams } from "react-router-dom";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import ActivityBar from "./ActivityBar";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
-// Mock activity data — thay bằng data thật từ API nếu có
-const MONTHS = ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"];
 const ACTIVITY = [28, 42, 35, 55, 38, 62, 48, 70, 44, 58, 80, 65];
 
-function ActivityBar({ values }: { values: number[] }) {
-  const max = Math.max(...values);
-  return (
-    <div>
-      <svg
-        viewBox="0 0 120 44"
-        className="w-full h-11 block"
-        role="img"
-        aria-label="Product activity chart"
-      >
-        {values.map((v, i) => {
-          const barWidth = 8;
-          const gap = 2;
-          const x = i * (barWidth + gap);
-          const height = (v / max) * 34;
-          const y = 38 - height;
-
-          return (
-            <g key={i}>
-              <rect
-                x={x}
-                y={4}
-                width={barWidth}
-                height={34}
-                rx={1.5}
-                fill="#EEEDFE"
-              />
-              <rect
-                x={x}
-                y={y}
-                width={barWidth}
-                height={height}
-                rx={1.5}
-                fill="#7F77DD"
-              />
-            </g>
-          );
-        })}
-      </svg>
-      <div className="flex gap-0.5 mt-1">
-        {MONTHS.map((m) => (
-          <div key={m} className="flex-1 text-center text-[9px] text-gray-400">
-            {m}
-          </div>
-        ))}
-      </div>
-    </div>
-  );
-}
-
 const CategoryDetailContainer: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
   const { id } = useParams();
-  const { categories, loading, error } = useSelector(
-    (state: RootState) => state.category
+  const { categories, loading, error } = useAppSelector(
+    (state) => state.category
   );
 
   React.useEffect(() => {

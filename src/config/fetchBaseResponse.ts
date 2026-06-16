@@ -1,15 +1,11 @@
-import axios, {
+import {
   AxiosError,
   type AxiosRequestConfig,
   type AxiosResponse
 } from "axios";
-const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  timeout: 15000,
-  withCredentials: true
-});
-console.log("API URL:", import.meta.env.VITE_API_URL);
-API.interceptors.request.use(
+import axiosClient from "../services/axiosClient";
+
+axiosClient.interceptors.request.use(
   (config) => {
     return config;
   },
@@ -32,7 +28,7 @@ export async function fetchBaseResponse<T = unknown>(
   console.log("Calling fetchBaseResponse with URL:", url);
   console.log("Axios config:", config);
   try {
-    const response: AxiosResponse = await API(url, config);
+    const response: AxiosResponse = await axiosClient(url, config);
     console.log("SUCCESS URL:", url);
     console.log("SUCCESS STATUS:", response.status);
     console.log("Axios response:", response);
