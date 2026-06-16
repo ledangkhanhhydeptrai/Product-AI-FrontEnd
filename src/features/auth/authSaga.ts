@@ -8,7 +8,10 @@ import {
   logoutSuccess,
   registerSuccess,
   registerFailure,
-  registerRequest
+  registerRequest,
+  getMeSuccess,
+  getMeFailure,
+  getMeRequest
 } from "./authSlice";
 import type { PayloadAction } from "@reduxjs/toolkit";
 
@@ -88,9 +91,19 @@ function* handleRegister(action: PayloadAction<CreateProps>): Generator {
     yield put(registerFailure("Register failed"));
   }
 }
+function* handleGetMe(): Generator {
+  try {
+    const response = yield call(fetchMe);
+
+    yield put(getMeSuccess(response.data));
+  } catch {
+    yield put(getMeFailure());
+  }
+}
 // WATCHER
 export default function* authSaga() {
   yield takeLatest(loginRequest.type, handleLogin);
   yield takeLatest(logoutAction.type, handleLogout);
   yield takeLatest(registerRequest.type, handleRegister);
+  yield takeLatest(getMeRequest.type, handleGetMe);
 }

@@ -1,20 +1,18 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useEffect, useState } from "react";
 import { AlertCircle, LayoutGrid, LayoutList, PackageX } from "lucide-react";
 
-import type { RootState } from "../../../app/store";
 import ProductCard from "../components/ProductCard";
 import { productRequest } from "../productSlice";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 type ViewType = "grid" | "list";
 
 export default function ProductContainerAll() {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [view, setView] = useState<ViewType>("grid");
 
-  const { data, loading, error } = useSelector(
-    (state: RootState) => state.product
-  );
+  const { data, loading, error } = useAppSelector((state) => state.product);
 
   useEffect(() => {
     dispatch(productRequest());

@@ -1,21 +1,20 @@
-import { useDispatch, useSelector } from "react-redux";
 import { useParams, Link } from "react-router-dom";
 import { productRequestById } from "../productSlice";
-import { RootState } from "../../../app/store";
+
 import React from "react";
 import Button from "../../../components/Button";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 const ProductDetailContainer: React.FC = () => {
   const { id } = useParams();
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const [quantity, setQuantity] = React.useState(1);
   const [selectedColor, setSelectedColor] = React.useState(0);
   const [activeThumb, setActiveThumb] = React.useState(0);
   const [wishlisted, setWishlisted] = React.useState(false);
 
-  const { product, loading, error } = useSelector(
-    (state: RootState) => state.product
-  );
+  const { product, loading, error } = useAppSelector((state) => state.product);
 
   React.useEffect(() => {
     if (id) dispatch(productRequestById(id));

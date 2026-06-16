@@ -1,17 +1,15 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
-import type { RootState } from "../../../app/store";
 
 import RegisterForm from "../components/RegisterForm";
 import { registerRequest } from "../authSlice";
 import { useNavigate } from "react-router-dom";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { useAppSelector } from "../../../hooks/useAppSelector";
 
 const RegisterContainer: React.FC = () => {
-  const dispatch = useDispatch();
+  const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const { loading, error, registered } = useSelector(
-    (state: RootState) => state.auth
-  );
+  const { loading, error, registered } = useAppSelector((state) => state.auth);
   React.useEffect(() => {
     if (registered) {
       const timer = setTimeout(() => {

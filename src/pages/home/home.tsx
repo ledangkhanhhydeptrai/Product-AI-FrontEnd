@@ -1,7 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
-import { useSelector } from "react-redux";
+
 
 import type { RootState } from "../../app/store";
 import { NavbarProps } from "../../components/Header";
@@ -12,6 +12,7 @@ import AiAssistantBanner from "./components/AiAssistantBanner";
 import FlashDealBanner from "./components/FlashDealBanner";
 import ProductContainer from "../../features/product/productContainer/ProductContainer";
 import HomeBrandSection from "./components/BrandSection";
+import { useAppSelector } from "../../hooks/useAppSelector";
 
 const insights = [
   { label: "Perfect for you", value: "94%", sub: "match score" },
@@ -20,7 +21,7 @@ const insights = [
 ];
 
 const HomePage: React.FC<NavbarProps> = () => {
-  const categories = useSelector((state: RootState) => state.category.data);
+  const categories = useAppSelector((state: RootState) => state.category.data);
   return (
     <div className="min-h-screen bg-[#f7f7f9]">
       <main className="flex flex-col gap-9">
