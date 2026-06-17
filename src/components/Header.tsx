@@ -17,13 +17,11 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
   const dispatch = useAppDispatch();
 
   // STATE
-  const user = useAppSelector((state) => state.profile.user);
-  const loading = useAppSelector((state) => state.profile.loading);
-  const isAuthenticated = useAppSelector((state) => state.auth.isAuthenticated);
+  const { user, isAuthenticated, loading } = useAppSelector(
+    (state) => state.profile
+  );
 
   const dropdownRef = useRef<HTMLDivElement>(null);
-
-  const userName = user?.fullName || "";
 
   const getInitials = (fullName: string) => {
     if (!fullName) return "U";
@@ -50,6 +48,7 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
+  const userName = (user && user.fullName) || "";
   // logout
   const handleLogout = () => {
     dispatch(logoutRequest());

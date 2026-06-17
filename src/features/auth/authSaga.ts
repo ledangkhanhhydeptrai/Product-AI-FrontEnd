@@ -21,6 +21,7 @@ import {
 } from "./authApi";
 import { showNotification } from "../notification/notificationSlice";
 import { profileAPI } from "../profile/profileAPI";
+import { clearProfile, getMeSuccess } from "../profile/profileSlice";
 
 export interface ApiErrorResponse {
   status: number;
@@ -51,6 +52,7 @@ function* handleLogin(action: PayloadAction<LoginRequest>): Generator {
         role: me.data.role
       })
     );
+    yield put(getMeSuccess(me.data))
   } catch (error) {
     console.log("Login Error:", error);
     yield put(loginFailure("Login failed"));
@@ -66,6 +68,7 @@ function* handleLogout(): Generator {
   } finally {
     // 🔥 QUAN TRỌNG: clear redux state
     yield put(logoutSuccess());
+    yield put(clearProfile());
   }
 }
 function* handleRegister(action: PayloadAction<CreateProps>): Generator {

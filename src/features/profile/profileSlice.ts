@@ -17,7 +17,7 @@ const initialState: ProfileState = {
   user: null,
   role: null,
   isAuthenticated: false,
-  initialized:false,
+  initialized: false
 };
 const profileSlice = createSlice({
   name: "profile",
@@ -41,9 +41,12 @@ const profileSlice = createSlice({
       state.role = null;
       state.isAuthenticated = false;
       state.initialized = true;
+    },
+    clearProfile: (state) => {
+      state.user = null;
     }
   }
 });
-export const { getMeRequest, getMeSuccess, getMeFailure } =
+export const { getMeRequest, getMeSuccess, getMeFailure, clearProfile } =
   profileSlice.actions;
 export default profileSlice.reducer;
