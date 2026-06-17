@@ -4,7 +4,7 @@ import { CartUserProps, CreateCartProps } from "./CartAPI";
 interface CartState {
   loading: boolean;
   error: string | null;
-  data: CartUserProps[] | [];
+  data: CartUserProps[];
   cart: CartUserProps | null;
 }
 const initialState: CartState = {
@@ -42,6 +42,44 @@ const CartSlice = createSlice({
     createCartFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    updateCartRequest(
+      state,
+      _action: PayloadAction<{ product_id: string; quantity: number }>
+    ) {
+      state.loading = true;
+      state.error = null;
+    },
+    updateCartSuccess(state, action: PayloadAction<CartUserProps>) {
+      state.loading = false;
+      state.error = null;
+
+      const updatedCart = action.payload;
+
+      const index = state.data.findIndex((c) => c.id === updatedCart.id);
+
+      if (index !== -1) {
+        state.data[index] = updatedCart;
+      } else {
+        state.data.push(updatedCart);
+      }
+    },
+    updateCartFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    deleteCartRequest(state, _action: PayloadAction<{ product_id: string }>) {
+      state.loading = true;
+      state.error = null;
+    },
+    deleteCartSuccess(state, action: PayloadAction<null>) {
+      state.loading = false;
+      state.error = null;
+      state.cart = action.payload;
+    },
+    deleteCartFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -51,6 +89,12 @@ export const {
   getCartFailure,
   createCartRequest,
   createCartSuccess,
-  createCartFailure
+  createCartFailure,
+  updateCartRequest,
+  updateCartSuccess,
+  updateCartFailure,
+  deleteCartRequest,
+  deleteCartSuccess,
+  deleteCartFailure
 } = CartSlice.actions;
 export default CartSlice.reducer;
