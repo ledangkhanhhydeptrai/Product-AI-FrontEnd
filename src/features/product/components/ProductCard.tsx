@@ -2,6 +2,9 @@ import React from "react";
 import { ShoppingBag } from "lucide-react";
 import { ProductProps } from "../productTypes";
 import { useNavigate } from "react-router-dom";
+import { useAppSelector } from "../../../hooks/useAppSelector";
+import { useAppDispatch } from "../../../hooks/useAppDispatch";
+import { createCartRequest } from "../../cart/CartSlice";
 
 export interface ProductCardProps {
   product: ProductProps;
@@ -9,7 +12,40 @@ export interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
+  const { isAuthenticated } = useAppSelector((state) => state.profile);
+  const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      navigate("/login", {
+        state: {
+          notification: {
+            open: true,
+            message: "Vui lòng đăng nhập trước khi thêm sản phẩm vào giỏ hàng",
+            severity: "warning"
+          }
+        }
+      });
 
+      return;
+    }
+
+    dispatch(
+      createCartRequest({
+        product_id: product.id,
+        quantity: 1
+      })
+    );
+
+    navigate("/cart", {
+      state: {
+        notification: {
+          open: true,
+          message: "Đã thêm sản phẩm vào giỏ hàng",
+          severity: "success"
+        }
+      }
+    });
+  };
   const originalPrice = (Number(product.price) * 1.15).toFixed(2);
   const hasDiscount = true; // thay bằng logic thật nếu có
 
@@ -50,7 +86,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </div>
 
           <button
-            onClick={() => navigate("/cart")}
+            onClick={handleAddToCart}
             className="flex items-center gap-1.5 bg-violet-600 hover:bg-violet-700 text-white text-[12px] font-medium rounded-lg px-3 py-1.5 transition-colors"
           >
             <ShoppingBag size={13} />

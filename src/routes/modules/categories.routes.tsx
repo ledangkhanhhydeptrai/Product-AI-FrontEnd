@@ -1,6 +1,7 @@
 import CategoryContainerAll from "../../features/categories/categoryContainer/categoryContainerAll";
 import CategoryDetailContainer from "../../features/categories/categoryDetail/CategoryDetailContainer";
-import MainLayout from "../../layouts/MainLayout";
+import { MainLayout } from "../../layouts/MainLayout";
+
 
 const CategoriesRoutes = [
   {

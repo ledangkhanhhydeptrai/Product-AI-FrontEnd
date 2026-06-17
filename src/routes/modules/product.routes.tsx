@@ -1,5 +1,6 @@
 import ProductContainerAll from "../../features/product/productContainer/ProductContainerAll";
-import MainLayout from "../../layouts/MainLayout";
+import { MainLayout } from "../../layouts/MainLayout";
+
 import ProductDetailPage from "../../pages/products/id/ProductDetailPage";
 import ProductListPage from "../../pages/products/ProductListPage";
 

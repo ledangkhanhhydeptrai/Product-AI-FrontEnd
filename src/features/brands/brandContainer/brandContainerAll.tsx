@@ -53,7 +53,7 @@ const BrandContainerAll: React.FC<Props> = ({ filterBrandId }) => {
 
   return (
     <div className="bg-[#F8F7FF] min-h-screen">
-      <div className="p-6">
+      <div className="">
         {/* Back button */}
         <button
           onClick={() => navigate(-1)}

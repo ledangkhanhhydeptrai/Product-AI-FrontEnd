@@ -1,5 +1,6 @@
 import BrandContainerAll from "../../features/brands/brandContainer/brandContainerAll";
-import MainLayout from "../../layouts/MainLayout";
+import { MainLayout } from "../../layouts/MainLayout";
+
 import BrandPage from "../../pages/brands/BrandPage";
 import BrandDetailPage from "../../pages/brands/id/BrandDetailPage";
 
