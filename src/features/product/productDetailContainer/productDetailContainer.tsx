@@ -1,10 +1,11 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { productRequestById } from "../productSlice";
 
 import React from "react";
 import Button from "../../../components/Button";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
+import { createCartRequest } from "../../cart/CartSlice";
 
 const ProductDetailContainer: React.FC = () => {
   const { id } = useParams();
@@ -13,13 +14,47 @@ const ProductDetailContainer: React.FC = () => {
   const [selectedColor, setSelectedColor] = React.useState(0);
   const [activeThumb, setActiveThumb] = React.useState(0);
   const [wishlisted, setWishlisted] = React.useState(false);
-
+  const navigate = useNavigate();
   const { product, loading, error } = useAppSelector((state) => state.product);
-
+  const { isAuthenticated } = useAppSelector((state) => state.profile);
   React.useEffect(() => {
     if (id) dispatch(productRequestById(id));
   }, [dispatch, id]);
+  if (!product) {
+    return null;
+  }
+  const handleAddToCart = () => {
+    if (!isAuthenticated) {
+      navigate("/login", {
+        state: {
+          notification: {
+            open: true,
+            message: "Vui lòng đăng nhập trước khi thêm sản phẩm vào giỏ hàng",
+            severity: "warning"
+          }
+        }
+      });
 
+      return;
+    }
+
+    dispatch(
+      createCartRequest({
+        product_id: product.id,
+        quantity: 1
+      })
+    );
+
+    navigate("/cart", {
+      state: {
+        notification: {
+          open: true,
+          message: "Đã thêm sản phẩm vào giỏ hàng",
+          severity: "success"
+        }
+      }
+    });
+  };
   if (loading)
     return (
       <div className="flex items-center justify-center min-h-[60vh]">
@@ -234,6 +269,7 @@ const ProductDetailContainer: React.FC = () => {
 
             <Button
               title="Giỏ hàng"
+              onClick={handleAddToCart}
               type="submit"
               className="flex-1 flex items-center justify-center gap-2 bg-violet-600 hover:bg-violet-700 active:scale-[0.98] text-white text-sm font-semibold py-3 rounded-xl transition shadow-lg shadow-violet-600/20"
             >

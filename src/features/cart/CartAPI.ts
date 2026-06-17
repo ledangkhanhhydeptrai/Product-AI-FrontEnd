@@ -8,6 +8,10 @@ interface CartItem {
   quantity: number;
   price: number;
 }
+export interface CreateCartProps {
+  product_id: string;
+  quantity: number;
+}
 export interface CartUserProps {
   id: string;
   user_id: string;
@@ -23,6 +27,27 @@ export const getCartByUser = async (): Promise<ApiResponse<CartUserProps>> => {
         headers: {
           "Content-Type": "application/json"
         }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    throw errors;
+  }
+};
+export const createCartByUser = async ({
+  product_id,
+  quantity
+}: CreateCartProps): Promise<ApiResponse<CartUserProps>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<CartUserProps>>(
+      "/cart/items",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        data: { product_id, quantity }
       }
     );
     return response.data;
