@@ -34,10 +34,24 @@ const ProfileContainer: React.FC = () => {
     );
   }
 
-  if (!user) return null;
+  if (!user) {
+    return (
+      <div className="max-w-xl mx-auto mt-10">
+        <div className="flex items-center gap-3 p-4 border border-amber-200 bg-amber-50 rounded-xl">
+          <AlertCircle className="text-amber-500" />
+          <div>
+            <p className="font-medium text-amber-700">Bạn chưa đăng nhập</p>
+            <p className="text-sm text-amber-600">
+              Vui lòng đăng nhập để xem thông tin cá nhân.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <div className="max-w-4xl mx-auto p-6">
+    <div className="">
       <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
         {/* Cover */}
         <div className="h-40 bg-linear-to-r from-indigo-500 via-violet-500 to-purple-500" />
