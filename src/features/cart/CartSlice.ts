@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CartUserProps, CreateCartProps, UpdateCartResponse } from "./CartAPI";
+import { CartUserProps, CreateCartProps } from "./CartAPI";
 
 interface CartState {
   loading: boolean;
   error: string | null;
-  data: CartUserProps[] | [];
+  data: CartUserProps[];
   cart: CartUserProps | null;
 }
 const initialState: CartState = {
@@ -50,20 +50,18 @@ const CartSlice = createSlice({
       state.loading = true;
       state.error = null;
     },
-    updateCartSuccess(state, action: PayloadAction<UpdateCartResponse>) {
+    updateCartSuccess(state, action: PayloadAction<CartUserProps>) {
       state.loading = false;
       state.error = null;
-      const updatedItem = action.payload;
-      const cart = state.data.find((c) => c.id === updatedItem.cart_id);
 
-      if (cart) {
-        const item = cart.cart_items.find(
-          (i) => i.product_id === updatedItem.product_id
-        );
+      const updatedCart = action.payload;
 
-        if (item) {
-          item.quantity = updatedItem.quantity;
-        }
+      const index = state.data.findIndex((c) => c.id === updatedCart.id);
+
+      if (index !== -1) {
+        state.data[index] = updatedCart;
+      } else {
+        state.data.push(updatedCart);
       }
     },
     updateCartFailure(state, action: PayloadAction<string>) {
