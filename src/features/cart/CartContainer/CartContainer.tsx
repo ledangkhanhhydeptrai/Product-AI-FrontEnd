@@ -3,7 +3,11 @@ import { Snackbar, Alert } from "@mui/material";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-import { getCartRequest } from "../CartSlice";
+import {
+  deleteCartRequest,
+  getCartRequest,
+  updateCartRequest
+} from "../CartSlice";
 import LoadingState from "../components/LoadingState";
 import ErrorState from "../components/ErrorState";
 import EmptyState from "../components/EmptyState";
@@ -50,12 +54,22 @@ export default function CartContainer() {
   if (loading) return <LoadingState />;
   if (error) return <ErrorState message={error} />;
   if (!data.length) return <EmptyState />;
-
+  const handleUpdateQuantity = (productId: string, quantity: number) => {
+    dispatch(updateCartRequest({ product_id: productId, quantity }));
+  };
+  const handleRemoveItem = (product_id: string) => {
+    dispatch(deleteCartRequest({ product_id: product_id }));
+  };
   return (
     <>
       <div className="cart-wrap">
         {data.map((cart) => (
-          <CartCard key={cart.id} cart={cart} />
+          <CartCard
+            key={cart.id}
+            cart={cart}
+            onUpdateQuantity={handleUpdateQuantity}
+            onRemoveItem={handleRemoveItem}
+          />
         ))}
       </div>
 

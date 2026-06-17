@@ -12,6 +12,7 @@ export interface CreateCartProps {
   product_id: string;
   quantity: number;
 }
+
 export interface CartUserProps {
   id: string;
   user_id: string;
@@ -48,6 +49,51 @@ export const createCartByUser = async ({
           "Content-Type": "application/json"
         },
         data: { product_id, quantity }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    throw errors;
+  }
+};
+export const updateAllProductQuantity = async ({
+  product_id,
+  quantity
+}: {
+  product_id: string;
+  quantity: number;
+}): Promise<ApiResponse<CartUserProps>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<CartUserProps>>(
+      `/cart/product/${product_id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        data: { quantity }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    throw errors;
+  }
+};
+export const deleteProduct = async ({
+  product_id
+}: {
+  product_id: string;
+}): Promise<ApiResponse<void>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<void>>(
+      `/cart/${product_id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        }
       }
     );
     return response.data;

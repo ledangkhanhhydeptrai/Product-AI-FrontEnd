@@ -3,14 +3,21 @@ import {
   CartUserProps,
   createCartByUser,
   CreateCartProps,
-  getCartByUser
+  deleteProduct,
+  getCartByUser,
+  updateAllProductQuantity
 } from "./CartAPI";
 import {
   createCartRequest,
   createCartSuccess,
+  deleteCartRequest,
+  deleteCartSuccess,
   getCartFailure,
   getCartRequest,
-  getCartSuccess
+  getCartSuccess,
+  updateCartFailure,
+  updateCartRequest,
+  updateCartSuccess
 } from "./CartSlice";
 import { ApiResponse } from "../../types/api";
 import { AxiosError } from "axios";
@@ -63,7 +70,42 @@ function* handleCreateCart(action: PayloadAction<CreateCartProps>): Generator {
     yield put(getCartFailure(message));
   }
 }
+function* handleUpdateCart(
+  action: PayloadAction<{ product_id: string; quantity: number }>
+): Generator {
+  try {
+    const { product_id, quantity } = action.payload;
+
+    const response: ApiResponse<CartUserProps> = yield call(
+      updateAllProductQuantity,
+      { product_id, quantity }
+    );
+
+    yield put(updateCartSuccess(response.data));
+    yield put(getCartRequest());
+  } catch (error) {
+    const err = error as AxiosError<{ message: string }>;
+    yield put(updateCartFailure(err.message));
+  }
+}
+function* handleDeleteCart(
+  action: PayloadAction<{ product_id: string }>
+): Generator {
+  try {
+    const { product_id } = action.payload;
+    const response: ApiResponse<null> = yield call(deleteProduct, {
+      product_id
+    });
+    yield put(deleteCartSuccess(response.data));
+    yield put(getCartRequest())
+  } catch (error) {
+    const err = error as AxiosError<{ message: string }>;
+    yield put(updateCartFailure(err.message));
+  }
+}
 export default function* CartSaga() {
   yield takeLatest(getCartRequest.type, handleGetCart);
-  yield takeLatest(createCartRequest.type,handleCreateCart);
+  yield takeLatest(createCartRequest.type, handleCreateCart);
+  yield takeLatest(updateCartRequest.type, handleUpdateCart);
+  yield takeLatest(deleteCartRequest.type, handleDeleteCart);
 }
