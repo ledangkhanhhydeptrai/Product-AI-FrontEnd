@@ -82,13 +82,13 @@ export const updateAllProductQuantity = async ({
   }
 };
 export const deleteProduct = async ({
-  product_id
+  cart_item_id
 }: {
-  product_id: string;
+  cart_item_id: string;
 }): Promise<ApiResponse<void>> => {
   try {
     const response = await fetchBaseResponse<ApiResponse<void>>(
-      `/cart/${product_id}`,
+      `/cart/${cart_item_id}`,
       {
         method: "DELETE",
         headers: {
