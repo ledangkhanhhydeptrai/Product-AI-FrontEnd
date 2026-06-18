@@ -1,17 +1,23 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { CartUserProps, CreateCartProps } from "./CartAPI";
+import { NotificationSeverity } from "../notification/notificationSlice";
 
 interface CartState {
   loading: boolean;
   error: string | null;
   data: CartUserProps[];
   cart: CartUserProps | null;
+  notification: {
+    message: string;
+    severity: NotificationSeverity;
+  } | null;
 }
 const initialState: CartState = {
   loading: false,
   error: null,
   data: [],
-  cart: null
+  cart: null,
+  notification: null
 };
 const CartSlice = createSlice({
   name: "cart",
@@ -68,18 +74,24 @@ const CartSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    deleteCartRequest(state, _action: PayloadAction<{ product_id: string }>) {
+    deleteCartRequest(state, _action: PayloadAction<{ cart_item_id: string }>) {
       state.loading = true;
       state.error = null;
     },
-    deleteCartSuccess(state, action: PayloadAction<null>) {
+    deleteCartSuccess(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = null;
-      state.cart = action.payload;
+      state.notification = {
+        message: action.payload,
+        severity: "error"
+      };
     },
     deleteCartFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    clearNotification(state) {
+      state.notification = null;
     }
   }
 });
@@ -95,6 +107,7 @@ export const {
   updateCartFailure,
   deleteCartRequest,
   deleteCartSuccess,
-  deleteCartFailure
+  deleteCartFailure,
+  clearNotification
 } = CartSlice.actions;
 export default CartSlice.reducer;

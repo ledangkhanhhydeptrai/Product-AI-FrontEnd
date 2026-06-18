@@ -10,6 +10,7 @@ import {
 import {
   createCartRequest,
   createCartSuccess,
+  deleteCartFailure,
   deleteCartRequest,
   deleteCartSuccess,
   getCartFailure,
@@ -89,18 +90,26 @@ function* handleUpdateCart(
   }
 }
 function* handleDeleteCart(
-  action: PayloadAction<{ product_id: string }>
+  action: PayloadAction<{ cart_item_id: string }>
 ): Generator {
   try {
-    const { product_id } = action.payload;
-    const response: ApiResponse<null> = yield call(deleteProduct, {
-      product_id
-    });
-    yield put(deleteCartSuccess(response.data));
-    yield put(getCartRequest())
+    yield call(deleteProduct, action.payload);
+    console.log("DELETE RESPONSE:", yield call(deleteProduct, action.payload));
+    yield put(deleteCartSuccess(action.payload.cart_item_id));
+    yield put(getCartRequest());
   } catch (error) {
     const err = error as AxiosError<{ message: string }>;
-    yield put(updateCartFailure(err.message));
+    let message = "Xóa sản phẩm thất bại";
+    if (err.response !== undefined && err.response !== null) {
+      if (
+        err.response.data &&
+        typeof err.response.data === "object" &&
+        "message" in err.response.data
+      ) {
+        message = err.response.data.message;
+      }
+    }
+    yield put(deleteCartFailure(message));
   }
 }
 export default function* CartSaga() {

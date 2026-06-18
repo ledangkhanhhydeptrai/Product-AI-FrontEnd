@@ -1,8 +1,6 @@
 import { Slide, SlideProps } from "@mui/material";
-interface SlideTransitionsProps extends Omit<
-  SlideProps,
-  "direction" | "children"
-> {
+interface SlideTransitionsProps
+  extends Omit<SlideProps, "direction" | "children"> {
   children: React.ReactElement;
 }
 export default function SlideTransitions({
