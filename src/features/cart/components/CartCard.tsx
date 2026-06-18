@@ -6,13 +6,17 @@ import {
   Minus,
   Plus,
   Trash2,
-  Sparkles
+  ScissorsLineDashed,
+  Receipt
 } from "lucide-react";
 
 interface CartCardProps {
   cart: CartUserProps;
   onUpdateQuantity: (product_id: string, quantity: number) => void;
   onRemoveItem: (itemId: string) => void;
+  selectedItems: string[];
+  onToggleItem: (cartItemId: string) => void;
+  onCheckout: (cartItemIds: string[]) => void;
 }
 
 function shortId(id: string) {
@@ -47,28 +51,35 @@ function formatVND(amount: number) {
   }).format(amount);
 }
 
+function pad2(n: number) {
+  return n.toString().padStart(2, "0");
+}
+
 export default function CartCard({
   cart,
   onUpdateQuantity,
-  onRemoveItem
+  onRemoveItem,
+  selectedItems,
+  onToggleItem,
+  onCheckout
 }: CartCardProps) {
   const product = useAppSelector((state) => state.product.product);
 
   if (!product) {
     return (
-      <div className="bg-linear-to-br from-indigo-50/70 via-violet-50/40 to-purple-50/70 rounded-4xl p-4 sm:p-6">
-        <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm">
-          <div className="flex flex-col items-center justify-center px-6 py-14 text-center">
-            <div className="p-4 rounded-2xl bg-linear-to-br from-indigo-100 via-violet-100 to-purple-100 mb-4">
+      <div className="bg-[#f6f1e7] rounded-2xl p-4 sm:p-6">
+        <div className="bg-[#fffdf8] border-2 border-dashed border-[#d8c9a8] rounded-2xl">
+          <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+            <div className="p-5 rounded-full bg-[#fbe9d0] mb-4 ring-4 ring-[#f6f1e7]">
               <ShoppingBag
-                className="w-8 h-8 text-indigo-400"
+                className="w-9 h-9 text-[#b5562b]"
                 strokeWidth={1.5}
               />
             </div>
-            <h3 className="text-sm font-semibold text-gray-800 mb-1">
-              Giỏ hàng của bạn đang trống
+            <h3 className="font-serif text-base text-[#3d2c1e] mb-1">
+              Giỏ hàng của bạn còn trống
             </h3>
-            <p className="text-sm text-gray-400 max-w-xs">
+            <p className="text-sm text-[#8a7860] max-w-xs">
               Hiện tại chưa có sản phẩm nào trong giỏ hàng. Mời bạn tìm sản phẩm
               yêu thích để thêm vào giỏ nhé!
             </p>
@@ -78,12 +89,19 @@ export default function CartCard({
     );
   }
 
-  const cartTotal = cart.cart_items.reduce(
+  const selectedCartItems = cart.cart_items.filter((item) =>
+    selectedItems.includes(item.id)
+  );
+
+  const cartTotal = selectedCartItems.reduce(
     (sum, item) => sum + item.price * item.quantity,
     0
   );
 
-  const cartQty = cart.cart_items.reduce((sum, item) => sum + item.quantity, 0);
+  const cartQty = selectedCartItems.reduce(
+    (sum, item) => sum + item.quantity,
+    0
+  );
 
   const shippingFee = cartTotal >= 500000 || cartTotal === 0 ? 0 : 30000;
   const grandTotal = cartTotal + shippingFee;
@@ -98,56 +116,70 @@ export default function CartCard({
   };
 
   return (
-    <div className="bg-linear-to-br from-indigo-50/70 via-violet-50/40 to-purple-50/70 rounded-4xl p-4 sm:p-6">
-      <div className="grid grid-cols-1 lg:grid-cols-[1fr_360px] gap-6 items-start">
-        {/* CỘT TRÁI — Danh sách sản phẩm */}
-        <div className="bg-white border border-gray-100 rounded-3xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow duration-300">
-          {/* Header */}
-          <div className="flex items-center justify-between px-5 py-4 bg-linear-to-r from-indigo-50 via-violet-50 to-purple-50 border-b border-gray-100">
+    <div className="bg-[#f6f1e7] rounded-2xl p-3 sm:p-6">
+      <div className="grid grid-cols-1 lg:grid-cols-[1fr_340px] gap-5 items-start">
+        {/* CỘT TRÁI — Danh sách sản phẩm, dạng phiếu/biên lai */}
+        <div className="bg-[#fffdf8] rounded-2xl shadow-[0_1px_2px_rgba(61,44,30,0.06)] overflow-hidden">
+          {/* Header — tem đóng dấu */}
+          <div className="flex items-center justify-between px-5 sm:px-6 py-4 bg-[#3d2c1e]">
             <div className="flex items-center gap-3">
-              <div className="p-2 rounded-xl bg-white shadow-sm">
-                <ShoppingBag className="w-4 h-4 text-indigo-500" />
+              <div className="w-9 h-9 rounded-full border-2 border-[#e8a06b] flex items-center justify-center">
+                <ShoppingBag className="w-4 h-4 text-[#e8a06b]" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-900">
-                  Giỏ hàng {shortId(cart.id)}
+                <p className="font-serif text-sm text-[#fffdf8] tracking-wide">
+                  Phiếu giỏ hàng {shortId(cart.id)}
                 </p>
-                <p className="text-[11px] text-gray-400 font-mono mt-0.5">
+                <p className="text-[11px] text-[#bfa888] font-mono mt-0.5">
                   {cart.user_id.slice(0, 16)}…
                 </p>
               </div>
             </div>
 
-            <div className="flex items-center gap-1.5 text-xs text-gray-500 bg-white/70 px-2.5 py-1 rounded-full">
-              <Clock className="w-3 h-3" />
+            <div className="flex items-center gap-1.5 text-xs text-[#bfa888]">
+              <Clock className="w-3.5 h-3.5" />
               {formatDate(cart.created_at)}
             </div>
           </div>
 
-          {/* Items */}
-          <div className="divide-y divide-gray-50">
-            {cart.cart_items.map((item) => (
+          {/* Perforation strip — đường răng cưa giả lập */}
+          <div className="h-3 bg-[#fffdf8]" />
+
+          {/* Items — đánh số như mục hóa đơn */}
+          <div className="divide-y divide-dashed divide-[#e3d7bf]">
+            {cart.cart_items.map((item, idx) => (
               <div
                 key={item.id}
-                className="group flex items-center gap-4 px-5 py-4 hover:bg-gray-50/60 transition-colors"
+                className="group flex items-center gap-3 sm:gap-4 px-5 sm:px-6 py-4 hover:bg-[#fbf6ea] transition-colors"
               >
+                <span className="font-serif text-xs text-[#c7b692] w-5 shrink-0 hidden sm:block">
+                  {pad2(idx + 1)}
+                </span>
+
+                <input
+                  placeholder="Choose product"
+                  type="checkbox"
+                  checked={selectedItems.includes(item.id)}
+                  onChange={() => onToggleItem(item.id)}
+                  className="w-4 h-4 accent-[#b5562b] cursor-pointer shrink-0"
+                />
+
                 <img
                   src={product.image_url}
                   alt={product.name}
-                  className="w-16 h-16 rounded-2xl object-cover border border-gray-100 shrink-0"
+                  className="w-16 h-16 rounded-xl object-cover border border-[#e3d7bf] shrink-0"
                 />
 
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-900 truncate">
+                  <p className="text-sm text-[#3d2c1e] font-medium truncate">
                     {product.name}
                   </p>
-                  <p className="text-xs text-gray-400 font-mono mt-0.5">
+                  <p className="text-[11px] text-[#a99776] font-mono mt-0.5">
                     {shortPid(item.product_id)}
                   </p>
 
-                  {/* Quantity stepper */}
-                  <div className="flex items-center gap-2 mt-2">
-                    <div className="flex items-center bg-gray-100 rounded-full overflow-hidden">
+                  <div className="flex items-center gap-2 mt-2.5">
+                    <div className="flex items-center bg-[#f6f1e7] rounded-full overflow-hidden">
                       <button
                         type="button"
                         aria-label="Giảm số lượng"
@@ -155,11 +187,11 @@ export default function CartCard({
                           handleDecrease(item.product_id, item.quantity)
                         }
                         disabled={item.quantity <= 1}
-                        className="p-1.5 text-gray-500 hover:text-indigo-600 hover:bg-gray-200 disabled:opacity-40 disabled:hover:bg-transparent disabled:hover:text-gray-500 transition-colors cursor-pointer disabled:cursor-not-allowed"
+                        className="p-1.5 text-[#8a7860] hover:text-[#b5562b] hover:bg-[#efe5d2] disabled:opacity-40 disabled:hover:bg-transparent transition-colors cursor-pointer disabled:cursor-not-allowed"
                       >
                         <Minus className="w-3.5 h-3.5" />
                       </button>
-                      <span className="px-3 text-sm font-medium text-gray-800 min-w-8 text-center select-none">
+                      <span className="px-3 text-sm font-mono text-[#3d2c1e] min-w-8 text-center select-none">
                         {item.quantity}
                       </span>
                       <button
@@ -168,7 +200,7 @@ export default function CartCard({
                         onClick={() =>
                           handleIncrease(item.product_id, item.quantity)
                         }
-                        className="p-1.5 text-gray-500 hover:text-indigo-600 hover:bg-gray-200 transition-colors cursor-pointer"
+                        className="p-1.5 text-[#8a7860] hover:text-[#b5562b] hover:bg-[#efe5d2] transition-colors cursor-pointer"
                       >
                         <Plus className="w-3.5 h-3.5" />
                       </button>
@@ -178,7 +210,7 @@ export default function CartCard({
                       type="button"
                       aria-label="Xóa sản phẩm"
                       onClick={() => onRemoveItem(item.id)}
-                      className="flex items-center gap-1 text-xs text-gray-400 hover:text-rose-500 px-2 py-1.5 rounded-full hover:bg-rose-50 transition-colors cursor-pointer"
+                      className="flex items-center gap-1 text-xs text-[#a99776] hover:text-[#b5562b] px-2 py-1.5 rounded-full hover:bg-[#fbe9d0] transition-colors cursor-pointer"
                     >
                       <Trash2 className="w-3.5 h-3.5" />
                       <span className="hidden sm:inline">Xóa</span>
@@ -187,10 +219,10 @@ export default function CartCard({
                 </div>
 
                 <div className="text-right shrink-0">
-                  <p className="text-xs text-gray-400">
+                  <p className="text-xs text-[#a99776] font-mono">
                     {formatVND(item.price)}
                   </p>
-                  <p className="font-semibold text-gray-900 mt-0.5">
+                  <p className="font-mono font-semibold text-[#3d2c1e] mt-0.5">
                     {formatVND(item.price * item.quantity)}
                   </p>
                 </div>
@@ -199,33 +231,42 @@ export default function CartCard({
           </div>
         </div>
 
-        {/* CỘT PHẢI — Tóm tắt đơn hàng (sticky) */}
+        {/* CỘT PHẢI — Biên lai tổng (sticky) */}
         <div className="lg:sticky lg:top-6">
-          <div className="bg-linear-to-b from-white to-indigo-50/60 border border-indigo-100 rounded-3xl overflow-hidden shadow-md hover:shadow-lg transition-shadow duration-300">
-            <div className="px-5 py-4 bg-linear-to-r from-indigo-600 via-violet-600 to-purple-600 border-b border-indigo-100">
-              <p className="text-sm font-semibold text-white">
-                Tóm tắt đơn hàng
-              </p>
-              <p className="text-[11px] text-indigo-100 mt-0.5">
-                {cartQty} sản phẩm trong giỏ
-              </p>
+          <div className="bg-[#fffdf8] rounded-2xl shadow-[0_1px_2px_rgba(61,44,30,0.06)] overflow-hidden relative">
+            {/* Notch hai bên giả lập vé xé */}
+            <div className="absolute top-31 -left-2.5 w-5 h-5 rounded-full bg-[#f6f1e7] hidden lg:block" />
+            <div className="absolute top-31 -right-2.5 w-5 h-5 rounded-full bg-[#f6f1e7] hidden lg:block" />
+
+            <div className="px-6 py-4 bg-[#b5562b] flex items-center gap-2">
+              <Receipt className="w-4 h-4 text-[#fbe9d0]" />
+              <div>
+                <p className="font-serif text-sm text-[#fffdf8] tracking-wide">
+                  Hóa đơn tạm tính
+                </p>
+                <p className="text-[11px] text-[#fbe9d0] mt-0.5">
+                  {cartQty} sản phẩm trong giỏ
+                </p>
+              </div>
             </div>
 
-            <div className="px-5 py-4 space-y-3">
+            <div className="h-3 bg-[#fffdf8]" />
+
+            <div className="px-6 py-4 space-y-3">
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">Tạm tính</span>
-                <span className="font-medium text-gray-800">
+                <span className="text-[#8a7860]">Tạm tính</span>
+                <span className="font-mono text-[#3d2c1e]">
                   {formatVND(cartTotal)}
                 </span>
               </div>
 
               <div className="flex items-center justify-between text-sm">
-                <span className="text-gray-500">Phí vận chuyển</span>
+                <span className="text-[#8a7860]">Phí vận chuyển</span>
                 <span
                   className={
                     shippingFee === 0
-                      ? "font-medium text-emerald-600"
-                      : "font-medium text-gray-800"
+                      ? "font-mono text-emerald-700"
+                      : "font-mono text-[#3d2c1e]"
                   }
                 >
                   {shippingFee === 0 ? "Miễn phí" : formatVND(shippingFee)}
@@ -233,8 +274,8 @@ export default function CartCard({
               </div>
 
               {shippingFee > 0 && (
-                <div className="flex items-start gap-2 text-xs text-indigo-700 bg-white border border-indigo-100 rounded-xl px-3 py-2">
-                  <Sparkles className="w-3.5 h-3.5 shrink-0 mt-0.5 text-indigo-500" />
+                <div className="flex items-start gap-2 text-xs text-[#b5562b] bg-[#fbe9d0] rounded-xl px-3 py-2">
+                  <ScissorsLineDashed className="w-3.5 h-3.5 shrink-0 mt-0.5" />
                   <span>
                     Mua thêm {formatVND(500000 - cartTotal)} để được miễn phí
                     vận chuyển
@@ -242,24 +283,35 @@ export default function CartCard({
                 </div>
               )}
 
-              <div className="h-px bg-gray-100 my-1" />
+              <div className="border-t border-dashed border-[#e3d7bf] my-1" />
 
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-gray-700">
+                <span className="font-serif text-sm text-[#3d2c1e]">
                   Tổng cộng
                 </span>
-                <span className="font-bold text-indigo-600 text-xl">
+                <span className="font-mono font-bold text-[#b5562b] text-2xl">
                   {formatVND(grandTotal)}
                 </span>
               </div>
             </div>
 
-            <div className="px-5 pb-5">
+            <div className="px-6 pb-6">
               <button
                 type="button"
-                className="w-full py-3 rounded-2xl bg-linear-to-r from-indigo-600 to-violet-600 text-white text-sm font-semibold shadow-sm hover:shadow-md hover:from-indigo-700 hover:to-violet-700 active:scale-[0.98] transition-all cursor-pointer"
+                disabled={selectedCartItems.length === 0}
+                onClick={() =>
+                  onCheckout(selectedCartItems.map((item) => item.id))
+                }
+                className="
+    w-full py-3 rounded-xl text-sm font-medium tracking-wide transition-colors
+    disabled:bg-[#d8c9a8]
+    disabled:cursor-not-allowed
+    bg-[#b5562b]
+    text-[#fffdf8]
+    hover:bg-[#9c4622]
+  "
               >
-                Tiến hành thanh toán
+                Thanh toán ({selectedCartItems.length})
               </button>
             </div>
           </div>

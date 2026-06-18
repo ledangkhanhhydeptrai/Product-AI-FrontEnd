@@ -5,6 +5,7 @@ import categorySaga from "../features/categories/categorySaga";
 import brandSaga from "../features/brands/brandSaga";
 import CartSaga from "../features/cart/CartSaga";
 import profileSaga from "../features/profile/profileSaga";
+import OrderSaga from "../features/order/OrderSaga";
 export default function* rootSaga() {
   yield all([
     authSaga(),
@@ -12,6 +13,7 @@ export default function* rootSaga() {
     categorySaga(),
     brandSaga(),
     CartSaga(),
-    profileSaga()
+    profileSaga(),
+    OrderSaga()
   ]);
 }

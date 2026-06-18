@@ -6,6 +6,7 @@ import CategoryReducer from "../features/categories/categorySlice";
 import BrandReducer from "../features/brands/brandSlice";
 import CartReducer from "../features/cart/CartSlice";
 import ProfileReducer from "../features/profile/profileSlice";
+import OrderReducer from "../features/order/OrderSlice";
 const rootReducer = combineReducers({
   auth: authReducer,
   notification: notificationReducer,
@@ -13,6 +14,7 @@ const rootReducer = combineReducers({
   category: CategoryReducer,
   brand: BrandReducer,
   cart: CartReducer,
-  profile: ProfileReducer
+  profile: ProfileReducer,
+  order: OrderReducer
 });
 export default rootReducer;

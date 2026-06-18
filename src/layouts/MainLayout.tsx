@@ -17,7 +17,7 @@ export const MainLayout: React.FC<ChildrenProps> = ({ children }) => {
   const cartItems = useAppSelector((state) => state.cart.data);
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="bg-gray-50">
       <Header
         cartCount={cartItems.reduce(
           (total, cart) => total + cart.cart_items.length,
