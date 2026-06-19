@@ -1,4 +1,5 @@
 import { MainLayout } from "../../layouts/MainLayout";
+import CreateOrderPage from "../../pages/order/createOrderPage";
 import OrderPage from "../../pages/order/OrderPage";
 
 export const OrderRoutes = [
@@ -7,6 +8,14 @@ export const OrderRoutes = [
     element: (
       <MainLayout>
         <OrderPage />
+      </MainLayout>
+    )
+  },
+  {
+    path: "/createOrder",
+    element: (
+      <MainLayout>
+        <CreateOrderPage />
       </MainLayout>
     )
   }

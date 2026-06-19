@@ -16,6 +16,7 @@ import CartCard from "../components/CartCard";
 import { productRequestById } from "../../product/productSlice";
 import { ShoppingBag } from "lucide-react";
 import { AxiosError } from "axios";
+import { CartItem } from "../CartAPI";
 
 export default function CartContainer() {
   const dispatch = useAppDispatch();
@@ -99,10 +100,10 @@ export default function CartContainer() {
     }
   };
 
-  const handleCheckout = (cartItemIds: string[]) => {
-    navigate("/order", {
+  const handleCheckout = (selectedCartItems: CartItem[]) => {
+    navigate("/createOrder", {
       state: {
-        cart_item_ids: cartItemIds
+        cartItems: selectedCartItems
       }
     });
   };

@@ -1,5 +1,5 @@
 import { useAppSelector } from "../../../hooks/useAppSelector";
-import { CartUserProps } from "../CartAPI";
+import { CartItem, CartUserProps } from "../CartAPI";
 import {
   ShoppingBag,
   Clock,
@@ -16,7 +16,7 @@ interface CartCardProps {
   onRemoveItem: (itemId: string) => void;
   selectedItems: string[];
   onToggleItem: (cartItemId: string) => void;
-  onCheckout: (cartItemIds: string[]) => void;
+  onCheckout: (cartItems: CartItem[]) => void;
 }
 
 function shortId(id: string) {
@@ -299,9 +299,7 @@ export default function CartCard({
               <button
                 type="button"
                 disabled={selectedCartItems.length === 0}
-                onClick={() =>
-                  onCheckout(selectedCartItems.map((item) => item.id))
-                }
+                onClick={() => onCheckout(selectedCartItems)}
                 className="
     w-full py-3 rounded-xl text-sm font-medium tracking-wide transition-colors
     disabled:bg-[#d8c9a8]
@@ -311,7 +309,7 @@ export default function CartCard({
     hover:bg-[#9c4622]
   "
               >
-                Thanh toán ({selectedCartItems.length})
+                Đặt hàng ({selectedCartItems.length})
               </button>
             </div>
           </div>
