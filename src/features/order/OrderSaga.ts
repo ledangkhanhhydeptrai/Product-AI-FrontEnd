@@ -22,7 +22,9 @@ function* handleGetAllOrder(): Generator {
     yield put(getOrderFailure(errors.message));
   }
 }
-function* handleCreateOrder(action: PayloadAction<CreateOrderProps>): Generator {
+function* handleCreateOrder(
+  action: PayloadAction<CreateOrderProps>
+): Generator {
   try {
     const { cart_item_ids, shipping_address, payment_method } = action.payload;
     const response: ApiResponse<OrderProps> = yield call(createOrderByCart, {

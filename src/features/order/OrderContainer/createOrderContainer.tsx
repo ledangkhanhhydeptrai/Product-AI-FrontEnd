@@ -19,35 +19,42 @@ const CreateOrderContainer: React.FC = () => {
   const state = location.state as { cartItems: CartItem[] } | null;
   const cartItems = state && state.cartItems ? state.cartItems : [];
 
-  const products = useAppSelector((state) => state.product.data);
-  const { loading, error } = useAppSelector((state) => state.order);
+  const products = useAppSelector(state => state.product.data);
+  const { loading, error } = useAppSelector(state => state.order);
 
   const [shipping_address, setShipping_address] = React.useState("");
-  const [payment_method, setPayment_method] =
-    React.useState<PaymentMethod>("PAYOS");
+  const [payment_method, setPayment_method] = React.useState<PaymentMethod>(
+    "PAYOS"
+  );
 
   const [openSuccess, setOpenSuccess] = React.useState(false);
   // derive openError from error to avoid setting state synchronously in an effect
   const openError = Boolean(error);
 
-  React.useEffect(() => {
-    dispatch(productRequest());
-  }, [dispatch]);
+  React.useEffect(
+    () => {
+      dispatch(productRequest());
+    },
+    [dispatch]
+  );
 
-  React.useEffect(() => {
-    if (error) {
-      // setOpenError(true); // Removed synchronous state update
-    }
-  }, [error]);
+  React.useEffect(
+    () => {
+      if (error) {
+        // setOpenError(true); // Removed synchronous state update
+      }
+    },
+    [error]
+  );
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     dispatch(
       createOrderRequest({
-        cart_item_ids: cartItems.map((item) => item.id),
+        cart_item_ids: cartItems.map(item => item.id),
         shipping_address,
-        payment_method,
+        payment_method
       })
     );
 
@@ -66,17 +73,13 @@ const CreateOrderContainer: React.FC = () => {
         products={products}
       />
 
-      {loading && (
-        <p className="mt-2 text-sm text-gray-500">
-          Đang xử lý đơn hàng...
-        </p>
-      )}
+      {loading &&
+        <p className="mt-2 text-sm text-gray-500">Đang xử lý đơn hàng...</p>}
 
-      {error && (
+      {error &&
         <p className="mt-2 text-sm text-red-500">
           {error}
-        </p>
-      )}
+        </p>}
 
       {/* Success Snackbar */}
       <Snackbar
@@ -85,7 +88,7 @@ const CreateOrderContainer: React.FC = () => {
         onClose={() => setOpenSuccess(false)}
         anchorOrigin={{
           vertical: "top",
-          horizontal: "right",
+          horizontal: "right"
         }}
       >
         <Alert
@@ -104,14 +107,10 @@ const CreateOrderContainer: React.FC = () => {
         onClose={() => {}}
         anchorOrigin={{
           vertical: "top",
-          horizontal: "right",
+          horizontal: "right"
         }}
       >
-        <Alert
-          severity="error"
-          variant="filled"
-          onClose={() => {}}
-        >
+        <Alert severity="error" variant="filled" onClose={() => {}}>
           {error}
         </Alert>
       </Snackbar>

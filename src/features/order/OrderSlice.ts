@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { OrderProps } from "./OrderTypes/OrderProps";
+import { CreateOrderProps, OrderProps } from "./OrderTypes/OrderProps";
 
 interface OrderState {
   loading: boolean;
@@ -30,7 +30,7 @@ const OrderSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    createOrderRequest(state, _action: PayloadAction<CreateCartProps>) {
+    createOrderRequest(state, _action: PayloadAction<CreateOrderProps>) {
       state.loading = true;
       state.error = null;
     },
