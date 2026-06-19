@@ -22,3 +22,8 @@ export interface OrderProps {
   created_at: string;
   order_items: OrderItemProps[];
 }
+export interface CreateOrderProps {
+  cart_item_ids: string[];
+  shipping_address: string;
+  payment_method: PaymentMethod;
+}

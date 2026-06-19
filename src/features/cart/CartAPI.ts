@@ -2,7 +2,7 @@ import { AxiosError } from "axios";
 import { fetchBaseResponse } from "../../config/fetchBaseResponse";
 import { ApiResponse } from "../../types/api";
 
-interface CartItem {
+export interface CartItem {
   id: string;
   product_id: string;
   quantity: number;
