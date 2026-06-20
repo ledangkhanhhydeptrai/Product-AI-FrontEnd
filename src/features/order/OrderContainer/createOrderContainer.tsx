@@ -46,9 +46,7 @@ const CreateOrderContainer: React.FC = () => {
     return () => clearTimeout(timer);
   }, [order, navigate]);
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleSubmit = () => {
     dispatch(
       createOrderRequest({
         cart_item_ids: cartItems.map((item) => item.id),

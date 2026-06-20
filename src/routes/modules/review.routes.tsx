@@ -9,6 +9,6 @@ const ReviewRoutes = [
         <ReviewPage />
       </MainLayout>
     )
-  }
+  },
 ];
 export default ReviewRoutes;
