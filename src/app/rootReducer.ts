@@ -7,6 +7,7 @@ import BrandReducer from "../features/brands/brandSlice";
 import CartReducer from "../features/cart/CartSlice";
 import ProfileReducer from "../features/profile/profileSlice";
 import OrderReducer from "../features/order/OrderSlice";
+import PaymentReducer from "../features/payment/paymentSlice";
 const rootReducer = combineReducers({
   auth: authReducer,
   notification: notificationReducer,
@@ -15,6 +16,7 @@ const rootReducer = combineReducers({
   brand: BrandReducer,
   cart: CartReducer,
   profile: ProfileReducer,
-  order: OrderReducer
+  order: OrderReducer,
+  payment: PaymentReducer
 });
 export default rootReducer;

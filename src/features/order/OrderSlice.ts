@@ -35,6 +35,7 @@ const OrderSlice = createSlice({
       state.error = null;
     },
     createOrderSuccess(state, action: PayloadAction<OrderProps>) {
+      console.log("ORDER REDUX UPDATE:", action.payload);
       state.loading = false;
       state.error = null;
       state.order = action.payload;

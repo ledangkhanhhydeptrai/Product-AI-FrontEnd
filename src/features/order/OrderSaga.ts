@@ -33,7 +33,6 @@ function* handleCreateOrder(
       payment_method
     });
     yield put(createOrderSuccess(response.data));
-    yield put(getOrderRequest());
   } catch (error) {
     const errors = error as AxiosError<{ message: string }>;
 
