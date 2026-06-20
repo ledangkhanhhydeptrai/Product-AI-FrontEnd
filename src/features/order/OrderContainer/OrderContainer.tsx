@@ -14,6 +14,8 @@ import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { getOrderRequest } from "../OrderSlice";
 import { createPaymentRequest } from "../../payment/paymentSlice";
+import { productRequest } from "../../product/productSlice";
+import { ORDER_STATUS } from "../OrderTypes/OrderProps";
 
 const formatVND = (amount: number) => {
   return new Intl.NumberFormat("vi-VN", {
@@ -27,41 +29,59 @@ const formatDate = (date: string) => {
 };
 
 const getStatusColor = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "pending":
+  switch (status) {
+    case ORDER_STATUS.PENDING:
       return "bg-[#fbe9d0] text-[#b5562b]";
-    case "completed":
+
+    case ORDER_STATUS.DELIVERED:
       return "bg-emerald-100 text-emerald-700";
-    case "cancelled":
+
+    case ORDER_STATUS.CANCELLED:
       return "bg-rose-100 text-rose-600";
+
     default:
       return "bg-[#efe5d2] text-[#8a7860]";
   }
 };
 
 const getStatusLabel = (status: string) => {
-  switch (status.toLowerCase()) {
-    case "pending":
+  switch (status) {
+    case ORDER_STATUS.PENDING:
       return "Chờ xử lý";
-    case "completed":
+
+    case ORDER_STATUS.DELIVERED:
       return "Hoàn tất";
-    case "cancelled":
+
+    case ORDER_STATUS.CANCELLED:
       return "Đã hủy";
+
+    case ORDER_STATUS.PAID:
+      return "Đã thanh toán";
+
+    case ORDER_STATUS.SHIPPED:
+      return "Đang giao hàng";
+
     default:
       return status;
   }
 };
-
 const OrderContainer: React.FC = () => {
   const dispatch = useAppDispatch();
-
+  const [openReviewOrderId, setOpenReviewOrderId] = React.useState<
+    string | null
+  >(null);
+  const [rating, setRating] = React.useState<number>(5);
+  const [comment, setComment] = React.useState("");
   const { data, loading, error } = useAppSelector((state) => state.order);
-  const { data: ProductProps } = useAppSelector((state) => state.product);
+  const ProductProps = useAppSelector((state) => state.product.data);
 
+  console.log("PRODUCTS:", ProductProps);
   React.useEffect(() => {
     dispatch(getOrderRequest());
   }, [dispatch]);
-
+  React.useEffect(() => {
+    dispatch(productRequest());
+  }, [dispatch]);
   const handlePayment = (order_id: string) => {
     dispatch(createPaymentRequest({ order_id }));
     console.log("Thanh toán đơn hàng:", order_id);
@@ -99,8 +119,10 @@ const OrderContainer: React.FC = () => {
   return (
     <div className="bg-[#f6f1e7] space-y-5">
       {data.map((order) => {
-        const isPending = order.status.toLowerCase() === "pending";
-
+        const isPending = order.status === ORDER_STATUS.PENDING;
+        const canReview =
+          order.status === ORDER_STATUS.DELIVERED ||
+          order.status === ORDER_STATUS.PAID;
         return (
           <div
             key={order.id}
@@ -220,7 +242,7 @@ const OrderContainer: React.FC = () => {
                   <span className="font-mono text-2xl font-bold text-[#b5562b] sm:hidden">
                     {formatVND(order.total_price)}
                   </span>
-                  {order.status.toLowerCase() === "pending" ? (
+                  {order.status === ORDER_STATUS.PENDING ? (
                     <button
                       onClick={() => handlePayment(order.id)}
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#b5562b] text-[#fffdf8] text-sm font-medium hover:bg-[#9c4720] active:scale-[0.98] transition-all shadow-[0_2px_6px_rgba(181,86,43,0.35)]"
@@ -228,12 +250,31 @@ const OrderContainer: React.FC = () => {
                       <Wallet className="w-4 h-4" />
                       Thanh toán ngay
                     </button>
-                  ) : order.status.toLowerCase() === "paid" ? (
+                  ) : order.status === order.status ? (
                     <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium cursor-default">
                       <CheckCircle className="w-4 h-4" />
                       Thanh toán thành công
                     </span>
                   ) : null}
+                  {canReview && (
+                    <>
+                      <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium">
+                        <CheckCircle className="w-4 h-4" />
+                        Thanh toán thành công
+                      </span>
+
+                      <button
+                        onClick={() =>
+                          setOpenReviewOrderId(
+                            openReviewOrderId === order.id ? null : order.id
+                          )
+                        }
+                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-600 text-[#fffdf8] text-sm font-medium hover:bg-blue-700"
+                      >
+                        ⭐ Đánh giá
+                      </button>
+                    </>
+                  )}
                   {isPending && (
                     <button onClick={() => handlePayment(order.id)}>
                       Thanh toán ngay
@@ -247,6 +288,63 @@ const OrderContainer: React.FC = () => {
                   </span>
                 </div>
               </div>
+              {openReviewOrderId === order.id && (
+                <div className="border-t border-dashed border-[#e3d7bf] px-5 sm:px-6 py-4 space-y-3">
+                  <p className="font-serif text-sm text-[#3d2c1e]">
+                    Đánh giá đơn hàng
+                  </p>
+
+                  {/* stars */}
+                  <div className="flex gap-1 text-2xl">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        onClick={() => setRating(star)}
+                        className={
+                          star <= rating ? "text-yellow-400" : "text-gray-300"
+                        }
+                      >
+                        ★
+                      </button>
+                    ))}
+                  </div>
+
+                  {/* comment */}
+                  <textarea
+                    value={comment}
+                    onChange={(e) => setComment(e.target.value)}
+                    placeholder="Nhận xét của bạn..."
+                    className="w-full border border-[#e3d7bf] rounded-lg p-2 text-sm"
+                  />
+
+                  {/* actions */}
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => {
+                        console.log({
+                          order_id: order.id,
+                          rating,
+                          comment
+                        });
+
+                        setOpenReviewOrderId(null);
+                        setRating(5);
+                        setComment("");
+                      }}
+                      className="px-4 py-2 bg-[#b5562b] text-white rounded text-sm"
+                    >
+                      Gửi đánh giá
+                    </button>
+
+                    <button
+                      onClick={() => setOpenReviewOrderId(null)}
+                      className="px-4 py-2 bg-gray-200 rounded text-sm"
+                    >
+                      Hủy
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         );
