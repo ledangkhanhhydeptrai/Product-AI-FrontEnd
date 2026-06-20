@@ -7,7 +7,9 @@ import {
   Package,
   Receipt,
   Wallet,
-  CheckCircle
+  CheckCircle,
+  Star,
+  X
 } from "lucide-react";
 
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
@@ -39,6 +41,12 @@ const getStatusColor = (status: string) => {
     case ORDER_STATUS.CANCELLED:
       return "bg-rose-100 text-rose-600";
 
+    case ORDER_STATUS.PAID:
+      return "bg-emerald-100 text-emerald-700";
+
+    case ORDER_STATUS.SHIPPED:
+      return "bg-sky-100 text-sky-700";
+
     default:
       return "bg-[#efe5d2] text-[#8a7860]";
   }
@@ -65,71 +73,94 @@ const getStatusLabel = (status: string) => {
       return status;
   }
 };
+
 const OrderContainer: React.FC = () => {
   const dispatch = useAppDispatch();
   const [openReviewOrderId, setOpenReviewOrderId] = React.useState<
     string | null
   >(null);
   const [rating, setRating] = React.useState<number>(5);
+  const [hoverRating, setHoverRating] = React.useState<number>(0);
   const [comment, setComment] = React.useState("");
   const { data, loading, error } = useAppSelector((state) => state.order);
   const ProductProps = useAppSelector((state) => state.product.data);
 
-  console.log("PRODUCTS:", ProductProps);
   React.useEffect(() => {
     dispatch(getOrderRequest());
   }, [dispatch]);
+
   React.useEffect(() => {
     dispatch(productRequest());
   }, [dispatch]);
+
   const handlePayment = (order_id: string) => {
     dispatch(createPaymentRequest({ order_id }));
-    console.log("Thanh toán đơn hàng:", order_id);
+  };
+
+  const handleSubmitReview = (order_id: string) => {
+    // TODO: wire up to a real review action
+    console.log({ order_id, rating, comment });
+    setOpenReviewOrderId(null);
+    setRating(5);
+    setComment("");
   };
 
   if (loading) {
     return (
-      <div className="flex justify-center py-10 text-[#8a7860]">
-        <p>Đang tải đơn hàng...</p>
+      <div className="flex flex-col items-center gap-3 py-16 text-[#8a7860]">
+        <div className="w-8 h-8 rounded-full border-2 border-[#e3d7bf] border-t-[#b5562b] animate-spin" />
+        <p className="text-sm">Đang tải đơn hàng...</p>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex justify-center py-10 text-rose-500">{error}</div>
+      <div className="flex justify-center py-16">
+        <p className="text-sm text-rose-500 bg-rose-50 px-4 py-3 rounded-xl">
+          {error}
+        </p>
+      </div>
     );
   }
 
   if (!data.length) {
     return (
-      <div className="bg-[#f6f1e7] rounded-2xl py-16 mt-24">
+      <div className="bg-[#f6f1e7] rounded-2xl py-16 mt-10">
         <div className="flex flex-col items-center text-center">
           <div className="p-5 rounded-full bg-[#fbe9d0] mb-4 ring-4 ring-[#f6f1e7]">
             <ShoppingBag className="w-9 h-9 text-[#b5562b]" strokeWidth={1.5} />
           </div>
           <h3 className="font-serif text-base text-[#3d2c1e]">
-            Bạn chưa có đơn hàng nào mời bạn mua hàng
+            Bạn chưa có đơn hàng nào
           </h3>
+          <p className="text-sm text-[#a99776] mt-1">
+            Hãy khám phá cửa hàng và đặt món yêu thích của bạn
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="bg-[#f6f1e7] space-y-5">
+    <div className="bg-[#f6f1e7] space-y-6 py-2">
       {data.map((order) => {
         const isPending = order.status === ORDER_STATUS.PENDING;
-        const canReview =
-          order.status === ORDER_STATUS.DELIVERED ||
-          order.status === ORDER_STATUS.PAID;
+        const isPaidOrFurther =
+          order.status === ORDER_STATUS.PAID ||
+          order.status === ORDER_STATUS.SHIPPED ||
+          order.status === ORDER_STATUS.DELIVERED;
+        const canReview = order.status === ORDER_STATUS.DELIVERED;
+        const isCancelled = order.status === ORDER_STATUS.CANCELLED;
+        const isReviewOpen = openReviewOrderId === order.id;
+
         return (
           <div
             key={order.id}
-            className="bg-[#fffdf8] shadow-[0_1px_2px_rgba(61,44,30,0.06)] overflow-hidden"
+            className="bg-[#fffdf8] rounded-2xl shadow-[0_1px_3px_rgba(61,44,30,0.08)] overflow-hidden border border-[#efe5d2]"
           >
-            {/* Header — tem đóng dấu, đồng bộ CartCard */}
-            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-3 px-5 sm:px-6 py-4 bg-[#3d2c1e]">
+            {/* Header */}
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 px-5 sm:px-6 py-4 bg-[#3d2c1e]">
               <div className="flex items-center gap-3">
                 <div className="w-9 h-9 rounded-full border-2 border-[#e8a06b] flex items-center justify-center shrink-0">
                   <Receipt className="w-4 h-4 text-[#e8a06b]" />
@@ -146,7 +177,7 @@ const OrderContainer: React.FC = () => {
               </div>
 
               <span
-                className={`px-3 py-1 rounded-full text-xs font-medium self-start md:self-auto ${getStatusColor(
+                className={`px-3 py-1 rounded-full text-xs font-medium self-start sm:self-auto ${getStatusColor(
                   order.status
                 )}`}
               >
@@ -154,12 +185,9 @@ const OrderContainer: React.FC = () => {
               </span>
             </div>
 
-            {/* Perforation strip */}
-            <div className="h-3 bg-[#fffdf8]" />
-
             {/* Info */}
             <div className="px-5 sm:px-6 py-5 space-y-5">
-              <div className="grid md:grid-cols-2 gap-4">
+              <div className="grid sm:grid-cols-2 gap-4">
                 <div className="flex gap-3">
                   <MapPin className="w-5 h-5 text-[#b5562b] mt-0.5 shrink-0" />
                   <div>
@@ -183,7 +211,7 @@ const OrderContainer: React.FC = () => {
                 </div>
               </div>
 
-              {/* Order Items — dạng mục biên lai đánh số */}
+              {/* Order Items */}
               <div>
                 <h4 className="font-serif text-sm text-[#3d2c1e] mb-3 flex items-center gap-2">
                   <Package className="w-4 h-4 text-[#b5562b]" />
@@ -235,14 +263,8 @@ const OrderContainer: React.FC = () => {
 
               {/* Footer */}
               <div className="border-t border-dashed border-[#e3d7bf] pt-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                <div className="flex items-center justify-between sm:justify-start sm:gap-3">
-                  <span className="font-serif text-sm text-[#3d2c1e]">
-                    Tổng thanh toán
-                  </span>
-                  <span className="font-mono text-2xl font-bold text-[#b5562b] sm:hidden">
-                    {formatVND(order.total_price)}
-                  </span>
-                  {order.status === ORDER_STATUS.PENDING ? (
+                <div className="flex flex-wrap items-center gap-2.5">
+                  {isPending && (
                     <button
                       onClick={() => handlePayment(order.id)}
                       className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-[#b5562b] text-[#fffdf8] text-sm font-medium hover:bg-[#9c4720] active:scale-[0.98] transition-all shadow-[0_2px_6px_rgba(181,86,43,0.35)]"
@@ -250,95 +272,93 @@ const OrderContainer: React.FC = () => {
                       <Wallet className="w-4 h-4" />
                       Thanh toán ngay
                     </button>
-                  ) : order.status === order.status ? (
-                    <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium cursor-default">
-                      <CheckCircle className="w-4 h-4" />
-                      Thanh toán thành công
-                    </span>
-                  ) : null}
-                  {canReview && (
-                    <>
-                      <span className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium">
-                        <CheckCircle className="w-4 h-4" />
-                        Thanh toán thành công
-                      </span>
-
-                      <button
-                        onClick={() =>
-                          setOpenReviewOrderId(
-                            openReviewOrderId === order.id ? null : order.id
-                          )
-                        }
-                        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-blue-600 text-[#fffdf8] text-sm font-medium hover:bg-blue-700"
-                      >
-                        ⭐ Đánh giá
-                      </button>
-                    </>
                   )}
-                  {isPending && (
-                    <button onClick={() => handlePayment(order.id)}>
-                      Thanh toán ngay
+
+                  {isPaidOrFurther && (
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-emerald-100 text-emerald-700 text-sm font-medium">
+                      <CheckCircle className="w-4 h-4" />
+                      Đã thanh toán
+                    </span>
+                  )}
+
+                  {isCancelled && (
+                    <span className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-rose-100 text-rose-600 text-sm font-medium">
+                      <X className="w-4 h-4" />
+                      Đơn hàng đã hủy
+                    </span>
+                  )}
+
+                  {canReview && (
+                    <button
+                      onClick={() =>
+                        setOpenReviewOrderId(isReviewOpen ? null : order.id)
+                      }
+                      className="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[#e3d7bf] text-[#3d2c1e] text-sm font-medium hover:bg-[#fbf6ea] transition-colors"
+                    >
+                      <Star className="w-4 h-4 text-[#e8a06b]" />
+                      Đánh giá đơn hàng
                     </button>
                   )}
                 </div>
 
-                <div className="flex items-center justify-between sm:justify-end gap-4 sm:gap-5">
-                  <span className="hidden sm:inline font-mono text-2xl font-bold text-[#b5562b]">
+                <div className="flex items-center justify-between sm:justify-end gap-3">
+                  <span className="text-xs text-[#a99776] sm:hidden">
+                    Tổng thanh toán
+                  </span>
+                  <span className="font-mono text-xl sm:text-2xl font-bold text-[#b5562b]">
                     {formatVND(order.total_price)}
                   </span>
                 </div>
               </div>
-              {openReviewOrderId === order.id && (
-                <div className="border-t border-dashed border-[#e3d7bf] px-5 sm:px-6 py-4 space-y-3">
+
+              {/* Review panel */}
+              {isReviewOpen && (
+                <div className="border-t border-dashed border-[#e3d7bf] pt-4 space-y-3">
                   <p className="font-serif text-sm text-[#3d2c1e]">
                     Đánh giá đơn hàng
                   </p>
 
-                  {/* stars */}
-                  <div className="flex gap-1 text-2xl">
+                  <div className="flex gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                       <button
                         key={star}
+                        type="button"
                         onClick={() => setRating(star)}
-                        className={
-                          star <= rating ? "text-yellow-400" : "text-gray-300"
-                        }
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        className="p-0.5"
+                        aria-label={`${star} sao`}
                       >
-                        ★
+                        <Star
+                          className={`w-6 h-6 transition-colors ${
+                            star <= (hoverRating || rating)
+                              ? "text-[#e8a06b] fill-[#e8a06b]"
+                              : "text-[#e3d7bf]"
+                          }`}
+                        />
                       </button>
                     ))}
                   </div>
 
-                  {/* comment */}
                   <textarea
                     value={comment}
                     onChange={(e) => setComment(e.target.value)}
-                    placeholder="Nhận xét của bạn..."
-                    className="w-full border border-[#e3d7bf] rounded-lg p-2 text-sm"
+                    placeholder="Chia sẻ cảm nhận của bạn về sản phẩm và dịch vụ..."
+                    rows={3}
+                    className="w-full border border-[#e3d7bf] rounded-xl p-3 text-sm text-[#3d2c1e] placeholder:text-[#c7b692] focus:outline-none focus:ring-2 focus:ring-[#e8a06b] resize-none"
                   />
 
-                  {/* actions */}
                   <div className="flex gap-2">
                     <button
-                      onClick={() => {
-                        console.log({
-                          order_id: order.id,
-                          rating,
-                          comment
-                        });
-
-                        setOpenReviewOrderId(null);
-                        setRating(5);
-                        setComment("");
-                      }}
-                      className="px-4 py-2 bg-[#b5562b] text-white rounded text-sm"
+                      onClick={() => handleSubmitReview(order.id)}
+                      className="px-4 py-2 rounded-full bg-[#b5562b] text-white text-sm font-medium hover:bg-[#9c4720] transition-colors"
                     >
                       Gửi đánh giá
                     </button>
 
                     <button
                       onClick={() => setOpenReviewOrderId(null)}
-                      className="px-4 py-2 bg-gray-200 rounded text-sm"
+                      className="px-4 py-2 rounded-full border border-[#e3d7bf] text-[#3d2c1e] text-sm font-medium hover:bg-[#fbf6ea] transition-colors"
                     >
                       Hủy
                     </button>
