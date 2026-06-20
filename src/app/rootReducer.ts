@@ -8,6 +8,7 @@ import CartReducer from "../features/cart/CartSlice";
 import ProfileReducer from "../features/profile/profileSlice";
 import OrderReducer from "../features/order/OrderSlice";
 import PaymentReducer from "../features/payment/paymentSlice";
+import ReviewReducer from "../features/review/reviewSlice";
 const rootReducer = combineReducers({
   auth: authReducer,
   notification: notificationReducer,
@@ -17,6 +18,7 @@ const rootReducer = combineReducers({
   cart: CartReducer,
   profile: ProfileReducer,
   order: OrderReducer,
-  payment: PaymentReducer
+  payment: PaymentReducer,
+  review: ReviewReducer
 });
 export default rootReducer;

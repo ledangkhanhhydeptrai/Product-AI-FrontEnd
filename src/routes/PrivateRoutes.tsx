@@ -6,6 +6,7 @@ import { OrderRoutes } from "./modules/order.routes";
 import PaymentRoutes from "./modules/payment.routes";
 import { productRoutes } from "./modules/product.routes";
 import { profileRoutes } from "./modules/profile.routes";
+import ReviewRoutes from "./modules/review.routes";
 
 export const privateRoutes = [
   ...productRoutes,
@@ -15,5 +16,6 @@ export const privateRoutes = [
   ...CartRoutes,
   ...profileRoutes,
   ...OrderRoutes,
-  ...PaymentRoutes
+  ...PaymentRoutes,
+  ...ReviewRoutes
 ];

@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { logoutRequest } from "../features/auth/authSlice";
 import { useAppDispatch } from "../hooks/useAppDispatch";
 import { useAppSelector } from "../hooks/useAppSelector";
+import { MessageSquareMore, Package, User } from "lucide-react";
 
 export interface NavbarProps {
   cartCount: number;
@@ -181,9 +182,14 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
 
                 <div className="p-1.5">
                   {[
-                    { label: "Profile", icon: "👤", path: "/profile" },
-                    { label: "Orders", icon: "📦", path: "/orders" }
-                  ].map(({ label, icon, path }) => (
+                    { label: "Profile", icon: User, path: "/profile" },
+                    { label: "Orders", icon: Package, path: "/orders" },
+                    {
+                      label: "Review",
+                      icon: MessageSquareMore,
+                      path: "/review"
+                    }
+                  ].map(({ label, icon: Icon, path }) => (
                     <button
                       key={path}
                       onClick={() => {
@@ -192,8 +198,8 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
                       }}
                       className="w-full flex items-center gap-2.5 px-2.5 py-2.5 text-sm text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
                     >
-                      <span>{icon}</span>
-                      {label}
+                      <Icon size={18} />
+                      <span>{label}</span>
                     </button>
                   ))}
 
