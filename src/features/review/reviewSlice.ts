@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CreateReviewProps, ReviewProps } from "./reviewTypes";
+import {
+  CreateReviewProps,
+  ReviewProps,
+  UpdateReviewPayload
+} from "./reviewTypes";
 
 interface ReviewState {
   loading: boolean;
@@ -42,6 +46,34 @@ const reviewSlice = createSlice({
     createReviewFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    updateReviewRequest(state, _action: PayloadAction<UpdateReviewPayload>) {
+      state.loading = true;
+      state.error = null;
+    },
+    updateReviewSuccess: (state, action: PayloadAction<ReviewProps>) => {
+      const updated = action.payload;
+
+      state.review = state.review.map((r) =>
+        r.id === updated.id ? updated : r
+      );
+    },
+    updateReviewFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    deleteReviewRequest(state, _action: PayloadAction<string>) {
+      state.loading = true;
+      state.error = null;
+    },
+    deleteReviewSuccess(state, action: PayloadAction<ReviewProps>) {
+      state.loading = false;
+      state.error = null;
+      state.data = action.payload;
+    },
+    deleteReviewFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -51,6 +83,12 @@ export const {
   getReviewFailure,
   createReviewRequest,
   createReviewSuccess,
-  createReviewFailure
+  createReviewFailure,
+  updateReviewRequest,
+  updateReviewSuccess,
+  updateReviewFailure,
+  deleteReviewRequest,
+  deleteReviewSuccess,
+  deleteReviewFailure
 } = reviewSlice.actions;
 export default reviewSlice.reducer;
