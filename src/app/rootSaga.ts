@@ -7,6 +7,7 @@ import CartSaga from "../features/cart/CartSaga";
 import profileSaga from "../features/profile/profileSaga";
 import OrderSaga from "../features/order/OrderSaga";
 import PaymentSaga from "../features/payment/paymentSaga";
+import reviewSaga from "../features/review/reviewSaga";
 export default function* rootSaga() {
   yield all([
     authSaga(),
@@ -16,6 +17,7 @@ export default function* rootSaga() {
     CartSaga(),
     profileSaga(),
     OrderSaga(),
-    PaymentSaga()
+    PaymentSaga(),
+    reviewSaga()
   ]);
 }
