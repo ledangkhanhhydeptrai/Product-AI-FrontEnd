@@ -23,3 +23,7 @@ export interface CreateReview {
   product: ProductProps[];
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
+export type UpdateReviewPayload = {
+  id: string;
+  data: CreateReviewProps;
+};
