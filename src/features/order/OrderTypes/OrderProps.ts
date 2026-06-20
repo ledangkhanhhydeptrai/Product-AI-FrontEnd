@@ -27,3 +27,10 @@ export interface CreateOrderProps {
   shipping_address: string;
   payment_method: PaymentMethod;
 }
+export const ORDER_STATUS = {
+  PENDING: "PENDING",
+  PAID: "PAID",
+  SHIPPED: "SHIPPED",
+  DELIVERED: "DELIVERED",
+  CANCELLED: "CANCELLED",
+} as const;
