@@ -49,7 +49,6 @@ const CreateOrderForm: React.FC<CreateCartForm> = ({
     (sum, item) => sum + item.price * item.quantity,
     0
   );
-
   return (
     <form
       onSubmit={onSubmit}

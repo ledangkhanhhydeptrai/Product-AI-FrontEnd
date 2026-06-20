@@ -1,6 +1,6 @@
 import React from "react";
 import { Snackbar, Alert } from "@mui/material";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
@@ -19,40 +19,39 @@ const CreateOrderContainer: React.FC = () => {
   const state = location.state as { cartItems: CartItem[] } | null;
   const cartItems = state && state.cartItems ? state.cartItems : [];
 
-  const products = useAppSelector(state => state.product.data);
-  const { loading, error } = useAppSelector(state => state.order);
+  const products = useAppSelector((state) => state.product.data);
+  const { loading, error, order } = useAppSelector((state) => state.order);
 
   const [shipping_address, setShipping_address] = React.useState("");
-  const [payment_method, setPayment_method] = React.useState<PaymentMethod>(
-    "PAYOS"
-  );
+  const [payment_method, setPayment_method] =
+    React.useState<PaymentMethod>("PAYOS");
 
-  const [openSuccess, setOpenSuccess] = React.useState(false);
+  const [openSuccess, setOpenSuccess] = React.useState<boolean>(false);
   // derive openError from error to avoid setting state synchronously in an effect
   const openError = Boolean(error);
+  const navigate = useNavigate();
+  React.useEffect(() => {
+    dispatch(productRequest());
+  }, [dispatch]);
 
-  React.useEffect(
-    () => {
-      dispatch(productRequest());
-    },
-    [dispatch]
-  );
+  React.useEffect(() => {
+    if (!order) return;
 
-  React.useEffect(
-    () => {
-      if (error) {
-        // setOpenError(true); // Removed synchronous state update
-      }
-    },
-    [error]
-  );
+    console.log("NAVIGATE PAYMENT:", order.id);
+
+    const timer = setTimeout(() => {
+      navigate(`/payment/${order.id}`);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, [order, navigate]);
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     dispatch(
       createOrderRequest({
-        cart_item_ids: cartItems.map(item => item.id),
+        cart_item_ids: cartItems.map((item) => item.id),
         shipping_address,
         payment_method
       })
@@ -73,13 +72,11 @@ const CreateOrderContainer: React.FC = () => {
         products={products}
       />
 
-      {loading &&
-        <p className="mt-2 text-sm text-gray-500">Đang xử lý đơn hàng...</p>}
+      {loading && (
+        <p className="mt-2 text-sm text-gray-500">Đang xử lý đơn hàng...</p>
+      )}
 
-      {error &&
-        <p className="mt-2 text-sm text-red-500">
-          {error}
-        </p>}
+      {error && <p className="mt-2 text-sm text-red-500">{error}</p>}
 
       {/* Success Snackbar */}
       <Snackbar
