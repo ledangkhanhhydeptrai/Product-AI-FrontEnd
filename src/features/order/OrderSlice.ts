@@ -1,5 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CreateOrderProps, OrderProps } from "./OrderTypes/OrderProps";
+import {
+  CreateOrderProps,
+  CreatePropsBuyNow,
+  OrderProps
+} from "./OrderTypes/OrderProps";
 
 interface OrderState {
   loading: boolean;
@@ -43,6 +47,19 @@ const OrderSlice = createSlice({
     createOrderFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    createOrderBuyNowRequest(state, _action: PayloadAction<CreatePropsBuyNow>) {
+      state.loading = true;
+      state.error = null;
+    },
+    createOrderBuyNowSuccess(state, action: PayloadAction<OrderProps>) {
+      state.loading = false;
+      state.error = null;
+      state.order = action.payload;
+    },
+    createOrderBuyNowFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -52,6 +69,9 @@ export const {
   getOrderFailure,
   createOrderRequest,
   createOrderSuccess,
-  createOrderFailure
+  createOrderFailure,
+  createOrderBuyNowRequest,
+  createOrderBuyNowSuccess,
+  createOrderBuyNowFailure
 } = OrderSlice.actions;
 export default OrderSlice.reducer;

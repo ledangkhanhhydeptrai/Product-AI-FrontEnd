@@ -1,3 +1,5 @@
+import { CartItem } from "../../cart/CartAPI";
+
 export type OrderStatus =
   | "PENDING"
   | "PAID"
@@ -32,5 +34,17 @@ export const ORDER_STATUS = {
   PAID: "PAID",
   SHIPPED: "SHIPPED",
   DELIVERED: "DELIVERED",
-  CANCELLED: "CANCELLED",
+  CANCELLED: "CANCELLED"
 } as const;
+export interface CreatePropsBuyNow {
+  product_id: string;
+  quantity: number;
+  shipping_address: string;
+  payment_method: PaymentMethod;
+}
+export type CreateOrderLocationState = {
+  cartItems: CartItem[];
+  buyNow: boolean;
+  product_id: string;
+  quantity: number;
+};
