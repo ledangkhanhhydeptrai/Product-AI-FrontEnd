@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from "react-router-dom";
+import { useParams, Link, useNavigate, useLocation } from "react-router-dom";
 import { productRequestById } from "../productSlice";
 
 import React from "react";
@@ -6,23 +6,51 @@ import Button from "../../../components/Button";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { createCartRequest } from "../../cart/CartSlice";
+import { CreateOrderLocationState } from "../../order/OrderTypes/OrderProps";
 
 const ProductDetailContainer: React.FC = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
-  const [quantity, setQuantity] = React.useState(1);
+  const location = useLocation();
+
   const [selectedColor, setSelectedColor] = React.useState(0);
   const [activeThumb, setActiveThumb] = React.useState(0);
   const [wishlisted, setWishlisted] = React.useState(false);
   const navigate = useNavigate();
   const { product, loading, error } = useAppSelector((state) => state.product);
   const { isAuthenticated } = useAppSelector((state) => state.profile);
+  const state = location.state as CreateOrderLocationState | null;
+  const [quantity, setQuantity] = React.useState(
+    state ? state.quantity || 1 : 1
+  );
   React.useEffect(() => {
     if (id) dispatch(productRequestById(id));
   }, [dispatch, id]);
   if (!product) {
     return null;
   }
+  const handleBuyNow = () => {
+    if (!isAuthenticated) {
+      navigate("/login", {
+        state: {
+          notification: {
+            open: true,
+            message: "Vui lòng đăng nhập trước khi mua hàng",
+            severity: "warning"
+          }
+        }
+      });
+      return;
+    }
+
+    navigate("/createOrder", {
+      state: {
+        buyNow: true,
+        product_id: product.id,
+        quantity
+      }
+    });
+  };
   const handleAddToCart = () => {
     if (!isAuthenticated) {
       navigate("/login", {
@@ -279,6 +307,7 @@ const ProductDetailContainer: React.FC = () => {
 
           {/* Buy now */}
           <Button
+          onClick={handleBuyNow}
             type="button"
             className="w-full mb-5 py-3 rounded-xl text-sm font-semibold text-violet-700 bg-white border-2 border-violet-200 hover:bg-violet-50 transition"
           >

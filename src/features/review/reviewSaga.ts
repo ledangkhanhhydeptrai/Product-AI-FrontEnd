@@ -47,7 +47,7 @@ function* handleCreateReview(
     yield put(
       showNotification({
         message: "Tạo đánh giá thành công",
-        severity: "error"
+        severity: "success"
       })
     );
     yield put(getReviewRequest());
