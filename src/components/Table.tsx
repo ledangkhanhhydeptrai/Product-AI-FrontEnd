@@ -41,12 +41,18 @@ export default function DataTable<T>({
       sx={{
         borderRadius: "14px",
         border: "1px solid #eef0f3",
-        overflow: "hidden"
+        overflow: "hidden",
+        bgcolor: "#fff",
+        boxShadow: "0 1px 2px rgba(15,23,42,0.04)"
       }}
     >
       <Table>
         <TableHead>
-          <TableRow sx={{ bgcolor: "#f8f9fb" }}>
+          <TableRow
+            sx={{
+              background: "linear-gradient(180deg, #f4f5fb 0%, #eef0f7 100%)"
+            }}
+          >
             {columns.map((column) => (
               <TableCell
                 key={String(column.id)}
@@ -57,8 +63,8 @@ export default function DataTable<T>({
                   fontSize: 12.5,
                   letterSpacing: 0.3,
                   textTransform: "uppercase",
-                  color: "#64748b",
-                  borderBottom: "1px solid #eef0f3",
+                  color: "#5b5f76",
+                  borderBottom: "1px solid #e3e5ef",
                   py: 1.6
                 }}
               >
@@ -70,15 +76,16 @@ export default function DataTable<T>({
 
         <TableBody>
           {rows.length ? (
-            rows.map((row) => (
+            rows.map((row, idx) => (
               <TableRow
                 key={rowKey(row)}
                 hover
                 sx={{
+                  bgcolor: idx % 2 === 1 ? "#fafbfd" : "#fff",
                   "&:last-child td": { borderBottom: 0 },
                   "& td": { borderColor: "#f1f2f5", py: 1.6 },
                   transition: "background-color 0.12s ease",
-                  "&:hover": { bgcolor: "#f8f9fb" }
+                  "&:hover": { bgcolor: "#f0f1ff" }
                 }}
               >
                 {columns.map((column) => (
@@ -96,7 +103,10 @@ export default function DataTable<T>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} sx={{ border: 0, py: 8 }}>
+              <TableCell
+                colSpan={columns.length}
+                sx={{ border: 0, py: 8, bgcolor: "#fafbfd" }}
+              >
                 <Box
                   sx={{
                     display: "flex",
@@ -107,17 +117,18 @@ export default function DataTable<T>({
                 >
                   <Box
                     sx={{
-                      width: 48,
-                      height: 48,
-                      borderRadius: "12px",
-                      bgcolor: "#f4f5f7",
+                      width: 52,
+                      height: 52,
+                      borderRadius: "14px",
+                      background: "linear-gradient(135deg, #eef0ff, #f5f3ff)",
                       display: "flex",
                       alignItems: "center",
                       justifyContent: "center",
-                      mb: 0.5
+                      mb: 0.5,
+                      border: "1px solid #e6e8fb"
                     }}
                   >
-                    <InboxRoundedIcon sx={{ fontSize: 24, color: "#94a3b8" }} />
+                    <InboxRoundedIcon sx={{ fontSize: 24, color: "#818CF8" }} />
                   </Box>
                   <Typography
                     sx={{ fontSize: 14.5, fontWeight: 600, color: "#334155" }}

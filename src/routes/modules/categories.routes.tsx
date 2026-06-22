@@ -1,4 +1,5 @@
 import CategoryContainer from "../../admin/category/categoryContainer/categoryContainer";
+import CreateCategoryContainer from "../../admin/category/categoryContainer/createCategoryContainer";
 import { AdminLayout } from "../../admin/layouts/AdminLayout";
 import CategoryContainerAll from "../../features/categories/categoryContainer/categoryContainerAll";
 import CategoryDetailContainer from "../../features/categories/categoryDetail/CategoryDetailContainer";
@@ -26,6 +27,14 @@ const CategoriesRoutes = [
     element: (
       <AdminLayout>
         <CategoryContainer />
+      </AdminLayout>
+    )
+  },
+  {
+    path: "/admin/category/create",
+    element: (
+      <AdminLayout>
+        <CreateCategoryContainer />
       </AdminLayout>
     )
   }

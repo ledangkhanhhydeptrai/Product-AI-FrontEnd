@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { fetchBaseResponse } from "../../config/fetchBaseResponse";
 import { ApiResponse } from "../../types/api";
-import { CategoryProps } from "./categoryTypes";
+import { CategoryProps, CreateCategoryProps } from "./categoryTypes";
 
 export const getAllCategory = async (): Promise<ApiResponse<CategoryProps>> => {
   try {
@@ -40,6 +40,29 @@ export const getCategoryById = async (
     if (response.status !== 200) {
       throw new Error(`HTTP Status:${response.status}`);
     }
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    console.log("Error:", errors);
+    throw errors;
+  }
+};
+export const createCategory = async ({
+  name,
+  description,
+  slug
+}: CreateCategoryProps): Promise<ApiResponse<CategoryProps>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<CategoryProps>>(
+      "/category",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        data: { name, description, slug }
+      }
+    );
     return response.data;
   } catch (error) {
     const errors = error as AxiosError;

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CategoryProps } from "./categoryTypes";
+import { CategoryProps, CreateCategoryProps } from "./categoryTypes";
 
 interface CategoryState {
   loading: boolean;
@@ -11,7 +11,7 @@ const initialState: CategoryState = {
   loading: false,
   error: null,
   data: [],
-  categories: null
+  categories: null,
 };
 const CategorySlice = createSlice({
   name: "category",
@@ -42,6 +42,19 @@ const CategorySlice = createSlice({
     categoryDetailFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    createCategoryRequest(state, _action: PayloadAction<CreateCategoryProps>) {
+      state.loading = true;
+      state.error = null;
+    },
+    createCategorySuccess(state, action: PayloadAction<CategoryProps>) {
+      state.loading = false;
+      state.error = null;
+      state.categories = action.payload;
+    },
+    createCategoryFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -51,6 +64,9 @@ export const {
   categoryFailure,
   categoryDetailRequest,
   categoryDetailSuccess,
-  categoryDetailFailure
+  categoryDetailFailure,
+  createCategoryRequest,
+  createCategorySuccess,
+  createCategoryFailure
 } = CategorySlice.actions;
 export default CategorySlice.reducer;

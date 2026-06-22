@@ -22,14 +22,15 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
+import { useNavigate } from "react-router-dom";
 
 const CategoryContainer: React.FC = () => {
   const dispatch = useAppDispatch();
   const { data, loading, error } = useAppSelector((state) => state.category);
-
+  const navigate = useNavigate();
   // ================= LOCAL STATE =================
   const [page, setPage] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(10);
+  const [pageSize, setPageSize] = React.useState(4);
   const [search, setSearch] = React.useState("");
 
   // ================= FETCH DATA =================
@@ -98,9 +99,9 @@ const CategoryContainer: React.FC = () => {
           size="small"
           sx={{
             fontSize: 12.5,
-            fontWeight: 500,
-            bgcolor: "#f4f5f7",
-            color: "#475569",
+            fontWeight: 600,
+            bgcolor: "#eef0ff",
+            color: "#4f46e5",
             borderRadius: "6px"
           }}
         />
@@ -146,13 +147,21 @@ const CategoryContainer: React.FC = () => {
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 0.5 }}>
           <IconButton
             size="small"
-            sx={{ color: "#64748b", "&:hover": { color: "#6366F1" } }}
+            sx={{
+              color: "#64748b",
+              bgcolor: "#f8f9fb",
+              "&:hover": { color: "#6366F1", bgcolor: "#eef0ff" }
+            }}
           >
             <EditRoundedIcon fontSize="small" />
           </IconButton>
           <IconButton
             size="small"
-            sx={{ color: "#64748b", "&:hover": { color: "#dc2626" } }}
+            sx={{
+              color: "#64748b",
+              bgcolor: "#f8f9fb",
+              "&:hover": { color: "#dc2626", bgcolor: "#fef2f2" }
+            }}
           >
             <DeleteOutlineRoundedIcon fontSize="small" />
           </IconButton>
@@ -167,18 +176,30 @@ const CategoryContainer: React.FC = () => {
       <Paper
         elevation={0}
         sx={{
-          border: "1px solid #fee2e2",
-          borderRadius: "14px",
+          border: "1px solid #fecaca",
+          borderRadius: "16px",
           p: 5,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           gap: 1.5,
-          bgcolor: "#fff7f7"
+          background: "linear-gradient(180deg, #fff5f5 0%, #fff 100%)"
         }}
       >
-        <ErrorOutlineRoundedIcon sx={{ fontSize: 32, color: "#dc2626" }} />
-        <Typography sx={{ fontWeight: 600, color: "#991b1b" }}>
+        <Box
+          sx={{
+            width: 56,
+            height: 56,
+            borderRadius: "50%",
+            bgcolor: "#fee2e2",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center"
+          }}
+        >
+          <ErrorOutlineRoundedIcon sx={{ fontSize: 28, color: "#dc2626" }} />
+        </Box>
+        <Typography sx={{ fontWeight: 700, color: "#991b1b" }}>
           Could not load categories
         </Typography>
         <Typography sx={{ fontSize: 13.5, color: "#b91c1c" }}>
@@ -188,7 +209,16 @@ const CategoryContainer: React.FC = () => {
           size="small"
           startIcon={<RefreshRoundedIcon />}
           onClick={() => dispatch(categoryRequest())}
-          sx={{ mt: 1, textTransform: "none", fontWeight: 600 }}
+          sx={{
+            mt: 1,
+            textTransform: "none",
+            fontWeight: 600,
+            borderRadius: "8px",
+            bgcolor: "#fff",
+            border: "1px solid #fecaca",
+            color: "#dc2626",
+            "&:hover": { bgcolor: "#fef2f2" }
+          }}
         >
           Try again
         </Button>
@@ -197,7 +227,17 @@ const CategoryContainer: React.FC = () => {
   }
 
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
+    <Box
+      sx={{
+        borderRadius: "18px",
+        background: "linear-gradient(180deg, #fdfdff 0%, #f6f7fb 100%)",
+        border: "1px solid #eef0f3",
+        p: { xs: 2, sm: 3 },
+        display: "flex",
+        flexDirection: "column",
+        gap: 2.5
+      }}
+    >
       {/* PAGE HEADER */}
       <Box
         sx={{
@@ -219,14 +259,18 @@ const CategoryContainer: React.FC = () => {
 
         <Button
           variant="contained"
+          onClick={() => navigate("/admin/category/create")}
           startIcon={<AddRoundedIcon />}
           sx={{
             textTransform: "none",
             fontWeight: 600,
             borderRadius: "10px",
-            bgcolor: "#6366F1",
-            boxShadow: "none",
-            "&:hover": { bgcolor: "#4f46e5", boxShadow: "none" }
+            background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
+            boxShadow: "0 6px 16px rgba(99,102,241,0.3)",
+            "&:hover": {
+              background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+              boxShadow: "0 6px 16px rgba(99,102,241,0.4)"
+            }
           }}
         >
           Add category
@@ -267,6 +311,7 @@ const CategoryContainer: React.FC = () => {
             border: "1px solid #eef0f3",
             borderRadius: "14px",
             p: 2,
+            bgcolor: "#fff",
             display: "flex",
             flexDirection: "column",
             gap: 1.25
@@ -297,15 +342,24 @@ const CategoryContainer: React.FC = () => {
 
       {/* PAGINATION */}
       {!loading && totalItems > 0 && (
-        <Pagination
-          page={page}
-          pageCount={pageCount}
-          totalItems={totalItems}
-          pageSize={pageSize}
-          onPageChange={setPage}
-          onPageSizeChange={handlePageSizeChange}
-          pageSizeOptions={[5, 10, 20, 50]}
-        />
+        <Box
+          sx={{
+            bgcolor: "#fff",
+            borderRadius: "12px",
+            border: "1px solid #eef0f3",
+            px: 1
+          }}
+        >
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            totalItems={totalItems}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            onPageSizeChange={handlePageSizeChange}
+            pageSizeOptions={[5, 10, 20, 50]}
+          />
+        </Box>
       )}
     </Box>
   );
