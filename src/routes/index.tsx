@@ -4,6 +4,7 @@ import { privateRoutes } from "./PrivateRoutes";
 import PrivateRoute from "./PrivateRoute";
 
 export default function AppRoutes() {
+  console.log(privateRoutes);
   return (
     <BrowserRouter>
       <Routes>

@@ -1,15 +1,16 @@
-import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { loginRequest } from "../authSlice";
 import LoginForm from "../components/LoginForm";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
+import React from "react";
+import { UserRole } from "../authApi";
 
 export default function LoginContainer() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const { loading, error, isAuthenticated } = useAppSelector(
+  const { user, loading, error, isAuthenticated } = useAppSelector(
     (state) => state.auth
   );
   console.log(isAuthenticated);
@@ -18,11 +19,15 @@ export default function LoginContainer() {
   };
 
   // ✅ CHUYỂN TRANG Ở ĐÂY
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate("/");
+  React.useEffect(() => {
+    if (isAuthenticated && user) {
+      if (user.role === UserRole.ADMIN) {
+        navigate("/admin/dashboard");
+      } else {
+        navigate("/");
+      }
     }
-  }, [isAuthenticated, navigate]);
+  }, [isAuthenticated, user, navigate]);
 
   return <LoginForm onSubmit={handleLogin} loading={loading} error={error} />;
 }
