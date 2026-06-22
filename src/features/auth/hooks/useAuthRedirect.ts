@@ -18,19 +18,28 @@ export function useAuthRedirect({
   const router = useNavigate();
 
   React.useEffect(() => {
-    // ❌ Chưa đăng nhập → về login
+    console.log("🚀 useAuthRedirect RUN");
+
+    console.log("isLoggedIn =", isLoggedIn);
+    console.log("role =", role);
+    console.log("redirectIfNotLoggedIn =", redirectIfNotLoggedIn);
+
     if (!isLoggedIn) {
+      console.log("➡ redirect login");
       router(redirectIfNotLoggedIn);
       return;
     }
 
-    // ⛔ Đã login nhưng CHƯA có role → CHỜ
-    if (!role) return;
+    if (!role) {
+      console.log("⏳ waiting role...");
+      return;
+    }
 
-    // ✅ Có role → redirect đúng
     if (role === UserRole.ADMIN) {
+      console.log("🔥 GO ADMIN");
       router("/admin");
     } else {
+      console.log("🏠 GO HOME");
       router("/");
     }
   }, [isLoggedIn, role, redirectIfNotLoggedIn, router]);

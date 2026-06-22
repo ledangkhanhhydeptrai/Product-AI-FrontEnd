@@ -1,8 +1,13 @@
-import DashboardPage from "../../pages/dashboard/DashboardPage";
+import DashboardPageAdmin from "../../admin/dashboard/dashboard";
+import { AdminLayout } from "../../admin/layouts/AdminLayout";
 
 export const dashboardRoutes = [
   {
-    path: "/dashboard",
-    element: <DashboardPage />
+    path: "/admin/dashboard",
+    element: (
+      <AdminLayout>
+        <DashboardPageAdmin />
+      </AdminLayout>
+    )
   }
 ];
