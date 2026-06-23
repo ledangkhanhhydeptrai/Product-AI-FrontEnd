@@ -23,3 +23,9 @@ export interface CreateCategoryPropsChildren {
   setSlug: (v: string) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
 }
+export interface UpdateCategoryProps extends CreateCategoryProps {
+  id: string;
+}
+export type Props = {
+  selectedCategory: CategoryProps | null;
+};

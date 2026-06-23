@@ -70,3 +70,29 @@ export const createCategory = async ({
     throw errors;
   }
 };
+export const updateCategoryById = async (
+  id: string,
+  { name, description, slug }: CreateCategoryProps
+): Promise<ApiResponse<CategoryProps>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<CategoryProps>>(
+      `/category/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        data: {
+          name,
+          description,
+          slug
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    console.log("Error:", errors);
+    throw errors;
+  }
+};

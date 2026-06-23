@@ -3,23 +3,27 @@ import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import {
   categoryRequest,
-  createCategoryRequest
+  updateCategoryRequest
 } from "../../../features/categories/categorySlice";
-import CategoryForm from "../components/categoryForm";
 import { NotificationProps } from "../../../types/notification";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Alert, Snackbar } from "@mui/material";
+import UpdateCategoryForm from "../components/updateCategoryForm";
+import { Props } from "../../../features/categories/categoryTypes";
 
-const CreateCategoryContainer: React.FC = () => {
+const UpdateCategoryContainer: React.FC<Props> = ({ selectedCategory }) => {
   const dispatch = useAppDispatch();
   const location = useLocation();
   const { loading, error } = useAppSelector(
     (state) => state.category
   );
+  const hasInit = React.useRef(false);
+
   const notification =
     location.state && "notification" in location.state
       ? location.state.notification
       : null;
+
   // ================= STATE =================
   const [name, setName] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
@@ -29,41 +33,50 @@ const CreateCategoryContainer: React.FC = () => {
     React.useState<NotificationProps | null>(notification);
   const [openSnackbar, setOpenSnackbar] = React.useState(Boolean(notification));
   React.useEffect(() => {
+    // 1. fetch data
     dispatch(categoryRequest());
-  }, [dispatch]);
-  React.useEffect(() => {
+
+    // 2. sync notification -> navigate
     if (notification) {
       navigate(location.pathname, {
         replace: true,
         state: null
       });
     }
-  }, [notification, navigate, location.pathname]);
-  
+
+    // 3. sync form data
+    if (!selectedCategory || hasInit.current) return;
+
+    setName(selectedCategory.name || "");
+    setDescription(selectedCategory.description || "");
+    setSlug(selectedCategory.slug || "");
+
+    hasInit.current = true;
+  }, [dispatch, notification, navigate, location.pathname, selectedCategory]);
   // ================= SUBMIT =================
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
+    if (!selectedCategory) return null;
     dispatch(
-      createCategoryRequest({
-        name,
-        description,
-        slug,
+      updateCategoryRequest({
+        id: selectedCategory.id,
+        name: selectedCategory.name,
+        description: selectedCategory.description,
+        slug: selectedCategory.slug,
         meta: {
           onSuccess: () => {
             setNotificationData({
               open: true,
-              message: "Tạo category thành công",
+              message: "Cập nhật category thành công",
               severity: "success"
             });
 
             setOpenSnackbar(true);
-            navigate("/admin/category");
           },
           onError: () => {
             setNotificationData({
               open: true,
-              message: "Tạo category thất bại",
+              message: "Cập nhật category thất bại",
               severity: "error"
             });
 
@@ -89,7 +102,7 @@ const CreateCategoryContainer: React.FC = () => {
         )}
 
         {/* FORM */}
-        <CategoryForm
+        <UpdateCategoryForm
           name={name}
           setName={setName}
           description={description}
@@ -135,4 +148,4 @@ const CreateCategoryContainer: React.FC = () => {
   );
 };
 
-export default CreateCategoryContainer;
+export default UpdateCategoryContainer;
