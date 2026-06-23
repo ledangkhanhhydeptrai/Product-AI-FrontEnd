@@ -22,10 +22,15 @@ export interface CreateCategoryPropsChildren {
   slug: string;
   setSlug: (v: string) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onClose: () => void;
 }
 export interface UpdateCategoryProps extends CreateCategoryProps {
   id: string;
 }
 export type Props = {
   selectedCategory: CategoryProps | null;
+  onClose: () => void;
 };
+export type CloseProps={
+  onClose: () => void;
+}

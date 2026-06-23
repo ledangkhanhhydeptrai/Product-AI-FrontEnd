@@ -1,4 +1,3 @@
-import { useNavigate } from "react-router-dom";
 import { CreateCategoryPropsChildren } from "../../../features/categories/categoryTypes";
 
 export default function CategoryForm({
@@ -8,9 +7,9 @@ export default function CategoryForm({
   setDescription,
   slug,
   setSlug,
-  onSubmit
+  onSubmit,
+  onClose
 }: CreateCategoryPropsChildren) {
-  const navigate = useNavigate();
   const handleAutoSlug = () => {
     if (!slug && name) {
       setSlug(
@@ -147,7 +146,7 @@ export default function CategoryForm({
       <div className="flex justify-end gap-3 px-6 py-4 bg-slate-50/60 border-t border-slate-100">
         <button
           type="button"
-          onClick={() => navigate(-1)}
+          onClick={onClose}
           className="px-4 h-10 rounded-lg border border-slate-200 text-sm font-medium text-slate-600 bg-white transition hover:bg-slate-50"
         >
           Cancel

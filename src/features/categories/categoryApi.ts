@@ -96,3 +96,21 @@ export const updateCategoryById = async (
     throw errors;
   }
 };
+export const deleteCategoryById = async (id: string) => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<CategoryProps>>(
+      `/category/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    console.log("Error:", errors);
+    throw errors;
+  }
+};

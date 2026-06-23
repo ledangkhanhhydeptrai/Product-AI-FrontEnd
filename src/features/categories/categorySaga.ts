@@ -7,6 +7,7 @@ import {
 } from "./categoryTypes";
 import {
   createCategory,
+  deleteCategoryById,
   getAllCategory,
   getCategoryById,
   updateCategoryById
@@ -21,12 +22,16 @@ import {
   createCategoryFailure,
   createCategoryRequest,
   createCategorySuccess,
+  deleteCategoryFailure,
+  deleteCategoryRequest,
+  deleteCategorySuccess,
   updateCategoryFailure,
   updateCategoryRequest,
   updateCategorySuccess
 } from "./categorySlice";
 import { AxiosError } from "axios";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { showNotification } from "../notification/notificationSlice";
 
 function* handleGetAllCategory(): Generator {
   try {
@@ -103,9 +108,35 @@ function* handleUpdateCategory(
     }
   }
 }
+function* handleDeleteCategory(action: PayloadAction<string>) {
+  try {
+    const response: ApiResponse<CategoryProps> = yield call(
+      deleteCategoryById,
+      action.payload
+    );
+    yield put(deleteCategorySuccess(response.data));
+    yield put(
+      showNotification({
+        message: "Xóa category thành công",
+        severity: "success"
+      })
+    );
+    yield put(categoryRequest());
+  } catch (error) {
+    const errors = error as AxiosError;
+    yield put(deleteCategoryFailure(errors.message));
+    yield put(
+      showNotification({
+        message: "Xóa category thất bại",
+        severity: "error"
+      })
+    );
+  }
+}
 export default function* categorySaga() {
   yield takeLatest(categoryRequest.type, handleGetAllCategory);
   yield takeLatest(categoryDetailRequest.type, handleGetCategoryDetail);
   yield takeLatest(createCategoryRequest.type, handleCreateCategory);
   yield takeLatest(updateCategoryRequest.type, handleUpdateCategory);
+  yield takeLatest(deleteCategoryRequest.type, handleDeleteCategory);
 }
