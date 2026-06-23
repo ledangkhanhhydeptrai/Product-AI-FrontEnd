@@ -34,7 +34,7 @@ const CategoriesRoutes = [
     path: "/admin/category/create",
     element: (
       <AdminLayout>
-        <CreateCategoryContainer />
+        <CreateCategoryContainer onClose={() => {}} />
       </AdminLayout>
     )
   }
