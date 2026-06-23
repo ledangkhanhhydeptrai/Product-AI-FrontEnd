@@ -19,6 +19,7 @@ import ReviewsRoundedIcon from "@mui/icons-material/ReviewsRounded";
 import SettingsRoundedIcon from "@mui/icons-material/SettingsRounded";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import BoltRoundedIcon from "@mui/icons-material/BoltRounded";
+import BusinessRoundedIcon from "@mui/icons-material/BusinessRounded";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const menuItems = [
@@ -31,6 +32,7 @@ const menuItems = [
   },
   { title: "Products", icon: <Inventory2RoundedIcon />, path: "/products" },
   { title: "Categories", icon: <CategoryRoundedIcon />, path: "/admin/category" },
+  { title: "Brands", icon: <BusinessRoundedIcon />, path: "/admin/brand" },
   { title: "Users", icon: <PeopleAltRoundedIcon />, path: "/users" },
   {
     title: "Reviews",

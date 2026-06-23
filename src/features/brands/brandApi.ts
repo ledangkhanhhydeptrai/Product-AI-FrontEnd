@@ -47,3 +47,6 @@ export const getBrandById = async (
     throw errors;
   }
 };
+export const CreateBrand = async()=>{
+  
+}
