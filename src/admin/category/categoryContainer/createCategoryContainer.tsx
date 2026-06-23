@@ -9,13 +9,13 @@ import CategoryForm from "../components/categoryForm";
 import { NotificationProps } from "../../../types/notification";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Alert, Snackbar } from "@mui/material";
+import { CloseProps } from "../../../features/categories/categoryTypes";
 
-const CreateCategoryContainer: React.FC = () => {
+const CreateCategoryContainer: React.FC<CloseProps> = ({ onClose }) => {
   const dispatch = useAppDispatch();
   const location = useLocation();
-  const { loading, error } = useAppSelector(
-    (state) => state.category
-  );
+  const { loading, error } = useAppSelector((state) => state.category);
+
   const notification =
     location.state && "notification" in location.state
       ? location.state.notification
@@ -30,16 +30,17 @@ const CreateCategoryContainer: React.FC = () => {
   const [openSnackbar, setOpenSnackbar] = React.useState(Boolean(notification));
   React.useEffect(() => {
     dispatch(categoryRequest());
-  }, [dispatch]);
-  React.useEffect(() => {
+
     if (notification) {
       navigate(location.pathname, {
         replace: true,
         state: null
       });
     }
-  }, [notification, navigate, location.pathname]);
-  
+  }, [dispatch, notification, navigate, location.pathname]);
+  const handleClose = () => {
+    onClose();
+  };
   // ================= SUBMIT =================
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -97,6 +98,7 @@ const CreateCategoryContainer: React.FC = () => {
           slug={slug}
           setSlug={setSlug}
           onSubmit={handleSubmit}
+          onClose={handleClose}
         />
 
         {/* LOADING */}

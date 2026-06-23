@@ -1,7 +1,10 @@
 import React from "react";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
-import { categoryRequest } from "../../../features/categories/categorySlice";
+import {
+  categoryRequest,
+  deleteCategoryRequest
+} from "../../../features/categories/categorySlice";
 import DataTable, { Column } from "../../../components/Table";
 import Pagination from "../../../components/Pagination";
 import { CategoryProps } from "../../../features/categories/categoryTypes";
@@ -15,9 +18,7 @@ import {
   Chip,
   Skeleton,
   IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent
+  Dialog
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
@@ -25,20 +26,19 @@ import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import { useNavigate } from "react-router-dom";
 import UpdateCategoryContainer from "./updateCategoryContainer";
+import CreateCategoryContainer from "./createCategoryContainer";
 
 const CategoryContainer: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { data, loading, error } = useAppSelector(
-    (state) => state.category
-  );
-  const navigate = useNavigate();
+  const { data, loading, error } = useAppSelector((state) => state.category);
   // ================= LOCAL STATE =================
   const [page, setPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(4);
   const [search, setSearch] = React.useState<string>("");
   const [openUpdate, setOpenUpdate] = React.useState<boolean>(false);
+  const [openUpdateCreate, setOpenUpdateCreate] =
+    React.useState<boolean>(false);
   const [selectedCategory, setSelectedCategory] =
     React.useState<CategoryProps | null>(null);
   // ================= FETCH DATA =================
@@ -54,7 +54,11 @@ const CategoryContainer: React.FC = () => {
       item.name.toLowerCase().includes(search.toLowerCase()) ||
       item.slug.toLowerCase().includes(search.toLowerCase())
   );
-
+  const handleDelete = (id: string) => {
+    if (!window.confirm("Are you sure you want to delete this category?"))
+      return;
+    dispatch(deleteCategoryRequest(id));
+  };
   // ================= PAGINATION =================
   const totalItems = filteredData.length;
   const pageCount = Math.max(1, Math.ceil(totalItems / pageSize));
@@ -163,6 +167,7 @@ const CategoryContainer: React.FC = () => {
             <EditRoundedIcon fontSize="small" />
           </IconButton>
           <IconButton
+            onClick={() => handleDelete(row.id)}
             size="small"
             sx={{
               color: "#64748b",
@@ -270,7 +275,7 @@ const CategoryContainer: React.FC = () => {
 
           <Button
             variant="contained"
-            onClick={() => navigate("/admin/category/create")}
+            onClick={() => setOpenUpdateCreate(true)}
             startIcon={<AddRoundedIcon />}
             sx={{
               textTransform: "none",
@@ -375,17 +380,32 @@ const CategoryContainer: React.FC = () => {
       </Box>
       <Dialog
         open={openUpdate}
-        onClose={() => setOpenUpdate(false)}
-        maxWidth="sm"
+        onClose={() => {
+          setOpenUpdate(false);
+          setSelectedCategory(null);
+        }}
         fullWidth
+        maxWidth="sm"
       >
-        <DialogTitle>Update Category</DialogTitle>
-
-        <DialogContent>
-          {selectedCategory && (
-            <UpdateCategoryContainer selectedCategory={selectedCategory} />
-          )}
-        </DialogContent>
+        {selectedCategory && (
+          <UpdateCategoryContainer
+            selectedCategory={selectedCategory}
+            onClose={() => {
+              setOpenUpdate(false);
+              setSelectedCategory(null);
+            }}
+          />
+        )}
+      </Dialog>
+      <Dialog
+        open={openUpdateCreate}
+        onClose={() => {
+          setOpenUpdateCreate(false);
+        }}
+        fullWidth
+        maxWidth="sm"
+      >
+        <CreateCategoryContainer onClose={() => setOpenUpdateCreate(false)} />
       </Dialog>
     </>
   );
