@@ -14,7 +14,10 @@ import {
   InputBase,
   Chip,
   Skeleton,
-  IconButton
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
@@ -23,16 +26,21 @@ import ErrorOutlineRoundedIcon from "@mui/icons-material/ErrorOutlineRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { useNavigate } from "react-router-dom";
+import UpdateCategoryContainer from "./updateCategoryContainer";
 
 const CategoryContainer: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { data, loading, error } = useAppSelector((state) => state.category);
+  const { data, loading, error } = useAppSelector(
+    (state) => state.category
+  );
   const navigate = useNavigate();
   // ================= LOCAL STATE =================
-  const [page, setPage] = React.useState(1);
-  const [pageSize, setPageSize] = React.useState(4);
-  const [search, setSearch] = React.useState("");
-
+  const [page, setPage] = React.useState<number>(1);
+  const [pageSize, setPageSize] = React.useState<number>(4);
+  const [search, setSearch] = React.useState<string>("");
+  const [openUpdate, setOpenUpdate] = React.useState<boolean>(false);
+  const [selectedCategory, setSelectedCategory] =
+    React.useState<CategoryProps | null>(null);
   // ================= FETCH DATA =================
   React.useEffect(() => {
     dispatch(categoryRequest());
@@ -143,14 +151,13 @@ const CategoryContainer: React.FC = () => {
       label: "",
       align: "right",
       width: 90,
-      render: () => (
+      render: (row) => (
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 0.5 }}>
           <IconButton
             size="small"
-            sx={{
-              color: "#64748b",
-              bgcolor: "#f8f9fb",
-              "&:hover": { color: "#6366F1", bgcolor: "#eef0ff" }
+            onClick={() => {
+              setSelectedCategory(row);
+              setOpenUpdate(true);
             }}
           >
             <EditRoundedIcon fontSize="small" />
@@ -227,141 +234,160 @@ const CategoryContainer: React.FC = () => {
   }
 
   return (
-    <Box
-      sx={{
-        borderRadius: "18px",
-        background: "linear-gradient(180deg, #fdfdff 0%, #f6f7fb 100%)",
-        border: "1px solid #eef0f3",
-        p: { xs: 2, sm: 3 },
-        display: "flex",
-        flexDirection: "column",
-        gap: 2.5
-      }}
-    >
-      {/* PAGE HEADER */}
+    <>
       <Box
         sx={{
+          borderRadius: "18px",
+          background: "linear-gradient(180deg, #fdfdff 0%, #f6f7fb 100%)",
+          border: "1px solid #eef0f3",
+          p: { xs: 2, sm: 3 },
           display: "flex",
-          alignItems: { xs: "flex-start", sm: "center" },
-          justifyContent: "space-between",
-          flexDirection: { xs: "column", sm: "row" },
-          gap: 1.5
+          flexDirection: "column",
+          gap: 2.5
         }}
       >
-        <Box>
-          <Typography sx={{ fontSize: 20, fontWeight: 700, color: "#0f172a" }}>
-            Categories
-          </Typography>
-          <Typography sx={{ fontSize: 13.5, color: "#64748b", mt: 0.25 }}>
-            {totalItems} {totalItems === 1 ? "category" : "categories"} in total
-          </Typography>
+        {/* PAGE HEADER */}
+        <Box
+          sx={{
+            display: "flex",
+            alignItems: { xs: "flex-start", sm: "center" },
+            justifyContent: "space-between",
+            flexDirection: { xs: "column", sm: "row" },
+            gap: 1.5
+          }}
+        >
+          <Box>
+            <Typography
+              sx={{ fontSize: 20, fontWeight: 700, color: "#0f172a" }}
+            >
+              Categories
+            </Typography>
+            <Typography sx={{ fontSize: 13.5, color: "#64748b", mt: 0.25 }}>
+              {totalItems} {totalItems === 1 ? "category" : "categories"} in
+              total
+            </Typography>
+          </Box>
+
+          <Button
+            variant="contained"
+            onClick={() => navigate("/admin/category/create")}
+            startIcon={<AddRoundedIcon />}
+            sx={{
+              textTransform: "none",
+              fontWeight: 600,
+              borderRadius: "10px",
+              background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
+              boxShadow: "0 6px 16px rgba(99,102,241,0.3)",
+              "&:hover": {
+                background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+                boxShadow: "0 6px 16px rgba(99,102,241,0.4)"
+              }
+            }}
+          >
+            Add category
+          </Button>
         </Box>
 
-        <Button
-          variant="contained"
-          onClick={() => navigate("/admin/category/create")}
-          startIcon={<AddRoundedIcon />}
+        {/* TOOLBAR */}
+        <Box
           sx={{
-            textTransform: "none",
-            fontWeight: 600,
+            display: "flex",
+            alignItems: "center",
+            gap: 1.25,
+            height: 42,
+            px: 1.75,
+            width: { xs: "100%", sm: 320 },
             borderRadius: "10px",
-            background: "linear-gradient(135deg, #6366F1, #8B5CF6)",
-            boxShadow: "0 6px 16px rgba(99,102,241,0.3)",
-            "&:hover": {
-              background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
-              boxShadow: "0 6px 16px rgba(99,102,241,0.4)"
+            bgcolor: "#fff",
+            border: "1px solid #eef0f3",
+            "&:focus-within": {
+              borderColor: "#6366F1",
+              boxShadow: "0 0 0 3px rgba(99,102,241,0.12)"
             }
           }}
         >
-          Add category
-        </Button>
-      </Box>
-
-      {/* TOOLBAR */}
-      <Box
-        sx={{
-          display: "flex",
-          alignItems: "center",
-          gap: 1.25,
-          height: 42,
-          px: 1.75,
-          width: { xs: "100%", sm: 320 },
-          borderRadius: "10px",
-          bgcolor: "#fff",
-          border: "1px solid #eef0f3",
-          "&:focus-within": {
-            borderColor: "#6366F1",
-            boxShadow: "0 0 0 3px rgba(99,102,241,0.12)"
-          }
-        }}
-      >
-        <SearchRoundedIcon sx={{ fontSize: 19, color: "#94a3b8" }} />
-        <InputBase
-          placeholder="Search by name or slug..."
-          value={search}
-          onChange={(e) => handleSearchChange(e.target.value)}
-          sx={{ flex: 1, fontSize: 14 }}
-        />
-      </Box>
-
-      {/* TABLE */}
-      {loading ? (
-        <Box
-          sx={{
-            border: "1px solid #eef0f3",
-            borderRadius: "14px",
-            p: 2,
-            bgcolor: "#fff",
-            display: "flex",
-            flexDirection: "column",
-            gap: 1.25
-          }}
-        >
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Skeleton
-              key={i}
-              variant="rounded"
-              height={44}
-              sx={{ borderRadius: "8px" }}
-            />
-          ))}
-        </Box>
-      ) : (
-        <DataTable
-          columns={columns}
-          rows={paginatedData}
-          rowKey={(row) => row.id}
-          emptyText="No categories found"
-          emptyHint={
-            search
-              ? "Try a different search term."
-              : "Create your first category to get started."
-          }
-        />
-      )}
-
-      {/* PAGINATION */}
-      {!loading && totalItems > 0 && (
-        <Box
-          sx={{
-            bgcolor: "#fff",
-            borderRadius: "12px",
-            border: "1px solid #eef0f3",
-            px: 1
-          }}
-        >
-          <Pagination
-            page={page}
-            pageCount={pageCount}
-            totalItems={totalItems}
-            pageSize={pageSize}
-            onPageChange={setPage}
-            onPageSizeChange={handlePageSizeChange}
-            pageSizeOptions={[5, 10, 20, 50]}
+          <SearchRoundedIcon sx={{ fontSize: 19, color: "#94a3b8" }} />
+          <InputBase
+            placeholder="Search by name or slug..."
+            value={search}
+            onChange={(e) => handleSearchChange(e.target.value)}
+            sx={{ flex: 1, fontSize: 14 }}
           />
         </Box>
-      )}
-    </Box>
+
+        {/* TABLE */}
+        {loading ? (
+          <Box
+            sx={{
+              border: "1px solid #eef0f3",
+              borderRadius: "14px",
+              p: 2,
+              bgcolor: "#fff",
+              display: "flex",
+              flexDirection: "column",
+              gap: 1.25
+            }}
+          >
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Skeleton
+                key={i}
+                variant="rounded"
+                height={44}
+                sx={{ borderRadius: "8px" }}
+              />
+            ))}
+          </Box>
+        ) : (
+          <DataTable
+            columns={columns}
+            rows={paginatedData}
+            rowKey={(row) => row.id}
+            emptyText="No categories found"
+            emptyHint={
+              search
+                ? "Try a different search term."
+                : "Create your first category to get started."
+            }
+          />
+        )}
+
+        {/* PAGINATION */}
+        {!loading && totalItems > 0 && (
+          <Box
+            sx={{
+              bgcolor: "#fff",
+              borderRadius: "12px",
+              border: "1px solid #eef0f3",
+              px: 1
+            }}
+          >
+            <Pagination
+              page={page}
+              pageCount={pageCount}
+              totalItems={totalItems}
+              pageSize={pageSize}
+              onPageChange={setPage}
+              onPageSizeChange={handlePageSizeChange}
+              pageSizeOptions={[5, 10, 20, 50]}
+            />
+          </Box>
+        )}
+      </Box>
+      <Dialog
+        open={openUpdate}
+        onClose={() => setOpenUpdate(false)}
+        maxWidth="sm"
+        fullWidth
+      >
+        <DialogTitle>Update Category</DialogTitle>
+
+        <DialogContent>
+          {selectedCategory && (
+            <UpdateCategoryContainer selectedCategory={selectedCategory} />
+          )}
+        </DialogContent>
+      </Dialog>
+    </>
   );
 };
 
