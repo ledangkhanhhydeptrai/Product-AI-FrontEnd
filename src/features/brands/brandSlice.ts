@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { BrandProps } from "./brandApi";
+import { BrandProps, CreateBrandsProps, UpdateBrandId } from "./brandTypes";
 
 interface BrandState {
   loading: boolean;
@@ -42,6 +42,32 @@ const BrandSlice = createSlice({
     getBrandIdFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    createBrandRequest(state, _action: PayloadAction<CreateBrandsProps>) {
+      state.loading = true;
+      state.error = null;
+    },
+    createBrandSuccess(state, action: PayloadAction<BrandProps>) {
+      state.loading = false;
+      state.error = null;
+      state.brands = action.payload;
+    },
+    createBrandFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    updateBrandRequest(state, _action: PayloadAction<UpdateBrandId>) {
+      state.loading = true;
+      state.error = null;
+    },
+    updateBrandSuccess(state, action: PayloadAction<BrandProps>) {
+      state.loading = false;
+      state.error = null;
+      state.brands = action.payload;
+    },
+    updateBrandFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -51,6 +77,12 @@ export const {
   getBrandFailure,
   getBrandIdRequest,
   getBrandIdSuccess,
-  getBrandIdFailure
+  getBrandIdFailure,
+  createBrandRequest,
+  createBrandFailure,
+  createBrandSuccess,
+  updateBrandRequest,
+  updateBrandSuccess,
+  updateBrandFailure
 } = BrandSlice.actions;
 export default BrandSlice.reducer;

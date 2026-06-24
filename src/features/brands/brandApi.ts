@@ -1,12 +1,8 @@
 import { AxiosError } from "axios";
 import { fetchBaseResponse } from "../../config/fetchBaseResponse";
 import { ApiResponse } from "../../types/api";
-export interface BrandProps {
-  id: string;
-  name: string;
-  logo: string;
-  description: string;
-}
+import { BrandProps, CreateBrandsProps } from "./brandTypes";
+
 export const getAllBrand = async (): Promise<ApiResponse<BrandProps>> => {
   try {
     const response = await fetchBaseResponse<ApiResponse<BrandProps>>(
@@ -47,6 +43,56 @@ export const getBrandById = async (
     throw errors;
   }
 };
-export const CreateBrand = async()=>{
-  
-}
+export const CreateBrand = async (
+  request: CreateBrandsProps
+): Promise<ApiResponse<BrandProps>> => {
+  const formData = new FormData();
+  formData.append("name", request.name);
+  formData.append("description", request.description);
+  if (request.file) {
+    formData.append("file", request.file);
+  }
+  try {
+    const response = await fetchBaseResponse<ApiResponse<BrandProps>>(
+      "/create-brands",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        data: formData
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    throw errors;
+  }
+};
+export const updateBrandById = async (
+  id: string,
+  request: CreateBrandsProps
+): Promise<ApiResponse<BrandProps>> => {
+  const formData = new FormData();
+  formData.append("name", request.name);
+  formData.append("description", request.description);
+  if (request.file) {
+    formData.append("file", request.file);
+  }
+  try {
+    const response = await fetchBaseResponse<ApiResponse<BrandProps>>(
+      `/brand/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "multipart/form-data"
+        },
+        data: formData
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    throw errors;
+  }
+};
