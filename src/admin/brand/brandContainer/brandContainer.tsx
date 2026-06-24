@@ -16,7 +16,6 @@ import {
   IconButton,
   Tooltip,
   Dialog,
-  DialogTitle,
   DialogContent
 } from "@mui/material";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
@@ -377,22 +376,33 @@ const BrandContainer: React.FC = () => {
         onClose={() => setOpenCreate(false)}
         fullWidth
         maxWidth="sm"
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: 4,
+              overflow: "hidden",
+              boxShadow: "0 8px 40px rgba(20, 20, 43, 0.18)"
+            }
+          }
+        }}
       >
-        <DialogTitle
+        <IconButton
+          onClick={() => setOpenCreate(false)}
           sx={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center"
+            position: "absolute",
+            top: 12,
+            right: 12,
+            zIndex: 10,
+            color: "#333",
+            bgcolor: "rgba(255,255,255,0.15)",
+            "&:hover": { bgcolor: "rgba(255,255,255,0.28)" }
           }}
+          size="small"
         >
-          Create Brand
-          <IconButton onClick={() => setOpenCreate(false)}>
-            <CloseRoundedIcon />
-          </IconButton>
-        </DialogTitle>
+          <CloseRoundedIcon sx={{ fontSize: 20 }} />
+        </IconButton>
 
-        <DialogContent>
-          {/* 👉 GẮN FORM CỦA BẠN VÀO ĐÂY */}
+        <DialogContent sx={{ p: 0 }}>
           <CreateBrandContainer onClose={() => setOpenCreate(false)} />
         </DialogContent>
       </Dialog>
