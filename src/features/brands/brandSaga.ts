@@ -1,15 +1,28 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import { ApiResponse } from "../../types/api";
-import { BrandProps, getAllBrand, getBrandById } from "./brandApi";
 import {
+  CreateBrand,
+  getAllBrand,
+  getBrandById,
+  updateBrandById
+} from "./brandApi";
+import {
+  createBrandFailure,
+  createBrandRequest,
+  createBrandSuccess,
   getBrandFailure,
   getBrandIdRequest,
   getBrandIdSuccess,
   getBrandRequest,
-  getBrandSuccess
+  getBrandSuccess,
+  updateBrandFailure,
+  updateBrandRequest,
+  updateBrandSuccess
 } from "./brandSlice";
 import { AxiosError } from "axios";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { BrandProps, CreateBrandsProps, UpdateBrandId } from "./brandTypes";
+import { showNotification } from "../notification/notificationSlice";
 
 function* handleGetAllBrand(): Generator {
   try {
@@ -32,7 +45,61 @@ function* handleGetBrandById(action: PayloadAction<string>): Generator {
     yield put(getBrandFailure(errors.message));
   }
 }
+function* handleCreateBrand(
+  action: PayloadAction<CreateBrandsProps>
+): Generator {
+  try {
+    const { name, description, file, meta } = action.payload;
+    const response: ApiResponse<BrandProps> = yield call(CreateBrand, {
+      name,
+      description,
+      file,
+      meta
+    });
+    yield put(createBrandSuccess(response.data));
+    yield put(
+      showNotification({
+        message: "Tạo brand thành công",
+        severity: "success"
+      })
+    );
+    if (meta.onSuccess) {
+      meta.onSuccess();
+    }
+    yield put(getBrandRequest());
+  } catch (error) {
+    const errors = error as AxiosError;
+    yield put(createBrandFailure(errors.message));
+  }
+}
+function* handleUpdateBrand(action: PayloadAction<UpdateBrandId>): Generator {
+  try {
+    const { id, name, description, file, meta } = action.payload;
+    const response: ApiResponse<BrandProps> = yield call(updateBrandById, id, {
+      name,
+      description,
+      file,
+      meta
+    });
+    yield put(updateBrandSuccess(response.data));
+    yield put(
+      showNotification({
+        message: "Cập nhật brand thành công",
+        severity: "success"
+      })
+    );
+    if (meta.onSuccess) {
+      meta.onSuccess();
+    }
+    yield put(getBrandRequest());
+  } catch (error) {
+    const errors = error as AxiosError;
+    yield put(updateBrandFailure(errors.message));
+  }
+}
 export default function* brandSaga() {
   yield takeLatest(getBrandRequest.type, handleGetAllBrand);
   yield takeLatest(getBrandIdRequest.type, handleGetBrandById);
+  yield takeLatest(createBrandRequest.type, handleCreateBrand);
+  yield takeLatest(updateBrandRequest.type, handleUpdateBrand);
 }

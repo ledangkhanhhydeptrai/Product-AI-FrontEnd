@@ -1,9 +1,6 @@
-import {
-  AxiosError,
-  type AxiosRequestConfig,
-  type AxiosResponse
-} from "axios";
+import { AxiosError, type AxiosRequestConfig, type AxiosResponse } from "axios";
 import axiosClient from "../services/axiosClient";
+import { HTTP_ERROR_MESSAGES } from "./HTTP_ERROR_MESSAGE";
 
 axiosClient.interceptors.request.use(
   (config) => {
@@ -62,16 +59,16 @@ export async function fetchBaseResponse<T = unknown>(
   } catch (error) {
     const errors = error as AxiosError<BaseResponse<T>>;
     console.log("FAILED URL:", url);
-    console.log("FAILED STATUS:", errors.response?.status);
-    console.log("FAILED DATA:", errors.response?.data);
     if (errors.response) {
+      console.log("FAILED STATUS:", errors.response.status);
+      console.log("FAILED DATA:", errors.response.data);
       const raw = errors.response.data;
       console.log("Axios error response data:", raw);
 
-      return {
+      throw {
         status: raw.status || errors.response.status || 400,
         serverStatus: raw.serverStatus,
-        message: raw.message || "Request failed",
+        message: HTTP_ERROR_MESSAGES[raw.status] || "Request failed",
         data: raw.data,
         success: false
       };

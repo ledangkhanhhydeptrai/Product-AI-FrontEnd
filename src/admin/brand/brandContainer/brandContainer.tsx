@@ -2,12 +2,10 @@ import React from "react";
 import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-import {
-  getBrandRequest,
-} from "../../../features/brands/brandSlice";
+import { getBrandRequest } from "../../../features/brands/brandSlice";
 import DataTable, { Column } from "../../../components/Table";
 import ConfirmDialog from "../../../components/ConfirmDialog";
-
+import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import {
   Box,
   Typography,
@@ -16,16 +14,21 @@ import {
   Button,
   Avatar,
   IconButton,
-  Tooltip
+  Tooltip,
+  Dialog,
+  DialogTitle,
+  DialogContent
 } from "@mui/material";
 import RefreshRoundedIcon from "@mui/icons-material/RefreshRounded";
 import LocalOfferRoundedIcon from "@mui/icons-material/LocalOfferRounded";
 import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
-import { BrandProps } from "../../../features/brands/brandApi";
+import { BrandProps } from "../../../features/brands/brandTypes";
+import CreateBrandContainer from "./createBrandContainer";
 
 const BrandContainer: React.FC = () => {
   const dispatch = useAppDispatch();
+  const [openCreate, setOpenCreate] = React.useState(false);
   const navigate = useNavigate();
   const { data, loading, error } = useAppSelector((state) => state.brand);
   const [brandToDelete, setBrandToDelete] = React.useState<BrandProps | null>(
@@ -301,6 +304,20 @@ const BrandContainer: React.FC = () => {
             />
           </IconButton>
         </Tooltip>
+        <Button
+          variant="contained"
+          onClick={() => setOpenCreate(true)}
+          sx={{
+            textTransform: "none",
+            fontWeight: 600,
+            borderRadius: "10px",
+            px: 2.5,
+            bgcolor: "#6366f1",
+            "&:hover": { bgcolor: "#4f46e5" }
+          }}
+        >
+          + Create Brand
+        </Button>
       </Box>
 
       {/* TABLE */}
@@ -355,6 +372,30 @@ const BrandContainer: React.FC = () => {
         onCancel={() => setBrandToDelete(null)}
         onConfirm={handleConfirmDelete}
       />
+      <Dialog
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
+        fullWidth
+        maxWidth="sm"
+      >
+        <DialogTitle
+          sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center"
+          }}
+        >
+          Create Brand
+          <IconButton onClick={() => setOpenCreate(false)}>
+            <CloseRoundedIcon />
+          </IconButton>
+        </DialogTitle>
+
+        <DialogContent>
+          {/* 👉 GẮN FORM CỦA BẠN VÀO ĐÂY */}
+          <CreateBrandContainer onClose={() => setOpenCreate(false)} />
+        </DialogContent>
+      </Dialog>
     </Box>
   );
 };

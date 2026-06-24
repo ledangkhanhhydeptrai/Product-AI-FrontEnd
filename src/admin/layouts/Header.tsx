@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   AppBar,
   Toolbar,
@@ -20,10 +20,42 @@ import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownR
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import SettingsOutlinedIcon from "@mui/icons-material/SettingsOutlined";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
+import { useAppDispatch } from "../../hooks/useAppDispatch";
+import { logoutRequest } from "../../features/auth/authSlice";
+import { useNavigate } from "react-router-dom";
 
 const Header: React.FC = () => {
-  const [userAnchor, setUserAnchor] = useState<null | HTMLElement>(null);
-  const [notifAnchor, setNotifAnchor] = useState<null | HTMLElement>(null);
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [userAnchor, setUserAnchor] = React.useState<null | HTMLElement>(null);
+  const [notifAnchor, setNotifAnchor] = React.useState<null | HTMLElement>(
+    null
+  );
+
+  // ===== USER MENU =====
+  const handleOpenUserMenu = (e: React.MouseEvent<HTMLElement>) => {
+    setUserAnchor(e.currentTarget);
+  };
+
+  const handleCloseUserMenu = () => {
+    setUserAnchor(null);
+  };
+
+  // ===== NOTIFICATION MENU =====
+  const handleOpenNotifMenu = (e: React.MouseEvent<HTMLElement>) => {
+    setNotifAnchor(e.currentTarget);
+  };
+
+  const handleCloseNotifMenu = () => {
+    setNotifAnchor(null);
+  };
+
+  // ===== LOGOUT =====
+  const handleLogout = () => {
+    dispatch(logoutRequest());
+    handleCloseUserMenu();
+    navigate("/login");
+  };
 
   return (
     <AppBar
@@ -36,7 +68,7 @@ const Header: React.FC = () => {
       }}
     >
       <Toolbar sx={{ justifyContent: "space-between", minHeight: 72, px: 3 }}>
-        {/* Left: search */}
+        {/* SEARCH */}
         <Box
           sx={{
             display: "flex",
@@ -48,7 +80,6 @@ const Header: React.FC = () => {
             borderRadius: "10px",
             bgcolor: "#f4f5f7",
             border: "1px solid transparent",
-            transition: "border-color 0.15s ease, background 0.15s ease",
             "&:hover": { borderColor: "#e2e4e9" },
             "&:focus-within": {
               bgcolor: "#fff",
@@ -62,41 +93,21 @@ const Header: React.FC = () => {
             placeholder="Search orders, products, users..."
             sx={{ flex: 1, fontSize: 14 }}
           />
-          <Box
-            sx={{
-              fontSize: 11,
-              fontWeight: 600,
-              color: "#94a3b8",
-              border: "1px solid #e2e4e9",
-              borderRadius: "5px",
-              px: 0.7,
-              py: 0.1,
-              bgcolor: "#fff"
-            }}
-          >
-            ⌘K
-          </Box>
         </Box>
 
-        {/* Right */}
+        {/* RIGHT */}
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          {/* NOTIFICATION */}
           <IconButton
-            onClick={(e) => setNotifAnchor(e.currentTarget)}
+            onClick={handleOpenNotifMenu}
             sx={{
               bgcolor: "#f4f5f7",
               borderRadius: "10px",
               width: 42,
-              height: 42,
-              "&:hover": { bgcolor: "#eceef1" }
+              height: 42
             }}
           >
-            <Badge
-              badgeContent={4}
-              color="error"
-              sx={{
-                "& .MuiBadge-badge": { fontSize: 10, height: 16, minWidth: 16 }
-              }}
-            >
+            <Badge badgeContent={4} color="error">
               <NotificationsNoneRoundedIcon
                 sx={{ fontSize: 21, color: "#475569" }}
               />
@@ -105,8 +116,8 @@ const Header: React.FC = () => {
 
           <Menu
             anchorEl={notifAnchor}
-            open={!!notifAnchor}
-            onClose={() => setNotifAnchor(null)}
+            open={Boolean(notifAnchor)}
+            onClose={handleCloseNotifMenu}
             slotProps={{
               paper: { sx: { width: 320, mt: 1.5, borderRadius: "12px" } }
             }}
@@ -117,12 +128,13 @@ const Header: React.FC = () => {
               </Typography>
             </Box>
             <Divider />
+
             {[
               { title: "New order #4821 received", time: "2m ago" },
               { title: 'Product "Aria Lamp" is low on stock', time: "1h ago" },
               { title: "New review awaiting moderation", time: "3h ago" }
             ].map((n) => (
-              <MenuItem key={n.title} sx={{ py: 1.25, whiteSpace: "normal" }}>
+              <MenuItem key={n.title} sx={{ py: 1.25 }}>
                 <Box>
                   <Typography sx={{ fontSize: 13.5, fontWeight: 500 }}>
                     {n.title}
@@ -135,14 +147,11 @@ const Header: React.FC = () => {
             ))}
           </Menu>
 
-          <Divider
-            orientation="vertical"
-            flexItem
-            sx={{ mx: 0.75, my: 1.25 }}
-          />
+          <Divider orientation="vertical" flexItem sx={{ mx: 0.75 }} />
 
+          {/* USER */}
           <Box
-            onClick={(e) => setUserAnchor(e.currentTarget)}
+            onClick={handleOpenUserMenu}
             sx={{
               display: "flex",
               alignItems: "center",
@@ -156,34 +165,23 @@ const Header: React.FC = () => {
           >
             <Avatar
               src="https://i.pravatar.cc/150?img=12"
-              alt="Admin"
               sx={{ width: 36, height: 36 }}
             />
             <Box sx={{ display: { xs: "none", sm: "block" } }}>
-              <Typography
-                sx={{ fontSize: 13.5, fontWeight: 600, lineHeight: 1.2 }}
-              >
+              <Typography sx={{ fontSize: 13.5, fontWeight: 600 }}>
                 Sarah Chen
               </Typography>
-              <Typography
-                sx={{
-                  fontSize: 11.5,
-                  color: "text.secondary",
-                  lineHeight: 1.2
-                }}
-              >
+              <Typography sx={{ fontSize: 11.5, color: "text.secondary" }}>
                 Super Admin
               </Typography>
             </Box>
-            <KeyboardArrowDownRoundedIcon
-              sx={{ fontSize: 18, color: "#94a3b8" }}
-            />
+            <KeyboardArrowDownRoundedIcon sx={{ fontSize: 18 }} />
           </Box>
 
           <Menu
             anchorEl={userAnchor}
-            open={!!userAnchor}
-            onClose={() => setUserAnchor(null)}
+            open={Boolean(userAnchor)}
+            onClose={handleCloseUserMenu}
             slotProps={{
               paper: { sx: { width: 220, mt: 1.5, borderRadius: "12px" } }
             }}
@@ -194,14 +192,17 @@ const Header: React.FC = () => {
               </ListItemIcon>
               My profile
             </MenuItem>
+
             <MenuItem>
               <ListItemIcon>
                 <SettingsOutlinedIcon fontSize="small" />
               </ListItemIcon>
               Account settings
             </MenuItem>
+
             <Divider />
-            <MenuItem sx={{ color: "#dc2626" }}>
+
+            <MenuItem onClick={handleLogout} sx={{ color: "#dc2626" }}>
               <ListItemIcon>
                 <LogoutRoundedIcon fontSize="small" sx={{ color: "#dc2626" }} />
               </ListItemIcon>
