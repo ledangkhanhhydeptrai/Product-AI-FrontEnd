@@ -31,7 +31,7 @@ import CreateCategoryContainer from "./createCategoryContainer";
 
 const CategoryContainer: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { data, loading, error } = useAppSelector((state) => state.category);
+  const { dataCategory, loading, error } = useAppSelector((state) => state.category);
   // ================= LOCAL STATE =================
   const [page, setPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(4);
@@ -47,7 +47,7 @@ const CategoryContainer: React.FC = () => {
   }, [dispatch]);
 
   // ================= SAFE DATA =================
-  const safeData: CategoryProps[] = Array.isArray(data) ? data : [];
+  const safeData: CategoryProps[] = Array.isArray(dataCategory) ? dataCategory : [];
 
   const filteredData = safeData.filter(
     (item) =>

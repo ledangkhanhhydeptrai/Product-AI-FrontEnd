@@ -136,7 +136,7 @@ const Header: React.FC<NavbarProps> = ({ cartCount, onSearchSubmit }) => {
               <div className="w-8 h-8 rounded-full bg-indigo-500 text-white flex items-center justify-center text-xs font-medium overflow-hidden">
                 {loading ? (
                   <div className="w-full h-full bg-gray-200 animate-pulse" />
-                ) : user?.avatarUrl ? (
+                ) : user.avatarUrl ? (
                   <img
                     src={user.avatarUrl}
                     alt="avatar"
