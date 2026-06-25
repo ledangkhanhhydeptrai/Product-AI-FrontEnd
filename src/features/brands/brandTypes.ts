@@ -7,7 +7,7 @@ export interface BrandProps {
 export interface CreateBrandsProps {
   name: string;
   description: string;
-  file: File | null;
+  logo: File | null;
   meta: {
     onSuccess: () => void;
     onError: () => void;
@@ -18,12 +18,18 @@ export interface CreateBrandPropsForm {
   setName: (v: string) => void;
   description: string;
   setDescription: (v: string) => void;
-  file: File | null;
-  setFile: (file: File | null) => void;
+  logo: File | null;
+  setLogo: (file: File | null) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
   onClose: () => void;
+  loading: boolean;
+  error: string | null;
 }
 export type CloseProps = {
+  onClose: () => void;
+};
+export type Props = {
+  selectedBrand: BrandProps | null;
   onClose: () => void;
 };
 export interface UpdateBrandId extends CreateBrandsProps {

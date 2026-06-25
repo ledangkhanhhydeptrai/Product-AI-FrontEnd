@@ -49,8 +49,8 @@ export const CreateBrand = async (
   const formData = new FormData();
   formData.append("name", request.name);
   formData.append("description", request.description);
-  if (request.file) {
-    formData.append("file", request.file);
+  if (request.logo) {
+    formData.append("logo", request.logo);
   }
   try {
     const response = await fetchBaseResponse<ApiResponse<BrandProps>>(
@@ -76,12 +76,12 @@ export const updateBrandById = async (
   const formData = new FormData();
   formData.append("name", request.name);
   formData.append("description", request.description);
-  if (request.file) {
-    formData.append("file", request.file);
+  if (request.logo) {
+    formData.append("logo", request.logo);
   }
   try {
     const response = await fetchBaseResponse<ApiResponse<BrandProps>>(
-      `/brand/${id}`,
+      `/brands/${id}`,
       {
         method: "PUT",
         headers: {
@@ -93,6 +93,24 @@ export const updateBrandById = async (
     return response.data;
   } catch (error) {
     const errors = error as AxiosError;
+    throw errors;
+  }
+};
+export const deleteBrandById = async (id: string) => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<BrandProps>>(
+      `/brands/${id}`,
+      {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    console.log("Error:", errors);
     throw errors;
   }
 };

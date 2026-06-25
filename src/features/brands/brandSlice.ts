@@ -68,6 +68,19 @@ const BrandSlice = createSlice({
     updateBrandFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    deleteBrandRequest(state, _action: PayloadAction<string>) {
+      state.loading = true;
+      state.error = null;
+    },
+    deleteBrandSuccess(state, action: PayloadAction<BrandProps>) {
+      state.loading = false;
+      state.error = null;
+      state.brands = action.payload;
+    },
+    deleteBrandFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -83,6 +96,9 @@ export const {
   createBrandSuccess,
   updateBrandRequest,
   updateBrandSuccess,
-  updateBrandFailure
+  updateBrandFailure,
+  deleteBrandRequest,
+  deleteBrandSuccess,
+  deleteBrandFailure
 } = BrandSlice.actions;
 export default BrandSlice.reducer;

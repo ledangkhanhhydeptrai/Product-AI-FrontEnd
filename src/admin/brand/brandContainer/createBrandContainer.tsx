@@ -1,4 +1,5 @@
 import React from "react";
+import { Alert, Box, Snackbar } from "@mui/material";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAppSelector } from "../../../hooks/useAppSelector";
@@ -10,7 +11,6 @@ import {
 import { CloseProps } from "../../../features/brands/brandTypes";
 import { AxiosError } from "axios";
 import BrandContainerForm from "../components/brandContainerForm";
-import { Alert, Snackbar } from "@mui/material";
 
 const CreateBrandContainer: React.FC<CloseProps> = ({ onClose }) => {
   const dispatch = useAppDispatch();
@@ -19,7 +19,7 @@ const CreateBrandContainer: React.FC<CloseProps> = ({ onClose }) => {
   const { loading, error } = useAppSelector((state) => state.brand);
   const [name, setName] = React.useState<string>("");
   const [description, setDescription] = React.useState<string>("");
-  const [file, setFile] = React.useState<File | null>(null);
+  const [logo, setLogo] = React.useState<File | null>(null);
 
   const notification =
     location.state && "notification" in location.state
@@ -28,6 +28,7 @@ const CreateBrandContainer: React.FC<CloseProps> = ({ onClose }) => {
   const [openSnackbar, setOpenSnackbar] = React.useState(Boolean(notification));
   const [notificationData, setNotificationData] =
     React.useState<NotificationProps | null>(notification);
+
   React.useEffect(() => {
     dispatch(getBrandRequest());
     if (notification) {
@@ -37,9 +38,11 @@ const CreateBrandContainer: React.FC<CloseProps> = ({ onClose }) => {
       });
     }
   }, [dispatch, notification, navigate, location.pathname]);
+
   const handleClose = () => {
     onClose();
   };
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     try {
@@ -47,7 +50,7 @@ const CreateBrandContainer: React.FC<CloseProps> = ({ onClose }) => {
         createBrandRequest({
           name,
           description,
-          file,
+          logo,
           meta: {
             onSuccess: () => {
               setNotificationData({
@@ -71,39 +74,37 @@ const CreateBrandContainer: React.FC<CloseProps> = ({ onClose }) => {
       );
       setName("");
       setDescription("");
-      setFile(null);
+      setLogo(null);
     } catch (error) {
       const errors = error as AxiosError;
       console.log("Error:", errors);
     }
   };
-  return (
-    <div className="flex justify-center p-6">
-      <div className="w-full space-y-3">
-        {/* ERROR */}
-        {error && (
-          <div className="p-3 text-sm text-red-600 bg-red-50 border border-red-200 rounded-lg">
-            {String(error)}
-          </div>
-        )}
 
-        {/* FORM */}
+  return (
+    <>
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          p: { xs: 2, sm: 4 },
+          bgcolor: "background.default"
+        }}
+      >
         <BrandContainerForm
           name={name}
           setName={setName}
           description={description}
           setDescription={setDescription}
-          file={file}
-          setFile={setFile}
+          logo={logo}
+          setLogo={setLogo}
           onSubmit={handleSubmit}
           onClose={handleClose}
+          loading={loading}
+          error={error}
         />
+      </Box>
 
-        {/* LOADING */}
-        {loading && (
-          <p className="text-sm text-slate-500">Creating category...</p>
-        )}
-      </div>
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
@@ -119,10 +120,10 @@ const CreateBrandContainer: React.FC<CloseProps> = ({ onClose }) => {
             variant="filled"
             onClose={() => setOpenSnackbar(false)}
             sx={{
-              borderRadius: "12px",
+              borderRadius: 3,
               fontWeight: 500,
               alignItems: "center",
-              boxShadow: "0 8px 24px rgba(0,0,0,0.12)"
+              boxShadow: "0 8px 24px rgba(0,0,0,0.16)"
             }}
           >
             {notificationData.message}
@@ -131,7 +132,7 @@ const CreateBrandContainer: React.FC<CloseProps> = ({ onClose }) => {
           <div />
         )}
       </Snackbar>
-    </div>
+    </>
   );
 };
 

@@ -1,8 +1,10 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
-import { getBrandRequest } from "../../../features/brands/brandSlice";
+import {
+  deleteBrandRequest,
+  getBrandRequest
+} from "../../../features/brands/brandSlice";
 import DataTable, { Column } from "../../../components/Table";
 import ConfirmDialog from "../../../components/ConfirmDialog";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
@@ -24,26 +26,29 @@ import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import { BrandProps } from "../../../features/brands/brandTypes";
 import CreateBrandContainer from "./createBrandContainer";
+import UpdateBrandContainer from "./updateBrandContainer";
 
 const BrandContainer: React.FC = () => {
   const dispatch = useAppDispatch();
   const [openCreate, setOpenCreate] = React.useState(false);
-  const navigate = useNavigate();
   const { data, loading, error } = useAppSelector((state) => state.brand);
   const [brandToDelete, setBrandToDelete] = React.useState<BrandProps | null>(
     null
   );
-
+  const [openUpdate, setOpenUpdate] = React.useState<boolean>(false);
+  const [selectedBrand, setSelectedBrand] = React.useState<BrandProps | null>(
+    null
+  );
   React.useEffect(() => {
     dispatch(getBrandRequest());
   }, [dispatch]);
 
   const safeData: BrandProps[] = Array.isArray(data) ? data : [];
 
-  const handleConfirmDelete = () => {
-    // if (!brandToDelete) return;
-    // dispatch(deleteBrandRequest({ id: brandToDelete.id }));
-    // setBrandToDelete(null);
+  const handleConfirmDelete = (id: string) => {
+    if (!brandToDelete) return;
+    dispatch(deleteBrandRequest(id));
+    setBrandToDelete(null);
   };
 
   // ================= COLUMNS =================
@@ -135,7 +140,10 @@ const BrandContainer: React.FC = () => {
         <Box sx={{ display: "flex", alignItems: "center", gap: 0.75 }}>
           <Tooltip title="Edit brand">
             <IconButton
-              onClick={() => navigate(`/admin/brands/edit/${row.id}`)}
+              onClick={() => {
+                setSelectedBrand(row);
+                setOpenUpdate(true);
+              }}
               sx={{
                 width: 32,
                 height: 32,
@@ -365,11 +373,14 @@ const BrandContainer: React.FC = () => {
         title="Delete brand"
         description={
           brandToDelete
-            ? `Are you sure you want to delete "${brandToDelete.name}"? This action cannot be undone.`
-            : undefined
+            ? `Are you sure you want to delete ${brandToDelete.name}? This action cannot be undone.`
+            : ""
         }
         onCancel={() => setBrandToDelete(null)}
-        onConfirm={handleConfirmDelete}
+        onConfirm={() => {
+          if (!brandToDelete) return;
+          handleConfirmDelete(brandToDelete.id);
+        }}
       />
       <Dialog
         open={openCreate}
@@ -404,6 +415,50 @@ const BrandContainer: React.FC = () => {
 
         <DialogContent sx={{ p: 0 }}>
           <CreateBrandContainer onClose={() => setOpenCreate(false)} />
+        </DialogContent>
+      </Dialog>
+      <Dialog
+        open={openUpdate}
+        onClose={() => {
+          setOpenUpdate(false);
+          setSelectedBrand(null);
+        }}
+        fullWidth
+        maxWidth="sm"
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: 4,
+              overflow: "hidden",
+              boxShadow: "0 8px 40px rgba(20, 20, 43, 0.18)"
+            }
+          }
+        }}
+      >
+        <IconButton
+          onClick={() => {
+            setOpenUpdate(false);
+            setSelectedBrand(null);
+          }}
+          sx={{
+            position: "absolute",
+            top: 12,
+            right: 12,
+            zIndex: 10
+          }}
+          size="small"
+        >
+          <CloseRoundedIcon />
+        </IconButton>
+
+        <DialogContent sx={{ p: 0 }}>
+          <UpdateBrandContainer
+            selectedBrand={selectedBrand}
+            onClose={() => {
+              setOpenUpdate(false);
+              setSelectedBrand(null);
+            }}
+          />
         </DialogContent>
       </Dialog>
     </Box>
