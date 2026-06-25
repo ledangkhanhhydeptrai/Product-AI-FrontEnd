@@ -23,6 +23,8 @@ import TagRoundedIcon from "@mui/icons-material/TagRounded";
 import { useAppDispatch } from "../../../hooks/useAppDispatch";
 import { useAppSelector } from "../../../hooks/useAppSelector";
 import { productAdminByIdRequest } from "../../../features/product/productSlice";
+import { categoryRequest } from "../../../features/categories/categorySlice";
+import { getBrandRequest } from "../../../features/brands/brandSlice";
 
 const InfoTile: React.FC<{
   icon: React.ReactNode;
@@ -77,17 +79,30 @@ const ProductAdminByIdContainer: React.FC = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-
+  const { dataCategory } = useAppSelector((state) => state.category);
+  const { data } = useAppSelector((state) => state.brand);
   const { adminProps, loading, error } = useAppSelector(
     (state) => state.product
   );
-
   React.useEffect(() => {
     if (id) {
       dispatch(productAdminByIdRequest(id));
     }
+    dispatch(categoryRequest());
+    dispatch(getBrandRequest());
   }, [dispatch, id]);
+  const getNameByCategory = (id: string) => {
+    const category = dataCategory.find((c) => c.id === id);
 
+    if (!category) return "Unknown";
+
+    return category.name;
+  };
+  const getNameByBrand = (id: string) => {
+    const brand = data.find((b) => b.id === id);
+    if (!brand) return "Unknown";
+    return brand.name;
+  };
   const BackButton = (
     <Button
       onClick={() => navigate(-1)}
@@ -283,22 +298,22 @@ const ProductAdminByIdContainer: React.FC = () => {
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <InfoTile
                     icon={<TagRoundedIcon fontSize="small" />}
-                    label="Mã sản phẩm"
-                    value={adminProps.id}
+                    label="Tên sản phẩm"
+                    value={adminProps.name}
                   />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <InfoTile
                     icon={<CategoryRoundedIcon fontSize="small" />}
-                    label="Mã danh mục"
-                    value={adminProps.category_id}
+                    label="Tên danh mục"
+                    value={getNameByCategory(adminProps.category_id)}
                   />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <InfoTile
                     icon={<SellRoundedIcon fontSize="small" />}
-                    label="Mã thương hiệu"
-                    value={adminProps.brand_id}
+                    label="Tên thương hiệu"
+                    value={getNameByBrand(adminProps.brand_id)}
                   />
                 </Grid>
                 <Grid size={{ xs: 12, sm: 6 }}>
