@@ -2,9 +2,13 @@ import { call, put, takeLatest } from "redux-saga/effects";
 import {
   getAllProductForCustomer,
   getProductAdmin,
+  getProductAdminById,
   getProductByIdForCustomer
 } from "./productApi";
 import {
+  productAdminByIdFailure,
+  productAdminByIdRequest,
+  productAdminByIdSuccess,
   productAdminFailure,
   productAdminRequest,
   productAdminSuccess,
@@ -53,8 +57,21 @@ function* handleGetProductAdmin(): Generator {
     yield put(productAdminFailure(errors.message));
   }
 }
+function* handleGetForAdminById(action: PayloadAction<string>): Generator {
+  try {
+    const response: ApiResponse<ProductPropsForAdmin> = yield call(
+      getProductAdminById,
+      action.payload
+    );
+    yield put(productAdminByIdSuccess(response.data));
+  } catch (error) {
+    const errors = error as AxiosError;
+    yield put(productAdminByIdFailure(errors.message));
+  }
+}
 export default function* productSaga() {
   yield takeLatest(productRequest.type, handleGetAllProductForCustomer);
   yield takeLatest(productRequestById.type, handleGetForCustomerById);
   yield takeLatest(productAdminRequest.type, handleGetProductAdmin);
+  yield takeLatest(productAdminByIdRequest.type, handleGetForAdminById);
 }

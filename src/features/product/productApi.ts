@@ -63,3 +63,23 @@ export const getProductAdmin = async (): Promise<
     throw errors;
   }
 };
+export const getProductAdminById = async (
+  id: string
+): Promise<ApiResponse<ProductPropsForAdmin>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<ProductPropsForAdmin>>(
+      `/product/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    console.log("Error:", errors);
+    throw errors;
+  }
+};
