@@ -5,19 +5,15 @@ import {
   Box,
   Avatar,
   InputBase,
-  Badge,
   Menu,
   MenuItem,
   Typography,
   Divider,
-  IconButton,
-  Skeleton,
   ListItemIcon,
   ListItemText
 } from "@mui/material";
 
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
-import NotificationsNoneRoundedIcon from "@mui/icons-material/NotificationsNoneRounded";
 import LogoutRoundedIcon from "@mui/icons-material/LogoutRounded";
 import PersonOutlineRoundedIcon from "@mui/icons-material/PersonOutlineRounded";
 import KeyboardArrowDownRoundedIcon from "@mui/icons-material/KeyboardArrowDownRounded";
@@ -26,7 +22,8 @@ import { useNavigate } from "react-router-dom";
 import { useAppDispatch } from "../../hooks/useAppDispatch";
 import { useAppSelector } from "../../hooks/useAppSelector";
 import { logoutRequest } from "../../features/auth/authSlice";
-
+import LoginRoundedIcon from "@mui/icons-material/LoginRounded";
+import Button from "../../components/Button";
 const BRAND_COLOR = "#6366F1";
 
 const Header: React.FC = () => {
@@ -150,7 +147,7 @@ const Header: React.FC = () => {
             flexShrink: 0
           }}
         >
-          {/* NOTIF */}
+          {/* NOTIF
           <IconButton
             onClick={(e) => setNotifAnchor(e.currentTarget)}
             sx={{
@@ -174,10 +171,10 @@ const Header: React.FC = () => {
             >
               <NotificationsNoneRoundedIcon fontSize="small" />
             </Badge>
-          </IconButton>
+          </IconButton> */}
 
           {/* USER PILL */}
-          {isAuthenticated && user && (
+          {isAuthenticated && user ? (
             <Box
               onClick={(e) => !loading && setUserAnchor(e.currentTarget)}
               sx={{
@@ -189,48 +186,40 @@ const Header: React.FC = () => {
                 py: 0.5,
                 borderRadius: 999,
                 border: "1px solid #e5e7eb",
-                cursor: loading ? "not-allowed" : "pointer",
-                opacity: loading ? 0.7 : 1,
-                transition: "background-color 0.15s ease",
-                "&:hover": { bgcolor: loading ? "transparent" : "#f9fafb" }
+                cursor: loading ? "not-allowed" : "pointer"
               }}
             >
-              {/* AVATAR LOADING */}
-              {loading ? (
-                <Skeleton variant="circular" width={30} height={30} />
-              ) : (
-                <Avatar
-                  sx={{
-                    width: 30,
-                    height: 30,
-                    fontSize: 12,
-                    fontWeight: 700,
-                    bgcolor: BRAND_COLOR
-                  }}
-                  src={user.avatarUrl}
-                >
-                  {getInitials(fullName)}
-                </Avatar>
-              )}
+              <Avatar
+                sx={{
+                  width: 30,
+                  height: 30,
+                  fontSize: 12,
+                  fontWeight: 700,
+                  bgcolor: BRAND_COLOR
+                }}
+                src={user.avatarUrl}
+              >
+                {getInitials(fullName)}
+              </Avatar>
 
-              {/* NAME LOADING */}
-              {loading ? (
-                <Skeleton width={80} height={18} />
-              ) : (
-                <Typography
-                  sx={{ fontSize: 13, fontWeight: 600, maxWidth: 140 }}
-                  noWrap
-                >
-                  {fullName}
-                </Typography>
-              )}
+              <Typography
+                sx={{ fontSize: 13, fontWeight: 600, maxWidth: 140 }}
+                noWrap
+              >
+                {fullName}
+              </Typography>
 
-              {!loading && (
-                <KeyboardArrowDownRoundedIcon
-                  sx={{ fontSize: 18, color: "text.secondary" }}
-                />
-              )}
+              <KeyboardArrowDownRoundedIcon
+                sx={{ fontSize: 18, color: "text.secondary" }}
+              />
             </Box>
+          ) : (
+            <Button
+              startIcon={<LoginRoundedIcon />}
+              onClick={() => navigate("/login")}
+            >
+              Đăng nhập
+            </Button>
           )}
 
           {/* USER MENU */}

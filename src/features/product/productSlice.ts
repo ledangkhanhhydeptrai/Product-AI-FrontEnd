@@ -59,6 +59,22 @@ const productSlice = createSlice({
     productAdminFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    productAdminByIdRequest(state, _action: PayloadAction<string>) {
+      state.loading = true;
+      state.error = null;
+    },
+    productAdminByIdSuccess(
+      state,
+      action: PayloadAction<ProductPropsForAdmin>
+    ) {
+      state.loading = false;
+      state.error = null;
+      state.adminProps = action.payload;
+    },
+    productAdminByIdFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -71,6 +87,9 @@ export const {
   productFailureById,
   productAdminRequest,
   productAdminSuccess,
-  productAdminFailure
+  productAdminFailure,
+  productAdminByIdRequest,
+  productAdminByIdSuccess,
+  productAdminByIdFailure
 } = productSlice.actions;
 export default productSlice.reducer;

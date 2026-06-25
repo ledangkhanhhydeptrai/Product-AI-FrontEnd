@@ -13,8 +13,8 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
-  icon?: React.ReactNode;
-  iconPosition?: "left" | "right";
+  startIcon?: React.ReactNode;
+  endIcon?: React.ReactNode;
 }
 
 const variantStyles: Record<ButtonVariant, string> = {
@@ -36,13 +36,16 @@ const sizeStyles: Record<ButtonSize, string> = {
   lg: "px-6 py-3 text-[15px] rounded-xl gap-2"
 };
 
-const Spinner: React.FC<{ light?: boolean }> = ({ light = true }) =>
+const Spinner: React.FC<{ light?: boolean }> = ({ light = true }) => (
   <span
-    className={`inline-block w-3.5 h-3.5 rounded-full border-2 animate-spin shrink-0 ${light
-      ? "border-white/30 border-t-white"
-      : "border-gray-200 border-t-gray-500"}`}
+    className={`inline-block w-3.5 h-3.5 rounded-full border-2 animate-spin shrink-0 ${
+      light
+        ? "border-white/30 border-t-white"
+        : "border-gray-200 border-t-gray-500"
+    }`}
     aria-hidden="true"
-  />;
+  />
+);
 
 const Button: React.FC<ButtonProps> = ({
   variant = "primary",
@@ -74,23 +77,16 @@ const Button: React.FC<ButtonProps> = ({
       ].join(" ")}
       {...props}
     >
-      {loading
-        ? <Spinner light={lightSpinner} />
-        : icon &&
-          iconPosition === "left" &&
-          <span className="shrink-0">
-            {icon}
-          </span>}
-      {children &&
-        <span>
-          {children}
-        </span>}
-      {!loading &&
+      {loading ? (
+        <Spinner light={lightSpinner} />
+      ) : (
         icon &&
-        iconPosition === "right" &&
-        <span className="shrink-0">
-          {icon}
-        </span>}
+        iconPosition === "left" && <span className="shrink-0">{icon}</span>
+      )}
+      {children && <span>{children}</span>}
+      {!loading && icon && iconPosition === "right" && (
+        <span className="shrink-0">{icon}</span>
+      )}
     </button>
   );
 };
