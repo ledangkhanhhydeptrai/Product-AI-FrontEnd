@@ -21,7 +21,7 @@ const insights = [
 ];
 
 const HomePage: React.FC<NavbarProps> = () => {
-  const categories = useAppSelector((state: RootState) => state.category.data);
+  const categories = useAppSelector((state: RootState) => state.category.dataCategory);
   return (
     <div className="min-h-screen bg-[#f7f7f9]">
       <main className="flex flex-col gap-9">

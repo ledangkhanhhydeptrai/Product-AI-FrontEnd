@@ -8,13 +8,13 @@ import {
 interface CategoryState {
   loading: boolean;
   error: string | null;
-  data: CategoryProps[] | [];
+  dataCategory: CategoryProps[] | [];
   categories: CategoryProps | null;
 }
 const initialState: CategoryState = {
   loading: false,
   error: null,
-  data: [],
+  dataCategory: [],
   categories: null
 };
 const CategorySlice = createSlice({
@@ -28,7 +28,7 @@ const CategorySlice = createSlice({
     categorySuccess(state, action: PayloadAction<CategoryProps[]>) {
       state.loading = false;
       state.error = null;
-      state.data = action.payload;
+      state.dataCategory = action.payload;
     },
     categoryFailure(state, action: PayloadAction<string>) {
       state.loading = false;

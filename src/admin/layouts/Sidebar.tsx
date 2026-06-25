@@ -30,7 +30,7 @@ const menuItems = [
     path: "/orders",
     badge: 12
   },
-  { title: "Products", icon: <Inventory2RoundedIcon />, path: "/products" },
+  { title: "Products", icon: <Inventory2RoundedIcon />, path: "/productAdmin" },
   { title: "Categories", icon: <CategoryRoundedIcon />, path: "/admin/category" },
   { title: "Brands", icon: <BusinessRoundedIcon />, path: "/admin/brand" },
   { title: "Users", icon: <PeopleAltRoundedIcon />, path: "/users" },

@@ -1,7 +1,7 @@
 import { AxiosError } from "axios";
 import { fetchBaseResponse } from "../../config/fetchBaseResponse";
 import { ApiResponse } from "../../types/api";
-import { ProductProps } from "./productTypes";
+import { ProductProps, ProductPropsForAdmin } from "./productTypes";
 
 export const getAllProductForCustomer = async (): Promise<
   ApiResponse<ProductProps>
@@ -29,6 +29,26 @@ export const getProductByIdForCustomer = async (
   try {
     const response = await fetchBaseResponse<ApiResponse<ProductProps>>(
       `/public/product/${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    console.log("Error:", errors);
+    throw errors;
+  }
+};
+export const getProductAdmin = async (): Promise<
+  ApiResponse<ProductPropsForAdmin>
+> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<ProductPropsForAdmin>>(
+      "/product",
       {
         method: "GET",
         headers: {

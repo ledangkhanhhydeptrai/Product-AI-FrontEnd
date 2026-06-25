@@ -45,7 +45,7 @@ export default function CategoryContainerAll() {
   const [isGrid, setIsGrid] = React.useState(true);
 
   const {
-    data: categories,
+    dataCategory: categories,
     loading,
     error
   } = useAppSelector((state) => state.category);

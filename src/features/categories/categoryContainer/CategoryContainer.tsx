@@ -10,7 +10,7 @@ import { useAppSelector } from "../../../hooks/useAppSelector";
 const CategoryContainer: React.FC = () => {
   const dispatch = useAppDispatch();
 
-  const { data, loading, error } = useAppSelector((state) => state.category);
+  const { dataCategory, loading, error } = useAppSelector((state) => state.category);
 
   useEffect(() => {
     dispatch(categoryRequest());
@@ -42,7 +42,7 @@ const CategoryContainer: React.FC = () => {
 
   return (
     <CategorySection
-      categories={data}
+      categories={dataCategory}
       onCategoryChange={handleCategoryChange}
     />
   );
