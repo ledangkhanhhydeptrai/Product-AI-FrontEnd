@@ -2,6 +2,7 @@ import { call, put, takeLatest } from "redux-saga/effects";
 import { ApiResponse } from "../../types/api";
 import {
   CreateBrand,
+  deleteBrandById,
   getAllBrand,
   getBrandById,
   updateBrandById
@@ -10,6 +11,9 @@ import {
   createBrandFailure,
   createBrandRequest,
   createBrandSuccess,
+  deleteBrandFailure,
+  deleteBrandRequest,
+  deleteBrandSuccess,
   getBrandFailure,
   getBrandIdRequest,
   getBrandIdSuccess,
@@ -49,11 +53,11 @@ function* handleCreateBrand(
   action: PayloadAction<CreateBrandsProps>
 ): Generator {
   try {
-    const { name, description, file, meta } = action.payload;
+    const { name, description, logo, meta } = action.payload;
     const response: ApiResponse<BrandProps> = yield call(CreateBrand, {
       name,
       description,
-      file,
+      logo,
       meta
     });
     yield put(createBrandSuccess(response.data));
@@ -74,11 +78,11 @@ function* handleCreateBrand(
 }
 function* handleUpdateBrand(action: PayloadAction<UpdateBrandId>): Generator {
   try {
-    const { id, name, description, file, meta } = action.payload;
+    const { id, name, description, logo, meta } = action.payload;
     const response: ApiResponse<BrandProps> = yield call(updateBrandById, id, {
       name,
       description,
-      file,
+      logo,
       meta
     });
     yield put(updateBrandSuccess(response.data));
@@ -97,9 +101,35 @@ function* handleUpdateBrand(action: PayloadAction<UpdateBrandId>): Generator {
     yield put(updateBrandFailure(errors.message));
   }
 }
+function* handleDeleteBrand(action: PayloadAction<string>) {
+  try {
+    const response: ApiResponse<BrandProps> = yield call(
+      deleteBrandById,
+      action.payload
+    );
+    yield put(deleteBrandSuccess(response.data));
+    yield put(
+      showNotification({
+        message: "Xóa brand thành công",
+        severity: "success"
+      })
+    );
+    yield put(getBrandRequest());
+  } catch (error) {
+    const errors = error as AxiosError;
+    yield put(deleteBrandFailure(errors.message));
+    yield put(
+      showNotification({
+        message: "Xóa brand thất bại",
+        severity: "error"
+      })
+    );
+  }
+}
 export default function* brandSaga() {
   yield takeLatest(getBrandRequest.type, handleGetAllBrand);
   yield takeLatest(getBrandIdRequest.type, handleGetBrandById);
   yield takeLatest(createBrandRequest.type, handleCreateBrand);
   yield takeLatest(updateBrandRequest.type, handleUpdateBrand);
+  yield takeLatest(deleteBrandRequest.type, handleDeleteBrand);
 }
