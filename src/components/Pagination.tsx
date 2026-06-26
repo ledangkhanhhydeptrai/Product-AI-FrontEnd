@@ -1,5 +1,12 @@
 import React from "react";
-import { IconButton, Select, MenuItem } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  MenuItem,
+  Select,
+  Stack,
+  Typography
+} from "@mui/material";
 import ChevronLeftRoundedIcon from "@mui/icons-material/ChevronLeftRounded";
 import ChevronRightRoundedIcon from "@mui/icons-material/ChevronRightRounded";
 
@@ -24,90 +31,146 @@ const Pagination: React.FC<PaginationProps> = ({
 }) => {
   const from = totalItems === 0 ? 0 : (page - 1) * pageSize + 1;
   const to = Math.min(page * pageSize, totalItems);
-
   const pages = buildPageList(page, pageCount);
 
   return (
-    <div className="flex items-center justify-between px-2 py-3 flex-wrap gap-3">
+    <Stack
+      direction="row"
+      sx={{
+        alignItems: "center",
+        justifyContent: "space-between",
+        flexWrap: "wrap",
+        gap: 1.5,
+        px: 1,
+        py: 1.5
+      }}
+    >
       {/* LEFT SIDE */}
-      <div className="flex items-center gap-4">
-        <p className="text-sm text-slate-500">
-          Showing <b className="text-slate-800 font-semibold">{from}</b>–
-          <b className="text-slate-800 font-semibold">{to}</b> of{" "}
-          <b className="text-slate-800 font-semibold">{totalItems}</b>
-        </p>
+      <Stack direction="row" spacing={2} sx={{ alignItems: "center" }}>
+        <Typography sx={{ fontSize: 13.5, color: "#64748b" }}>
+          Showing{" "}
+          <Typography
+            component="span"
+            sx={{ fontWeight: 700, color: "#1e293b" }}
+          >
+            {from}
+          </Typography>
+          –
+          <Typography
+            component="span"
+            sx={{ fontWeight: 700, color: "#1e293b" }}
+          >
+            {to}
+          </Typography>{" "}
+          of{" "}
+          <Typography
+            component="span"
+            sx={{ fontWeight: 700, color: "#1e293b" }}
+          >
+            {totalItems}
+          </Typography>
+        </Typography>
 
         {onPageSizeChange && (
           <Select
             size="small"
             value={pageSize}
             onChange={(e) => onPageSizeChange(Number(e.target.value))}
-            className="text-sm h-8 rounded-lg bg-slate-50"
+            sx={{
+              fontSize: 13.5,
+              height: 34,
+              borderRadius: "10px",
+              bgcolor: "#f8fafc",
+              "& .MuiOutlinedInput-notchedOutline": { borderColor: "#e2e8f0" },
+              "&:hover .MuiOutlinedInput-notchedOutline": {
+                borderColor: "#cbd5e1"
+              }
+            }}
           >
             {pageSizeOptions.map((size) => (
-              <MenuItem key={size} value={size} className="text-sm">
+              <MenuItem key={size} value={size} sx={{ fontSize: 13.5 }}>
                 {size} / page
               </MenuItem>
             ))}
           </Select>
         )}
-      </div>
+      </Stack>
 
       {/* RIGHT SIDE (PAGINATION BUTTONS) */}
-      <div className="flex items-center gap-1">
-        {/* PREV */}
+      <Stack direction="row" spacing={0.5} sx={{ alignItems: "center" }}>
         <IconButton
           size="small"
           disabled={page <= 1}
           onClick={() => onPageChange(page - 1)}
-          className="
-            w-8 h-8 rounded-lg border border-slate-200
-            text-slate-600 hover:bg-slate-100
-            disabled:text-slate-300 disabled:border-slate-100
-          "
+          sx={{
+            width: 32,
+            height: 32,
+            borderRadius: "10px",
+            border: "1px solid #e2e8f0",
+            color: "#475569",
+            "&:hover": { bgcolor: "#f1f5f9" },
+            "&.Mui-disabled": { color: "#cbd5e1", borderColor: "#f1f5f9" }
+          }}
         >
           <ChevronLeftRoundedIcon fontSize="small" />
         </IconButton>
 
-        {/* PAGES */}
         {pages.map((p, i) =>
           p === "..." ? (
-            <span key={`dots-${i}`} className="px-2 text-sm text-slate-400">
+            <Typography
+              key={`dots-${i}`}
+              sx={{ px: 1, fontSize: 13.5, color: "#94a3b8" }}
+            >
               …
-            </span>
+            </Typography>
           ) : (
-            <div
+            <Box
               key={p}
               onClick={() => onPageChange(p as number)}
-              className={`
-                w-8 h-8 flex items-center justify-center rounded-lg text-sm font-semibold cursor-pointer
-                ${
-                  p === page
-                    ? "bg-indigo-500 text-white"
-                    : "text-slate-600 hover:bg-slate-100"
+              sx={{
+                width: 32,
+                height: 32,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "10px",
+                fontSize: 13.5,
+                fontWeight: 600,
+                cursor: "pointer",
+                userSelect: "none",
+                transition: "all 0.15s ease",
+                color: p === page ? "#fff" : "#475569",
+                bgcolor: p === page ? "primary.main" : "transparent",
+                boxShadow:
+                  p === page ? "0 4px 10px rgba(99,102,241,0.35)" : "none",
+                "&:hover": {
+                  bgcolor: p === page ? "primary.main" : "#f1f5f9"
                 }
-              `}
+              }}
             >
               {p}
-            </div>
+            </Box>
           )
         )}
 
-        {/* NEXT */}
         <IconButton
           size="small"
           disabled={page >= pageCount}
           onClick={() => onPageChange(page + 1)}
-          className="
-            w-8 h-8 rounded-lg border border-slate-200
-            text-slate-600 hover:bg-slate-100
-            disabled:text-slate-300 disabled:border-slate-100
-          "
+          sx={{
+            width: 32,
+            height: 32,
+            borderRadius: "10px",
+            border: "1px solid #e2e8f0",
+            color: "#475569",
+            "&:hover": { bgcolor: "#f1f5f9" },
+            "&.Mui-disabled": { color: "#cbd5e1", borderColor: "#f1f5f9" }
+          }}
         >
           <ChevronRightRoundedIcon fontSize="small" />
         </IconButton>
-      </div>
-    </div>
+      </Stack>
+    </Stack>
   );
 };
 

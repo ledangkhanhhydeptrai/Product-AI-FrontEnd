@@ -8,7 +8,14 @@ import { NotificationProps } from "../../../types/notification";
 import { CloseProps } from "../../../features/brands/brandTypes";
 import { createProductAdminRequest } from "../../../features/product/productSlice";
 import ProductFormAdmin from "../components/productFormAdmin";
-import { Alert, Backdrop, CircularProgress, Snackbar } from "@mui/material";
+import {
+  Alert,
+  Backdrop,
+  CircularProgress,
+  Snackbar,
+  Stack,
+  Typography
+} from "@mui/material";
 
 const CreateProductAdminContainer: React.FC<CloseProps> = ({ onClose }) => {
   const dispatch = useAppDispatch();
@@ -34,6 +41,7 @@ const CreateProductAdminContainer: React.FC<CloseProps> = ({ onClose }) => {
   const [brand_id, setBrand_id] = React.useState<string>("");
   const [is_active, setIs_active] = React.useState<boolean>(false);
   const [file, setFile] = React.useState<File | null>(null);
+
   React.useEffect(() => {
     dispatch(categoryRequest());
     dispatch(getBrandRequest());
@@ -44,15 +52,18 @@ const CreateProductAdminContainer: React.FC<CloseProps> = ({ onClose }) => {
       });
     }
   }, [dispatch, notification, navigate, location.pathname]);
+
   const handleClose = () => {
     onClose();
   };
+
   const snackbarMessage =
     error || (notificationData && notificationData.message);
   const snackbarSeverity = error
     ? "error"
     : notificationData && notificationData.severity;
   const snackbarOpen = Boolean(error) || openSnackbar;
+
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(
@@ -77,8 +88,7 @@ const CreateProductAdminContainer: React.FC<CloseProps> = ({ onClose }) => {
             }
           });
           setOpenSnackbar(true);
-
-          onClose(); // đóng dialog
+          onClose();
         },
         onError: (message: string) => {
           setNotificationData({
@@ -91,6 +101,7 @@ const CreateProductAdminContainer: React.FC<CloseProps> = ({ onClose }) => {
       })
     );
   };
+
   return (
     <div>
       <ProductFormAdmin
@@ -119,38 +130,44 @@ const CreateProductAdminContainer: React.FC<CloseProps> = ({ onClose }) => {
         onSubmit={handleSubmit}
         onClose={handleClose}
       />
+
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={3000}
         onClose={() => setOpenSnackbar(false)}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right"
-        }}
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
       >
         <Alert
           severity={snackbarSeverity || "info"}
           variant="filled"
           onClose={() => setOpenSnackbar(false)}
           sx={{
-            borderRadius: "12px",
+            borderRadius: "14px",
             fontWeight: 500,
             alignItems: "center",
-            boxShadow: "0 8px 24px rgba(0,0,0,0.12)"
+            boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
+            minWidth: 280
           }}
         >
           {snackbarMessage}
         </Alert>
       </Snackbar>
-      {/* LOADING */}
+
       <Backdrop
         open={loading}
         sx={{
           color: "#fff",
-          zIndex: (theme) => theme.zIndex.drawer + 1
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+          backdropFilter: "blur(2px)",
+          bgcolor: "rgba(0,0,0,0.4)"
         }}
       >
-        <CircularProgress color="inherit" />
+        <Stack spacing={1.5} sx={{ alignItems: "center" }}>
+          <CircularProgress color="inherit" />
+          <Typography sx={{ fontSize: "0.85rem", opacity: 0.9 }}>
+            Saving product...
+          </Typography>
+        </Stack>
       </Backdrop>
     </div>
   );
