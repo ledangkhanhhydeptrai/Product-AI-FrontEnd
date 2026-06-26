@@ -4,7 +4,8 @@ import {
   getAllProductForCustomer,
   getProductAdmin,
   getProductAdminById,
-  getProductByIdForCustomer
+  getProductByIdForCustomer,
+  updateProductForAdmin
 } from "./productApi";
 import {
   createProductAdminFailure,
@@ -21,13 +22,17 @@ import {
   productRequest,
   productRequestById,
   productSuccess,
-  productSuccessById
+  productSuccessById,
+  updateProductAdminFailure,
+  updateProductAdminRequest,
+  updateProductAdminSuccess
 } from "./productSlice";
 import { AxiosError } from "axios";
 import {
   ProductProps,
   ProductPropsAdminForm,
-  ProductPropsForAdmin
+  ProductPropsForAdmin,
+  UpdateProductForm
 } from "./productTypes";
 import { ApiResponse } from "../../types/api";
 import { PayloadAction } from "@reduxjs/toolkit";
@@ -110,6 +115,48 @@ function* handleCreateProductFormAdmin(
     yield put(createProductAdminFailure(message));
   }
 }
+function* handleUpdateProductForAdmin(
+  action: PayloadAction<UpdateProductForm>
+): Generator {
+  try {
+    const {
+      id,
+      name,
+      stock,
+      description,
+      onError,
+      onSuccess,
+      price,
+      slug,
+      thumbnail
+    } = action.payload;
+    const response: ApiResponse<ProductPropsForAdmin> = yield call(
+      updateProductForAdmin,
+      id,
+      { name, description, onError, onSuccess, slug, price, stock, thumbnail }
+    );
+    yield put(updateProductAdminSuccess(response.data));
+    yield put(productAdminRequest());
+  } catch (error) {
+    const errors = error as AxiosError<{ message: string }>;
+    let message = "Update product failed";
+
+    if (
+      errors.response &&
+      errors.response.data &&
+      errors.response.data.message
+    ) {
+      message = errors.response.data.message;
+    } else if (errors.message) {
+      message = errors.message;
+    }
+
+    if (action.payload.onError) {
+      action.payload.onError(message);
+    }
+    yield put(updateProductAdminFailure(message));
+  }
+}
 export default function* productSaga() {
   yield takeLatest(productRequest.type, handleGetAllProductForCustomer);
   yield takeLatest(productRequestById.type, handleGetForCustomerById);
@@ -119,4 +166,5 @@ export default function* productSaga() {
     createProductAdminRequest.type,
     handleCreateProductFormAdmin
   );
+  yield takeLatest(updateProductAdminRequest.type, handleUpdateProductForAdmin);
 }
