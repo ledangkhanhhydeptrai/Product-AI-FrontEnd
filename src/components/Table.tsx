@@ -7,7 +7,8 @@ import {
   TableHead,
   TableRow,
   Box,
-  Typography
+  Typography,
+  Skeleton
 } from "@mui/material";
 import InboxRoundedIcon from "@mui/icons-material/InboxRounded";
 
@@ -25,6 +26,8 @@ interface DataTableProps<T> {
   rowKey: (row: T) => string | number;
   emptyText?: string;
   emptyHint?: string;
+  loading?: boolean;
+  loadingRows?: number;
 }
 
 export default function DataTable<T>({
@@ -32,25 +35,27 @@ export default function DataTable<T>({
   rows,
   rowKey,
   emptyText = "No data yet",
-  emptyHint = "Items will show up here once available."
+  emptyHint = "Items will show up here once available.",
+  loading = false,
+  loadingRows = 5
 }: DataTableProps<T>) {
   return (
     <TableContainer
       component={Paper}
       elevation={0}
       sx={{
-        borderRadius: "14px",
+        borderRadius: "16px",
         border: "1px solid #eef0f3",
         overflow: "hidden",
         bgcolor: "#fff",
-        boxShadow: "0 1px 2px rgba(15,23,42,0.04)"
+        boxShadow: "0 1px 3px rgba(15,23,42,0.05)"
       }}
     >
       <Table>
         <TableHead>
           <TableRow
             sx={{
-              background: "linear-gradient(180deg, #f4f5fb 0%, #eef0f7 100%)"
+              background: "linear-gradient(180deg, #f6f7fc 0%, #eef0f7 100%)"
             }}
           >
             {columns.map((column) => (
@@ -61,11 +66,12 @@ export default function DataTable<T>({
                 sx={{
                   fontWeight: 700,
                   fontSize: 12.5,
-                  letterSpacing: 0.3,
+                  letterSpacing: 0.4,
                   textTransform: "uppercase",
                   color: "#5b5f76",
                   borderBottom: "1px solid #e3e5ef",
-                  py: 1.6
+                  py: 1.7,
+                  whiteSpace: "nowrap"
                 }}
               >
                 {column.label}
@@ -75,7 +81,17 @@ export default function DataTable<T>({
         </TableHead>
 
         <TableBody>
-          {rows.length ? (
+          {loading ? (
+            Array.from({ length: loadingRows }).map((_, idx) => (
+              <TableRow key={`skeleton-${idx}`}>
+                {columns.map((column) => (
+                  <TableCell key={String(column.id)} sx={{ py: 1.8 }}>
+                    <Skeleton variant="text" sx={{ fontSize: 14 }} />
+                  </TableCell>
+                ))}
+              </TableRow>
+            ))
+          ) : rows.length ? (
             rows.map((row, idx) => (
               <TableRow
                 key={rowKey(row)}
@@ -84,8 +100,8 @@ export default function DataTable<T>({
                   bgcolor: idx % 2 === 1 ? "#fafbfd" : "#fff",
                   "&:last-child td": { borderBottom: 0 },
                   "& td": { borderColor: "#f1f2f5", py: 1.6 },
-                  transition: "background-color 0.12s ease",
-                  "&:hover": { bgcolor: "#f0f1ff" }
+                  transition: "background-color 0.15s ease",
+                  "&:hover": { bgcolor: "#f3f4ff" }
                 }}
               >
                 {columns.map((column) => (
@@ -117,9 +133,9 @@ export default function DataTable<T>({
                 >
                   <Box
                     sx={{
-                      width: 52,
-                      height: 52,
-                      borderRadius: "14px",
+                      width: 56,
+                      height: 56,
+                      borderRadius: "16px",
                       background: "linear-gradient(135deg, #eef0ff, #f5f3ff)",
                       display: "flex",
                       alignItems: "center",
@@ -128,7 +144,7 @@ export default function DataTable<T>({
                       border: "1px solid #e6e8fb"
                     }}
                   >
-                    <InboxRoundedIcon sx={{ fontSize: 24, color: "#818CF8" }} />
+                    <InboxRoundedIcon sx={{ fontSize: 26, color: "#818CF8" }} />
                   </Box>
                   <Typography
                     sx={{ fontSize: 14.5, fontWeight: 600, color: "#334155" }}
