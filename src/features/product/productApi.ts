@@ -2,6 +2,7 @@ import { AxiosError } from "axios";
 import { fetchBaseResponse } from "../../config/fetchBaseResponse";
 import { ApiResponse } from "../../types/api";
 import {
+  FormUpdateProduct,
   ProductProps,
   ProductPropsAdminForm,
   ProductPropsForAdmin
@@ -119,6 +120,27 @@ export const createProductFormAdmin = async ({
         method: "POST",
         headers: {},
         data: formData
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    throw errors;
+  }
+};
+export const updateProductForAdmin = async (
+  id: string,
+  request: FormUpdateProduct
+): Promise<ApiResponse<ProductPropsForAdmin>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<ProductPropsForAdmin>>(
+      `/product/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        data: request
       }
     );
     return response.data;

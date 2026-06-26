@@ -1,3 +1,4 @@
+import React from "react";
 import { BrandProps } from "../brands/brandTypes";
 import { CategoryProps } from "../categories/categoryTypes";
 
@@ -62,5 +63,36 @@ export interface ProductPropsFormAdmin {
   brand: BrandProps[];
   category: CategoryProps[];
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onClose: () => void;
+}
+export interface FormUpdateProduct {
+  name: string;
+  slug: string;
+  price: number;
+  description: string;
+  stock: number;
+  thumbnail: string;
+  onSuccess: () => void;
+  onError: (message: string) => void;
+}
+export interface UpdateProductForm extends FormUpdateProduct {
+  id: string;
+}
+export interface FormUpdateProductForm {
+  name: string;
+  setName: (v: string) => void;
+  slug: string;
+  setSlug: (v: string) => void;
+  price: number;
+  setPrice: (v: number) => void;
+  description: string;
+  setDescription: (v: string) => void;
+  thumbnail: string;
+  setThumbnail: (v: string) => void;
+  onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onClose: () => void;
+}
+export interface ProductPropsSelected {
+  selectedProduct: ProductPropsForAdmin | null;
   onClose: () => void;
 }

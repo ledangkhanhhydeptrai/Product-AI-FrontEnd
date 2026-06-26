@@ -2,7 +2,8 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   ProductProps,
   ProductPropsAdminForm,
-  ProductPropsForAdmin
+  ProductPropsForAdmin,
+  UpdateProductForm
 } from "./productTypes";
 
 interface ProductState {
@@ -19,7 +20,7 @@ const initialState: ProductState = {
   data: [],
   product: null,
   admin: [],
-  adminProps: null,
+  adminProps: null
 };
 const productSlice = createSlice({
   name: "productCustomer",
@@ -98,6 +99,22 @@ const productSlice = createSlice({
     createProductAdminFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    updateProductAdminRequest(state, _action: PayloadAction<UpdateProductForm>) {
+      state.loading = true;
+      state.error = null;
+    },
+    updateProductAdminSuccess(
+      state,
+      action: PayloadAction<ProductPropsForAdmin>
+    ) {
+      state.loading = false;
+      state.error = null;
+      state.adminProps = action.payload;
+    },
+    updateProductAdminFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -116,6 +133,9 @@ export const {
   productAdminByIdFailure,
   createProductAdminRequest,
   createProductAdminSuccess,
-  createProductAdminFailure
+  createProductAdminFailure,
+  updateProductAdminRequest,
+  updateProductAdminSuccess,
+  updateProductAdminFailure
 } = productSlice.actions;
 export default productSlice.reducer;
