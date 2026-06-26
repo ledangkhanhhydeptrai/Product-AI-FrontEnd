@@ -35,6 +35,7 @@ import { getBrandRequest } from "../../../features/brands/brandSlice";
 import { useNavigate } from "react-router-dom";
 import { BrandProps } from "../../../features/brands/brandTypes";
 import { CategoryProps } from "../../../features/categories/categoryTypes";
+import CreateProductAdminContainer from "../createProductAdminContainer/createProductAdminContainer";
 
 const ProductAdminContainer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -47,6 +48,7 @@ const ProductAdminContainer: React.FC = () => {
   const [page, setPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(4);
   const [search, setSearch] = React.useState<string>("");
+  const [openCreate, setOpenCreate] = React.useState(false);
   const [productToDelete, setProductToDelete] =
     React.useState<ProductPropsForAdmin | null>(null);
 
@@ -63,6 +65,7 @@ const ProductAdminContainer: React.FC = () => {
   const handleView = (row: ProductPropsForAdmin) => {
     navigate(`/productAdmin/${row.id}`);
   };
+
   const filteredProducts = React.useMemo(() => {
     if (!search.trim()) return products;
     const keyword = search.trim().toLowerCase();
@@ -91,7 +94,7 @@ const ProductAdminContainer: React.FC = () => {
 
   // ===== Actions =====
   const handleAdd = () => {
-    navigate("/admin/products/create");
+    setOpenCreate(true);
   };
 
   const handleEdit = (row: ProductPropsForAdmin) => {
@@ -358,7 +361,18 @@ const ProductAdminContainer: React.FC = () => {
           onPageSizeChange={handlePageSizeChange}
         />
       </Box>
+      <Dialog
+        open={openCreate}
+        onClose={() => setOpenCreate(false)}
+        fullWidth
+        maxWidth="md"
+      >
+        <DialogTitle>Create Product</DialogTitle>
 
+        <DialogContent dividers>
+          <CreateProductAdminContainer onClose={() => setOpenCreate(false)} />
+        </DialogContent>
+      </Dialog>
       {/* ===== Confirm Delete Dialog ===== */}
       <Dialog open={!!productToDelete} onClose={handleCancelDelete}>
         <DialogTitle>Delete product?</DialogTitle>
