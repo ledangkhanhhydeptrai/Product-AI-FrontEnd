@@ -100,7 +100,10 @@ const productSlice = createSlice({
       state.loading = false;
       state.error = action.payload;
     },
-    updateProductAdminRequest(state, _action: PayloadAction<UpdateProductForm>) {
+    updateProductAdminRequest(
+      state,
+      _action: PayloadAction<UpdateProductForm>
+    ) {
       state.loading = true;
       state.error = null;
     },
@@ -113,6 +116,19 @@ const productSlice = createSlice({
       state.adminProps = action.payload;
     },
     updateProductAdminFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    deleteProductRequest(state, _action: PayloadAction<string>) {
+      state.loading = true;
+      state.error = null;
+    },
+    deleteProductSuccess(state, action: PayloadAction<ProductPropsForAdmin>) {
+      state.loading = false;
+      state.error = null;
+      state.adminProps = action.payload;
+    },
+    deleteProductFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
     }
@@ -136,6 +152,9 @@ export const {
   createProductAdminFailure,
   updateProductAdminRequest,
   updateProductAdminSuccess,
-  updateProductAdminFailure
+  updateProductAdminFailure,
+  deleteProductRequest,
+  deleteProductSuccess,
+  deleteProductFailure
 } = productSlice.actions;
 export default productSlice.reducer;

@@ -5,7 +5,8 @@ import {
   FormUpdateProduct,
   ProductProps,
   ProductPropsAdminForm,
-  ProductPropsForAdmin
+  ProductPropsForAdmin,
+  ProductPropsFormAdmin
 } from "./productTypes";
 
 export const getAllProductForCustomer = async (): Promise<
@@ -143,6 +144,24 @@ export const updateProductForAdmin = async (
         data: request
       }
     );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    throw errors;
+  }
+};
+export const deleteProductAdmin = async (
+  id: string
+): Promise<ApiResponse<ProductPropsFormAdmin>> => {
+  try {
+    const response = await fetchBaseResponse<
+      ApiResponse<ProductPropsFormAdmin>
+    >(`/product/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
     return response.data;
   } catch (error) {
     const errors = error as AxiosError;
