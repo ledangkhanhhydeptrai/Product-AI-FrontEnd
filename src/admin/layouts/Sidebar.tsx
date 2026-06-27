@@ -27,7 +27,7 @@ const menuItems = [
   {
     title: "Orders",
     icon: <ShoppingBagRoundedIcon />,
-    path: "/orders",
+    path: "/admin/order",
     badge: 12
   },
   { title: "Products", icon: <Inventory2RoundedIcon />, path: "/productAdmin" },
