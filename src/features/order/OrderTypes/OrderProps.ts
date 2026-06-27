@@ -136,6 +136,7 @@ export interface OrderUpdateAdminProps {
   shipping_address: string;
   setShipping_address: (v: string) => void;
   onSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+  onClose: () => void;
 }
 export interface OrderUpdateProps {
   selectedOrder: OrderAdmin | null;
