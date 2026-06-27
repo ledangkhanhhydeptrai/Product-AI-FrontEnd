@@ -96,6 +96,15 @@ function* handleUpdateCategory(
       { name, description, slug, meta }
     );
     yield put(updateCategorySuccess(response.data));
+    // yield put(
+    //   showNotification({
+    //     message: "Cập nhật danh mục thành công",
+    //     severity: "success"
+    //   })
+    // );
+    if (meta.onSuccess) {
+      meta.onSuccess();
+    }
     yield put(categoryRequest());
   } catch (error) {
     const errors = error as AxiosError;

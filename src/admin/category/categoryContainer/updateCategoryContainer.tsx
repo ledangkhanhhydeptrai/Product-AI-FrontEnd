@@ -76,6 +76,9 @@ const UpdateCategoryContainer: React.FC<Props> = ({
               severity: "success"
             });
             setOpenSnackbar(true);
+            setTimeout(() => {
+              onClose();
+            }, 5000);
           },
           onError: () => {
             setNotificationData({

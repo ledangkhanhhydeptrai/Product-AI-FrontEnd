@@ -36,6 +36,7 @@ import { useNavigate } from "react-router-dom";
 import { BrandProps } from "../../../features/brands/brandTypes";
 import { CategoryProps } from "../../../features/categories/categoryTypes";
 import CreateProductAdminContainer from "../createProductAdminContainer/createProductAdminContainer";
+import UpdateProductAdminContainer from "../updateProductAdminContainer/updateProductAdminContainer";
 
 const ProductAdminContainer: React.FC = () => {
   const dispatch = useAppDispatch();
@@ -51,26 +52,30 @@ const ProductAdminContainer: React.FC = () => {
   const [openCreate, setOpenCreate] = React.useState(false);
   const [productToDelete, setProductToDelete] =
     React.useState<ProductPropsForAdmin | null>(null);
+  const [openUpdate, setOpenUpdate] = React.useState<boolean>(false);
+  const [selectedProduct, setSelectedProduct] =
+    React.useState<ProductPropsForAdmin | null>(null);
 
   React.useEffect(() => {
     dispatch(productAdminRequest());
     dispatch(categoryRequest());
     dispatch(getBrandRequest());
   }, [dispatch]);
-
-  const products: ProductPropsForAdmin[] = React.useMemo(
-    () => (Array.isArray(admin) ? admin : []),
-    [admin]
-  );
+  React.useEffect(() => {
+    console.log("openUpdate =", openUpdate);
+    console.log("selectedProduct =", selectedProduct);
+  }, [openUpdate, selectedProduct]);
   const handleView = (row: ProductPropsForAdmin) => {
     navigate(`/productAdmin/${row.id}`);
   };
 
   const filteredProducts = React.useMemo(() => {
-    if (!search.trim()) return products;
-    const keyword = search.trim().toLowerCase();
-    return products.filter((p) => p.name.toLowerCase().includes(keyword));
-  }, [products, search]);
+    const products = Array.isArray(admin) ? admin : [];
+
+    return products.filter((item) =>
+      item.name.toLowerCase().includes(search.toLowerCase())
+    );
+  }, [admin, search]);
 
   const handlePageSizeChange = (size: number) => {
     setPageSize(size);
@@ -95,10 +100,6 @@ const ProductAdminContainer: React.FC = () => {
   // ===== Actions =====
   const handleAdd = () => {
     setOpenCreate(true);
-  };
-
-  const handleEdit = (row: ProductPropsForAdmin) => {
-    navigate(`/admin/products/${row.id}/edit`);
   };
 
   const handleDeleteClick = (row: ProductPropsForAdmin) => {
@@ -216,7 +217,11 @@ const ProductAdminContainer: React.FC = () => {
             <IconButton
               size="small"
               color="primary"
-              onClick={() => handleEdit(row)}
+              onClick={() => {
+                console.log("EDIT CLICK", row);
+                setSelectedProduct(row);
+                setOpenUpdate(true);
+              }}
             >
               <EditOutlinedIcon fontSize="small" />
             </IconButton>
@@ -284,117 +289,138 @@ const ProductAdminContainer: React.FC = () => {
   }
 
   return (
-    <Box sx={{ p: { xs: 1, sm: 2 } }}>
-      {/* ===== Toolbar ===== */}
-      <Stack
-        sx={{
-          flexDirection: { xs: "column", sm: "row" },
-          justifyContent: "space-between",
-          alignItems: { xs: "stretch", sm: "center" },
-          gap: 2,
-          mb: 2
-        }}
-      >
-        <Box>
-          <Typography sx={{ fontSize: 20, fontWeight: 700 }}>
-            Products
-          </Typography>
-          <Typography sx={{ fontSize: 13 }} color="text.secondary">
-            {totalItems} product{totalItems !== 1 ? "s" : ""} found
-          </Typography>
+    <>
+      <Box sx={{ p: { xs: 1, sm: 2 } }}>
+        {/* ===== Toolbar ===== */}
+        <Stack
+          sx={{
+            flexDirection: { xs: "column", sm: "row" },
+            justifyContent: "space-between",
+            alignItems: { xs: "stretch", sm: "center" },
+            gap: 2,
+            mb: 2
+          }}
+        >
+          <Box>
+            <Typography sx={{ fontSize: 20, fontWeight: 700 }}>
+              Products
+            </Typography>
+            <Typography sx={{ fontSize: 13 }} color="text.secondary">
+              {totalItems} product{totalItems !== 1 ? "s" : ""} found
+            </Typography>
+          </Box>
+
+          <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
+            <TextField
+              size="small"
+              placeholder="Search product name..."
+              value={search}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              slotProps={{
+                input: {
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <SearchIcon fontSize="small" />
+                    </InputAdornment>
+                  )
+                }
+              }}
+              sx={{ minWidth: 240 }}
+            />
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+              onClick={handleAdd}
+              sx={{ whiteSpace: "nowrap" }}
+            >
+              Add Product
+            </Button>
+          </Stack>
+        </Stack>
+
+        {/* ===== Table ===== */}
+        <Box
+          sx={{
+            border: "1px solid #eee",
+            borderRadius: 2,
+            overflow: "hidden",
+            bgcolor: "background.paper"
+          }}
+        >
+          <DataTable<ProductPropsForAdmin>
+            columns={columns}
+            rows={paginatedRows}
+            rowKey={(row) => row.id}
+            emptyText="No products"
+            emptyHint="Product list will appear here"
+          />
         </Box>
 
-        <Stack direction={{ xs: "column", sm: "row" }} spacing={1.5}>
-          <TextField
-            size="small"
-            placeholder="Search product name..."
-            value={search}
-            onChange={(e) => handleSearchChange(e.target.value)}
-            slotProps={{
-              input: {
-                startAdornment: (
-                  <InputAdornment position="start">
-                    <SearchIcon fontSize="small" />
-                  </InputAdornment>
-                )
-              }
-            }}
-            sx={{ minWidth: 240 }}
+        {/* ===== Pagination ===== */}
+        <Box sx={{ mt: 2 }}>
+          <Pagination
+            page={page}
+            pageCount={pageCount}
+            totalItems={totalItems}
+            pageSize={pageSize}
+            onPageChange={setPage}
+            onPageSizeChange={handlePageSizeChange}
           />
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={handleAdd}
-            sx={{ whiteSpace: "nowrap" }}
-          >
-            Add Product
-          </Button>
-        </Stack>
-      </Stack>
+        </Box>
+        <Dialog
+          open={openCreate}
+          onClose={() => setOpenCreate(false)}
+          fullWidth
+          maxWidth="md"
+        >
+          <DialogTitle>Create Product</DialogTitle>
 
-      {/* ===== Table ===== */}
-      <Box
-        sx={{
-          border: "1px solid #eee",
-          borderRadius: 2,
-          overflow: "hidden",
-          bgcolor: "background.paper"
-        }}
-      >
-        <DataTable<ProductPropsForAdmin>
-          columns={columns}
-          rows={paginatedRows}
-          rowKey={(row) => row.id}
-          emptyText="No products"
-          emptyHint="Product list will appear here"
-        />
-      </Box>
-
-      {/* ===== Pagination ===== */}
-      <Box sx={{ mt: 2 }}>
-        <Pagination
-          page={page}
-          pageCount={pageCount}
-          totalItems={totalItems}
-          pageSize={pageSize}
-          onPageChange={setPage}
-          onPageSizeChange={handlePageSizeChange}
-        />
+          <DialogContent dividers>
+            <CreateProductAdminContainer onClose={() => setOpenCreate(false)} />
+          </DialogContent>
+        </Dialog>
+        {/* ===== Confirm Delete Dialog ===== */}
+        <Dialog open={!!productToDelete} onClose={handleCancelDelete}>
+          <DialogTitle>Delete product?</DialogTitle>
+          <DialogContent>
+            <Typography sx={{ fontSize: 14 }}>
+              Are you sure you want to delete{" "}
+              <strong>{productToDelete?.name}</strong>? This action cannot be
+              undone.
+            </Typography>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={handleCancelDelete}>Cancel</Button>
+            <Button
+              color="error"
+              variant="contained"
+              onClick={handleConfirmDelete}
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
       </Box>
       <Dialog
-        open={openCreate}
-        onClose={() => setOpenCreate(false)}
+        open={openUpdate}
+        onClose={() => {
+          setOpenUpdate(false);
+          setSelectedProduct(null);
+        }}
         fullWidth
-        maxWidth="md"
+        maxWidth="sm"
       >
-        <DialogTitle>Create Product</DialogTitle>
-
-        <DialogContent dividers>
-          <CreateProductAdminContainer onClose={() => setOpenCreate(false)} />
-        </DialogContent>
+        {selectedProduct && (
+          <UpdateProductAdminContainer
+            selectedProduct={selectedProduct}
+            onClose={() => {
+              setOpenUpdate(false);
+              setSelectedProduct(null);
+            }}
+          />
+        )}
       </Dialog>
-      {/* ===== Confirm Delete Dialog ===== */}
-      <Dialog open={!!productToDelete} onClose={handleCancelDelete}>
-        <DialogTitle>Delete product?</DialogTitle>
-        <DialogContent>
-          <Typography sx={{ fontSize: 14 }}>
-            Are you sure you want to delete{" "}
-            <strong>{productToDelete?.name}</strong>? This action cannot be
-            undone.
-          </Typography>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleCancelDelete}>Cancel</Button>
-          <Button
-            color="error"
-            variant="contained"
-            onClick={handleConfirmDelete}
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
-    </Box>
+    </>
   );
 };
 

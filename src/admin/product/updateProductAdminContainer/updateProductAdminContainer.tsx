@@ -4,18 +4,21 @@ import { useAppSelector } from "../../../hooks/useAppSelector";
 import { useLocation, useNavigate } from "react-router-dom";
 import { NotificationProps } from "../../../types/notification";
 import { ProductPropsSelected } from "../../../features/product/productTypes";
-import {
-  productAdminRequest,
-  updateProductAdminRequest
-} from "../../../features/product/productSlice";
+import { updateProductAdminRequest } from "../../../features/product/productSlice";
 import UpdateProductFormAdmin from "../components/updateProductFormAdmin";
 import {
   Alert,
-  Backdrop,
-  CircularProgress,
   Snackbar,
-  Box
+  Box,
+  Paper,
+  Skeleton,
+  Stack,
+  Avatar,
+  Typography,
+  Fade,
+  LinearProgress
 } from "@mui/material";
+import { ErrorOutlineRounded } from "@mui/icons-material";
 
 const UpdateProductAdminContainer: React.FC<ProductPropsSelected> = ({
   onClose,
@@ -47,8 +50,6 @@ const UpdateProductAdminContainer: React.FC<ProductPropsSelected> = ({
   const [thumbnail, setThumbnail] = React.useState("");
 
   React.useEffect(() => {
-    dispatch(productAdminRequest());
-
     if (notification) {
       navigate(location.pathname, {
         replace: true,
@@ -81,67 +82,177 @@ const UpdateProductAdminContainer: React.FC<ProductPropsSelected> = ({
         slug,
         stock,
         thumbnail,
-        onError: (message: string) => {
-          setNotificationData({
-            open: true,
-            severity: "error",
-            message
-          });
-          setOpenSnackbar(true);
-        },
-        onSuccess: () => {
-          navigate("/productAdmin", {
-            state: {
-              notification: {
-                severity: "success",
-                message: "Product updated successfully"
-              }
-            }
-          });
-          setOpenSnackbar(true);
-          onClose();
+        meta: {
+          onSuccess: () => {
+            setNotificationData({
+              open: true,
+              message: "Cập nhật product thành công",
+              severity: "success"
+            });
+            setOpenSnackbar(true);
+
+            setTimeout(() => {
+              onClose();
+            }, 1000);
+          },
+          onError: () => {
+            setNotificationData({
+              open: true,
+              message: "Cập nhật product thất bại",
+              severity: "error"
+            });
+            setOpenSnackbar(true);
+          }
         }
       })
     );
   };
 
+  const isSavingExisting = loading && Boolean(selectedProduct);
+  const isInitialLoading = loading && !selectedProduct;
+
   return (
-    <Box>
-      {/* FORM */}
-      <UpdateProductFormAdmin
-        name={name}
-        setName={setName}
-        description={description}
-        setDescription={setDescription}
-        price={price}
-        setPrice={setPrice}
-        slug={slug}
-        setSlug={setSlug}
-        onClose={onClose}
-        onSubmit={handleSubmit}
-        thumbnail={thumbnail}
-        setThumbnail={setThumbnail}
-      />
+    <>
+      <Box sx={{ position: "relative", maxWidth: 560, mx: "auto" }}>
+        {/* Thanh tiến trình khi đang lưu (đè lên trên form, không thay layout) */}
+        {isSavingExisting && (
+          <LinearProgress
+            sx={{
+              position: "absolute",
+              top: 0,
+              left: 0,
+              right: 0,
+              borderRadius: "12px 12px 0 0",
+              zIndex: 1
+            }}
+          />
+        )}
 
-      {/* ERROR ALERT (inline nhẹ) */}
-      {error && (
-        <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>
-          {error}
-        </Alert>
-      )}
+        {/* FORM hoặc SKELETON */}
+        {isInitialLoading ? (
+          <Paper
+            elevation={0}
+            sx={{
+              p: { xs: 2.5, sm: 4 },
+              borderRadius: 3,
+              border: "1px solid",
+              borderColor: "divider"
+            }}
+          >
+            <Stack
+              direction="row"
+              spacing={2}
+              sx={{ mb: 2.5, alignItems: "center" }}
+            >
+              <Skeleton
+                variant="rounded"
+                width={48}
+                height={48}
+                sx={{ borderRadius: 2 }}
+              />
+              <Box sx={{ flex: 1 }}>
+                <Skeleton width="40%" height={24} />
+                <Skeleton width="60%" height={18} />
+              </Box>
+            </Stack>
+            <Stack spacing={2.5}>
+              <Skeleton
+                variant="rounded"
+                height={56}
+                sx={{ borderRadius: 1.5 }}
+              />
+              <Stack direction="row" spacing={2}>
+                <Skeleton
+                  variant="rounded"
+                  height={56}
+                  sx={{ borderRadius: 1.5, flex: 1 }}
+                />
+                <Skeleton
+                  variant="rounded"
+                  height={56}
+                  sx={{ borderRadius: 1.5, flex: 1 }}
+                />
+              </Stack>
+              <Skeleton
+                variant="rounded"
+                height={110}
+                sx={{ borderRadius: 1.5 }}
+              />
+              <Skeleton
+                variant="rounded"
+                height={56}
+                sx={{ borderRadius: 1.5 }}
+              />
+            </Stack>
+          </Paper>
+        ) : (
+          <UpdateProductFormAdmin
+            name={name}
+            setName={setName}
+            description={description}
+            setDescription={setDescription}
+            price={price}
+            setPrice={setPrice}
+            slug={slug}
+            setSlug={setSlug}
+            thumbnail={thumbnail}
+            setThumbnail={setThumbnail}
+            onClose={onClose}
+            onSubmit={handleSubmit}
+          />
+        )}
 
-      {/* LOADING OVERLAY */}
-      <Backdrop
-        open={loading}
-        sx={{
-          color: "#fff",
-          zIndex: (theme) => theme.zIndex.modal + 1
-        }}
-      >
-        <CircularProgress color="inherit" />
-      </Backdrop>
+        {/* ERROR ALERT */}
+        <Fade in={Boolean(error)} unmountOnExit>
+          <Box sx={{ mt: 2 }}>
+            <Alert
+              severity="error"
+              icon={<ErrorOutlineRounded fontSize="small" />}
+              variant="outlined"
+              sx={{ borderRadius: 2 }}
+            >
+              {String(error)}
+            </Alert>
+          </Box>
+        </Fade>
 
-      {/* SNACKBAR */}
+        {/* SAVING HINT */}
+        <Fade in={isSavingExisting} unmountOnExit>
+          <Stack
+            direction="row"
+            spacing={1}
+            sx={{ mt: 1.5, px: 0.5, alignItems: "center" }}
+          >
+            <Avatar
+              sx={{
+                width: 16,
+                height: 16,
+                bgcolor: "transparent"
+              }}
+            >
+              <Box
+                sx={{
+                  width: 14,
+                  height: 14,
+                  borderRadius: "50%",
+                  border: "2px solid",
+                  borderColor: "grey.300",
+                  borderTopColor: "primary.main",
+                  animation: "spin 0.8s linear infinite",
+                  "@keyframes spin": {
+                    "0%": { transform: "rotate(0deg)" },
+                    "100%": { transform: "rotate(360deg)" }
+                  }
+                }}
+              />
+            </Avatar>
+            <Typography variant="body2" color="text.secondary">
+              Đang lưu thay đổi...
+            </Typography>
+          </Stack>
+        </Fade>
+      </Box>
+
       <Snackbar
         open={openSnackbar}
         autoHideDuration={3000}
@@ -165,7 +276,7 @@ const UpdateProductAdminContainer: React.FC<ProductPropsSelected> = ({
           <div />
         )}
       </Snackbar>
-    </Box>
+    </>
   );
 };
 

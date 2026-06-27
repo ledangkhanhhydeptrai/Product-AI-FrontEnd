@@ -36,6 +36,7 @@ import {
 } from "./productTypes";
 import { ApiResponse } from "../../types/api";
 import { PayloadAction } from "@reduxjs/toolkit";
+import { showNotification } from "../notification/notificationSlice";
 
 function* handleGetAllProductForCustomer(): Generator {
   try {
@@ -93,8 +94,6 @@ function* handleCreateProductFormAdmin(
 
     yield put(createProductAdminSuccess(response.data));
 
-    yield put(productAdminRequest());
-
     if (action.payload.onSuccess) {
       action.payload.onSuccess();
     }
@@ -119,23 +118,23 @@ function* handleUpdateProductForAdmin(
   action: PayloadAction<UpdateProductForm>
 ): Generator {
   try {
-    const {
-      id,
-      name,
-      stock,
-      description,
-      onError,
-      onSuccess,
-      price,
-      slug,
-      thumbnail
-    } = action.payload;
+    const { id, name, stock, description, meta, price, slug, thumbnail } =
+      action.payload;
     const response: ApiResponse<ProductPropsForAdmin> = yield call(
       updateProductForAdmin,
       id,
-      { name, description, onError, onSuccess, slug, price, stock, thumbnail }
+      { name, description, meta, slug, price, stock, thumbnail }
     );
     yield put(updateProductAdminSuccess(response.data));
+    yield put(
+      showNotification({
+        message: "Cập nhật product thành công",
+        severity: "success"
+      })
+    );
+    if (meta.onSuccess) {
+      meta.onSuccess();
+    }
     yield put(productAdminRequest());
   } catch (error) {
     const errors = error as AxiosError<{ message: string }>;
@@ -151,8 +150,8 @@ function* handleUpdateProductForAdmin(
       message = errors.message;
     }
 
-    if (action.payload.onError) {
-      action.payload.onError(message);
+    if (action.payload.meta.onError) {
+      action.payload.meta.onError();
     }
     yield put(updateProductAdminFailure(message));
   }

@@ -18,7 +18,8 @@ import {
   Chip,
   Skeleton,
   IconButton,
-  Dialog
+  Dialog,
+  Tooltip
 } from "@mui/material";
 import AddRoundedIcon from "@mui/icons-material/AddRounded";
 import SearchRoundedIcon from "@mui/icons-material/SearchRounded";
@@ -28,10 +29,15 @@ import EditRoundedIcon from "@mui/icons-material/EditRounded";
 import DeleteOutlineRoundedIcon from "@mui/icons-material/DeleteOutlineRounded";
 import UpdateCategoryContainer from "./updateCategoryContainer";
 import CreateCategoryContainer from "./createCategoryContainer";
+import { showNotification } from "../../../features/notification/notificationSlice";
 
 const CategoryContainer: React.FC = () => {
   const dispatch = useAppDispatch();
-  const { dataCategory, loading, error } = useAppSelector((state) => state.category);
+  const { dataCategory, loading, error } = useAppSelector(
+    (state) => state.category
+  );
+  const [openConfirm, setOpenConfirm] = React.useState(false);
+  const [deleteId, setDeleteId] = React.useState<string | null>(null);
   // ================= LOCAL STATE =================
   const [page, setPage] = React.useState<number>(1);
   const [pageSize, setPageSize] = React.useState<number>(4);
@@ -47,7 +53,9 @@ const CategoryContainer: React.FC = () => {
   }, [dispatch]);
 
   // ================= SAFE DATA =================
-  const safeData: CategoryProps[] = Array.isArray(dataCategory) ? dataCategory : [];
+  const safeData: CategoryProps[] = Array.isArray(dataCategory)
+    ? dataCategory
+    : [];
 
   const filteredData = safeData.filter(
     (item) =>
@@ -55,9 +63,8 @@ const CategoryContainer: React.FC = () => {
       item.slug.toLowerCase().includes(search.toLowerCase())
   );
   const handleDelete = (id: string) => {
-    if (!window.confirm("Are you sure you want to delete this category?"))
-      return;
-    dispatch(deleteCategoryRequest(id));
+    setDeleteId(id);
+    setOpenConfirm(true);
   };
   // ================= PAGINATION =================
   const totalItems = filteredData.length;
@@ -86,7 +93,9 @@ const CategoryContainer: React.FC = () => {
       align: "left",
       width: 70,
       render: (row) => (
-        <Typography sx={{ fontSize: 13, color: "#94a3b8", fontWeight: 600 }}>
+        <Typography
+          sx={{ fontSize: 13, color: "text.disabled", fontWeight: 600 }}
+        >
           #{row.id}
         </Typography>
       )
@@ -96,7 +105,9 @@ const CategoryContainer: React.FC = () => {
       label: "Name",
       align: "left",
       render: (row) => (
-        <Typography sx={{ fontSize: 14, fontWeight: 600, color: "#1e293b" }}>
+        <Typography
+          sx={{ fontSize: 14, fontWeight: 600, color: "text.primary" }}
+        >
           {row.name}
         </Typography>
       )
@@ -112,8 +123,8 @@ const CategoryContainer: React.FC = () => {
           sx={{
             fontSize: 12.5,
             fontWeight: 600,
-            bgcolor: "#eef0ff",
-            color: "#4f46e5",
+            bgcolor: "primary.50",
+            color: "primary.main",
             borderRadius: "6px"
           }}
         />
@@ -127,7 +138,7 @@ const CategoryContainer: React.FC = () => {
         <Typography
           sx={{
             fontSize: 13.5,
-            color: row.description ? "#475569" : "#cbd5e1",
+            color: row.description ? "text.secondary" : "text.disabled",
             maxWidth: 320,
             overflow: "hidden",
             textOverflow: "ellipsis",
@@ -143,7 +154,7 @@ const CategoryContainer: React.FC = () => {
       label: "Created At",
       align: "left",
       render: (row) => (
-        <Typography sx={{ fontSize: 13.5, color: "#64748b" }}>
+        <Typography sx={{ fontSize: 13.5, color: "text.secondary" }}>
           {row.created_at
             ? new Date(row.created_at).toLocaleString("vi-VN")
             : "-"}
@@ -152,31 +163,40 @@ const CategoryContainer: React.FC = () => {
     },
     {
       id: "actions",
-      label: "",
+      label: "Actions",
       align: "right",
-      width: 90,
+      width: 110,
       render: (row) => (
         <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 0.5 }}>
-          <IconButton
-            size="small"
-            onClick={() => {
-              setSelectedCategory(row);
-              setOpenUpdate(true);
-            }}
-          >
-            <EditRoundedIcon fontSize="small" />
-          </IconButton>
-          <IconButton
-            onClick={() => handleDelete(row.id)}
-            size="small"
-            sx={{
-              color: "#64748b",
-              bgcolor: "#f8f9fb",
-              "&:hover": { color: "#dc2626", bgcolor: "#fef2f2" }
-            }}
-          >
-            <DeleteOutlineRoundedIcon fontSize="small" />
-          </IconButton>
+          <Tooltip title="Edit category">
+            <IconButton
+              size="small"
+              onClick={() => {
+                setSelectedCategory(row);
+                setOpenUpdate(true);
+              }}
+              sx={{
+                color: "text.secondary",
+                bgcolor: "grey.50",
+                "&:hover": { color: "primary.main", bgcolor: "primary.50" }
+              }}
+            >
+              <EditRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
+          <Tooltip title="Delete category">
+            <IconButton
+              onClick={() => handleDelete(row.id)}
+              size="small"
+              sx={{
+                color: "text.secondary",
+                bgcolor: "grey.50",
+                "&:hover": { color: "error.main", bgcolor: "error.50" }
+              }}
+            >
+              <DeleteOutlineRoundedIcon fontSize="small" />
+            </IconButton>
+          </Tooltip>
         </Box>
       )
     }
@@ -188,7 +208,8 @@ const CategoryContainer: React.FC = () => {
       <Paper
         elevation={0}
         sx={{
-          border: "1px solid #fecaca",
+          border: "1px solid",
+          borderColor: "error.light",
           borderRadius: "16px",
           p: 5,
           display: "flex",
@@ -203,18 +224,18 @@ const CategoryContainer: React.FC = () => {
             width: 56,
             height: 56,
             borderRadius: "50%",
-            bgcolor: "#fee2e2",
+            bgcolor: "error.50",
             display: "flex",
             alignItems: "center",
             justifyContent: "center"
           }}
         >
-          <ErrorOutlineRoundedIcon sx={{ fontSize: 28, color: "#dc2626" }} />
+          <ErrorOutlineRoundedIcon sx={{ fontSize: 28, color: "error.main" }} />
         </Box>
-        <Typography sx={{ fontWeight: 700, color: "#991b1b" }}>
+        <Typography sx={{ fontWeight: 700, color: "error.dark" }}>
           Could not load categories
         </Typography>
-        <Typography sx={{ fontSize: 13.5, color: "#b91c1c" }}>
+        <Typography sx={{ fontSize: 13.5, color: "error.main" }}>
           {String(error)}
         </Typography>
         <Button
@@ -226,10 +247,11 @@ const CategoryContainer: React.FC = () => {
             textTransform: "none",
             fontWeight: 600,
             borderRadius: "8px",
-            bgcolor: "#fff",
-            border: "1px solid #fecaca",
-            color: "#dc2626",
-            "&:hover": { bgcolor: "#fef2f2" }
+            bgcolor: "background.paper",
+            border: "1px solid",
+            borderColor: "error.light",
+            color: "error.main",
+            "&:hover": { bgcolor: "error.50" }
           }}
         >
           Try again
@@ -244,7 +266,8 @@ const CategoryContainer: React.FC = () => {
         sx={{
           borderRadius: "18px",
           background: "linear-gradient(180deg, #fdfdff 0%, #f6f7fb 100%)",
-          border: "1px solid #eef0f3",
+          border: "1px solid",
+          borderColor: "grey.100",
           p: { xs: 2, sm: 3 },
           display: "flex",
           flexDirection: "column",
@@ -263,11 +286,13 @@ const CategoryContainer: React.FC = () => {
         >
           <Box>
             <Typography
-              sx={{ fontSize: 20, fontWeight: 700, color: "#0f172a" }}
+              sx={{ fontSize: 20, fontWeight: 700, color: "text.primary" }}
             >
               Categories
             </Typography>
-            <Typography sx={{ fontSize: 13.5, color: "#64748b", mt: 0.25 }}>
+            <Typography
+              sx={{ fontSize: 13.5, color: "text.secondary", mt: 0.25 }}
+            >
               {totalItems} {totalItems === 1 ? "category" : "categories"} in
               total
             </Typography>
@@ -303,15 +328,16 @@ const CategoryContainer: React.FC = () => {
             px: 1.75,
             width: { xs: "100%", sm: 320 },
             borderRadius: "10px",
-            bgcolor: "#fff",
-            border: "1px solid #eef0f3",
+            bgcolor: "background.paper",
+            border: "1px solid",
+            borderColor: "grey.100",
             "&:focus-within": {
-              borderColor: "#6366F1",
+              borderColor: "primary.main",
               boxShadow: "0 0 0 3px rgba(99,102,241,0.12)"
             }
           }}
         >
-          <SearchRoundedIcon sx={{ fontSize: 19, color: "#94a3b8" }} />
+          <SearchRoundedIcon sx={{ fontSize: 19, color: "text.disabled" }} />
           <InputBase
             placeholder="Search by name or slug..."
             value={search}
@@ -324,10 +350,11 @@ const CategoryContainer: React.FC = () => {
         {loading ? (
           <Box
             sx={{
-              border: "1px solid #eef0f3",
+              border: "1px solid",
+              borderColor: "grey.100",
               borderRadius: "14px",
               p: 2,
-              bgcolor: "#fff",
+              bgcolor: "background.paper",
               display: "flex",
               flexDirection: "column",
               gap: 1.25
@@ -360,9 +387,10 @@ const CategoryContainer: React.FC = () => {
         {!loading && totalItems > 0 && (
           <Box
             sx={{
-              bgcolor: "#fff",
+              bgcolor: "background.paper",
               borderRadius: "12px",
-              border: "1px solid #eef0f3",
+              border: "1px solid",
+              borderColor: "grey.100",
               px: 1
             }}
           >
@@ -396,6 +424,58 @@ const CategoryContainer: React.FC = () => {
             }}
           />
         )}
+      </Dialog>
+      <Dialog
+        open={openConfirm}
+        onClose={() => setOpenConfirm(false)}
+        slotProps={{
+          paper: {
+            sx: {
+              borderRadius: "16px",
+              padding: 2,
+              minWidth: 320
+            }
+          }
+        }}
+      >
+        <Box sx={{ p: 2, textAlign: "center" }}>
+          <Typography sx={{ fontWeight: 700, mb: 1 }}>
+            Delete category?
+          </Typography>
+
+          <Typography sx={{ fontSize: 13, color: "text.secondary", mb: 2 }}>
+            This action cannot be undone
+          </Typography>
+
+          <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
+            <Button onClick={() => setOpenConfirm(false)} variant="outlined">
+              Cancel
+            </Button>
+
+            <Button
+              color="error"
+              variant="contained"
+              onClick={() => {
+                if (!deleteId) return;
+
+                dispatch(deleteCategoryRequest(deleteId));
+
+                // 🔥 TOAST CENTER
+                dispatch(
+                  showNotification({
+                    message: "Delete category success",
+                    severity: "success"
+                  })
+                );
+
+                setOpenConfirm(false);
+                setDeleteId(null);
+              }}
+            >
+              Delete
+            </Button>
+          </Box>
+        </Box>
       </Dialog>
       <Dialog
         open={openUpdateCreate}
