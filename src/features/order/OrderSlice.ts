@@ -4,7 +4,6 @@ import {
   CreatePropsBuyNow,
   OrderAdmin,
   OrderProps,
-  OrderUpdateAdmin,
   OrderUpdateAdminById
 } from "./OrderTypes/OrderProps";
 

@@ -7,10 +7,6 @@ import {
   Avatar,
   Paper,
   Button,
-  Menu,
-  MenuItem,
-  ListItemIcon,
-  ListItemText,
   Dialog,
   DialogTitle,
   DialogContent
@@ -45,8 +41,6 @@ const STATUS_META: Record<
   DELIVERED: { color: "#15803D", bg: "#EAF8EE", label: "Delivered" },
   CANCELLED: { color: "#B91C1C", bg: "#FDEDED", label: "Cancelled" }
 };
-
-const STATUS_ORDER = Object.keys(STATUS_META);
 
 const StatusDotChip: React.FC<{ status: string }> = ({ status }) => {
   const meta = STATUS_META[status] ?? {
@@ -86,90 +80,6 @@ const StatusDotChip: React.FC<{ status: string }> = ({ status }) => {
 };
 
 // ---- Per-row "Update status" action ----
-const UpdateStatusAction: React.FC<{ row: OrderAdmin }> = ({ row }) => {
-  const dispatch = useAppDispatch();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-  const open = Boolean(anchorEl);
-
-  const handleSelect = (status: string) => {
-    // setAnchorEl(null);
-    // if (status === row.status) return;
-    // dispatch(updateOrderStatusRequest({ id: row.id, status }));
-  };
-
-  return (
-    <>
-      <Button
-        size="small"
-        variant="outlined"
-        startIcon={<EditOutlinedIcon sx={{ fontSize: 16 }} />}
-        onClick={(e) => setAnchorEl(e.currentTarget)}
-        sx={{
-          textTransform: "none",
-          fontSize: 12.5,
-          fontWeight: 600,
-          borderRadius: 1.5,
-          borderColor: tokens.border,
-          color: tokens.ink,
-          px: 1.25,
-          "&:hover": {
-            borderColor: tokens.accent,
-            bgcolor: "#F1F4FE"
-          }
-        }}
-      >
-        Update
-      </Button>
-
-      <Menu
-        anchorEl={anchorEl}
-        open={open}
-        onClose={() => setAnchorEl(null)}
-        anchorOrigin={{ vertical: "bottom", horizontal: "right" }}
-        transformOrigin={{ vertical: "top", horizontal: "right" }}
-        slotProps={{
-          paper: {
-            sx: {
-              borderRadius: 1.5,
-              border: `1px solid ${tokens.border}`,
-              minWidth: 180
-            }
-          }
-        }}
-      >
-        {STATUS_ORDER.map((status) => {
-          const meta = STATUS_META[status];
-          const isCurrent = status === row.status;
-          return (
-            <MenuItem
-              key={status}
-              selected={isCurrent}
-              onClick={() => handleSelect(status)}
-              sx={{ fontSize: 13.5 }}
-            >
-              <ListItemIcon sx={{ minWidth: 24 }}>
-                <Box
-                  sx={{
-                    width: 8,
-                    height: 8,
-                    borderRadius: "50%",
-                    bgcolor: meta.color
-                  }}
-                />
-              </ListItemIcon>
-              <ListItemText>{meta.label}</ListItemText>
-              {isCurrent && (
-                <Typography sx={{ fontSize: 11, color: tokens.muted, ml: 1 }}>
-                  current
-                </Typography>
-              )}
-            </MenuItem>
-          );
-        })}
-      </Menu>
-    </>
-  );
-};
 
 const OrderAdminContainer: React.FC = () => {
   const dispatch = useAppDispatch();
