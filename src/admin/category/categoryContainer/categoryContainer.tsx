@@ -62,6 +62,7 @@ const CategoryContainer: React.FC = () => {
       item.name.toLowerCase().includes(search.toLowerCase()) ||
       item.slug.toLowerCase().includes(search.toLowerCase())
   );
+
   const handleDelete = (id: string) => {
     setDeleteId(id);
     setOpenConfirm(true);
@@ -406,6 +407,8 @@ const CategoryContainer: React.FC = () => {
           </Box>
         )}
       </Box>
+
+      {/* UPDATE DIALOG */}
       <Dialog
         open={openUpdate}
         onClose={() => {
@@ -414,6 +417,7 @@ const CategoryContainer: React.FC = () => {
         }}
         fullWidth
         maxWidth="sm"
+        slotProps={{ paper: { sx: { borderRadius: "16px" } } }}
       >
         {selectedCategory && (
           <UpdateCategoryContainer
@@ -425,42 +429,59 @@ const CategoryContainer: React.FC = () => {
           />
         )}
       </Dialog>
+
+      {/* CONFIRM DELETE DIALOG */}
       <Dialog
         open={openConfirm}
         onClose={() => setOpenConfirm(false)}
         slotProps={{
-          paper: {
-            sx: {
-              borderRadius: "16px",
-              padding: 2,
-              minWidth: 320
-            }
-          }
+          paper: { sx: { borderRadius: "16px", p: 1, minWidth: 320 } }
         }}
       >
         <Box sx={{ p: 2, textAlign: "center" }}>
-          <Typography sx={{ fontWeight: 700, mb: 1 }}>
+          <Box
+            sx={{
+              width: 48,
+              height: 48,
+              borderRadius: "50%",
+              bgcolor: "error.50",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              mx: "auto",
+              mb: 1.5
+            }}
+          >
+            <DeleteOutlineRoundedIcon sx={{ color: "error.main" }} />
+          </Box>
+
+          <Typography sx={{ fontWeight: 700, mb: 0.5 }}>
             Delete category?
           </Typography>
 
-          <Typography sx={{ fontSize: 13, color: "text.secondary", mb: 2 }}>
-            This action cannot be undone
+          <Typography sx={{ fontSize: 13, color: "text.secondary", mb: 2.5 }}>
+            This action cannot be undone.
           </Typography>
 
           <Box sx={{ display: "flex", justifyContent: "center", gap: 1 }}>
-            <Button onClick={() => setOpenConfirm(false)} variant="outlined">
+            <Button
+              onClick={() => setOpenConfirm(false)}
+              variant="outlined"
+              color="inherit"
+              sx={{ textTransform: "none", borderRadius: "8px" }}
+            >
               Cancel
             </Button>
 
             <Button
               color="error"
               variant="contained"
+              sx={{ textTransform: "none", borderRadius: "8px" }}
               onClick={() => {
                 if (!deleteId) return;
 
                 dispatch(deleteCategoryRequest(deleteId));
 
-                // 🔥 TOAST CENTER
                 dispatch(
                   showNotification({
                     message: "Delete category success",
@@ -477,13 +498,14 @@ const CategoryContainer: React.FC = () => {
           </Box>
         </Box>
       </Dialog>
+
+      {/* CREATE DIALOG */}
       <Dialog
         open={openUpdateCreate}
-        onClose={() => {
-          setOpenUpdateCreate(false);
-        }}
+        onClose={() => setOpenUpdateCreate(false)}
         fullWidth
         maxWidth="sm"
+        slotProps={{ paper: { sx: { borderRadius: "16px" } } }}
       >
         <CreateCategoryContainer onClose={() => setOpenUpdateCreate(false)} />
       </Dialog>

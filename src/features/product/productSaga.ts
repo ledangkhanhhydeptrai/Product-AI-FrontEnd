@@ -1,6 +1,7 @@
 import { call, put, takeLatest } from "redux-saga/effects";
 import {
   createProductFormAdmin,
+  deleteProductAdmin,
   getAllProductForCustomer,
   getProductAdmin,
   getProductAdminById,
@@ -11,6 +12,9 @@ import {
   createProductAdminFailure,
   createProductAdminRequest,
   createProductAdminSuccess,
+  deleteProductFailure,
+  deleteProductRequest,
+  deleteProductSuccess,
   productAdminByIdFailure,
   productAdminByIdRequest,
   productAdminByIdSuccess,
@@ -156,6 +160,31 @@ function* handleUpdateProductForAdmin(
     yield put(updateProductAdminFailure(message));
   }
 }
+function* handleDeleteProduct(action: PayloadAction<string>) {
+  try {
+    const response: ApiResponse<ProductPropsForAdmin> = yield call(
+      deleteProductAdmin,
+      action.payload
+    );
+    yield put(deleteProductSuccess(response.data));
+    yield put(
+      showNotification({
+        message: "Xóa product thành công",
+        severity: "success"
+      })
+    );
+    yield put(productAdminRequest());
+  } catch (error) {
+    const errors = error as AxiosError;
+    yield put(deleteProductFailure(errors.message));
+    yield put(
+      showNotification({
+        message: "Xóa product thất bại",
+        severity: "error"
+      })
+    );
+  }
+}
 export default function* productSaga() {
   yield takeLatest(productRequest.type, handleGetAllProductForCustomer);
   yield takeLatest(productRequestById.type, handleGetForCustomerById);
@@ -166,4 +195,5 @@ export default function* productSaga() {
     handleCreateProductFormAdmin
   );
   yield takeLatest(updateProductAdminRequest.type, handleUpdateProductForAdmin);
+  yield takeLatest(deleteProductRequest.type, handleDeleteProduct);
 }
