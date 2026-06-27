@@ -72,8 +72,10 @@ export interface FormUpdateProduct {
   description: string;
   stock: number;
   thumbnail: string;
-  onSuccess: () => void;
-  onError: (message: string) => void;
+  meta: {
+    onSuccess: () => void;
+    onError: () => void;
+  };
 }
 export interface UpdateProductForm extends FormUpdateProduct {
   id: string;

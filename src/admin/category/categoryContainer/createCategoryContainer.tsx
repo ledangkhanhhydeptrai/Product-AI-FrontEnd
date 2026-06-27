@@ -59,7 +59,10 @@ const CreateCategoryContainer: React.FC<CloseProps> = ({ onClose }) => {
             });
 
             setOpenSnackbar(true);
-            navigate("/admin/category");
+            setTimeout(() => {
+              onClose();
+              navigate("/admin/category");
+            }, 5000);
           },
           onError: () => {
             setNotificationData({
