@@ -2,7 +2,10 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
   CreateOrderProps,
   CreatePropsBuyNow,
-  OrderProps
+  OrderAdmin,
+  OrderProps,
+  OrderUpdateAdmin,
+  OrderUpdateAdminById
 } from "./OrderTypes/OrderProps";
 
 interface OrderState {
@@ -10,12 +13,16 @@ interface OrderState {
   error: string | null;
   data: OrderProps[];
   order: OrderProps | null;
+  admin: OrderAdmin[];
+  adminProps: OrderAdmin | null;
 }
 const initialState: OrderState = {
   loading: false,
   error: null,
   data: [],
-  order: null
+  order: null,
+  admin: [],
+  adminProps: null
 };
 const OrderSlice = createSlice({
   name: "order",
@@ -60,6 +67,32 @@ const OrderSlice = createSlice({
     createOrderBuyNowFailure(state, action: PayloadAction<string>) {
       state.loading = false;
       state.error = action.payload;
+    },
+    getAllOrderAdminRequest(state) {
+      state.loading = true;
+      state.error = null;
+    },
+    getAllOrderAdminSuccess(state, action: PayloadAction<OrderAdmin[]>) {
+      state.loading = false;
+      state.error = null;
+      state.admin = action.payload;
+    },
+    getAllOrderAdminFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
+    },
+    updateOrderAdminRequest(state, _action: PayloadAction<OrderUpdateAdminById>) {
+      state.loading = true;
+      state.error = null;
+    },
+    updateOrderAdminSuccess(state, action: PayloadAction<OrderAdmin>) {
+      state.loading = false;
+      state.error = null;
+      state.adminProps = action.payload;
+    },
+    updateOrderAdminFailure(state, action: PayloadAction<string>) {
+      state.loading = false;
+      state.error = action.payload;
     }
   }
 });
@@ -72,6 +105,12 @@ export const {
   createOrderFailure,
   createOrderBuyNowRequest,
   createOrderBuyNowSuccess,
-  createOrderBuyNowFailure
+  createOrderBuyNowFailure,
+  getAllOrderAdminRequest,
+  getAllOrderAdminSuccess,
+  getAllOrderAdminFailure,
+  updateOrderAdminRequest,
+  updateOrderAdminSuccess,
+  updateOrderAdminFailure
 } = OrderSlice.actions;
 export default OrderSlice.reducer;

@@ -4,7 +4,9 @@ import { ApiResponse } from "../../types/api";
 import {
   CreateOrderProps,
   CreatePropsBuyNow,
-  OrderProps
+  OrderAdmin,
+  OrderProps,
+  OrderUpdateAdmin
 } from "./OrderTypes/OrderProps";
 
 export const getAllOrder = async (): Promise<ApiResponse<OrderProps>> => {
@@ -64,6 +66,44 @@ export const CreateOrderBuyNow = async ({
         method: "POST",
 
         data: formData
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    throw errors;
+  }
+};
+export const getAllOrderAdmin = async (): Promise<ApiResponse<OrderAdmin>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<OrderAdmin>>(
+      "/admin/orders",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+    return response.data;
+  } catch (error) {
+    const errors = error as AxiosError;
+    throw errors;
+  }
+};
+export const updateOrderAdmin = async (
+  id: string,
+  request: OrderUpdateAdmin
+): Promise<ApiResponse<OrderAdmin>> => {
+  try {
+    const response = await fetchBaseResponse<ApiResponse<OrderAdmin>>(
+      `/admin/order/${id}`,
+      {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        data: request
       }
     );
     return response.data;
