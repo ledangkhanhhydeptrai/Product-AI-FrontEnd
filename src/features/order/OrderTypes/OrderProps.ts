@@ -37,7 +37,7 @@ export const ORDER_STATUS = {
   SHIPPED: "SHIPPED",
   DELIVERED: "DELIVERED",
   CANCELLED: "CANCELLED"
-} as const;
+};
 export interface CreatePropsBuyNow {
   product_id: string;
   quantity: number;
