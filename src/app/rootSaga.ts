@@ -8,6 +8,7 @@ import profileSaga from "../features/profile/profileSaga";
 import OrderSaga from "../features/order/OrderSaga";
 import PaymentSaga from "../features/payment/paymentSaga";
 import reviewSaga from "../features/review/reviewSaga";
+import chatSaga from "../features/ai-chat/aiChatSaga";
 export default function* rootSaga() {
   yield all([
     authSaga(),
@@ -18,6 +19,7 @@ export default function* rootSaga() {
     profileSaga(),
     OrderSaga(),
     PaymentSaga(),
-    reviewSaga()
+    reviewSaga(),
+    chatSaga()
   ]);
 }

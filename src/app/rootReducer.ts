@@ -9,6 +9,7 @@ import ProfileReducer from "../features/profile/profileSlice";
 import OrderReducer from "../features/order/OrderSlice";
 import PaymentReducer from "../features/payment/paymentSlice";
 import ReviewReducer from "../features/review/reviewSlice";
+import ChatReducer from "../features/ai-chat/aiChatSlice";
 const rootReducer = combineReducers({
   auth: authReducer,
   notification: notificationReducer,
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   profile: ProfileReducer,
   order: OrderReducer,
   payment: PaymentReducer,
-  review: ReviewReducer
+  review: ReviewReducer,
+  chat: ChatReducer
 });
 export default rootReducer;

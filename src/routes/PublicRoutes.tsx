@@ -1,3 +1,4 @@
+import { ChatRoutes } from "./modules/aiChat.routes";
 import { authRoutes } from "./modules/auth.routes";
 import { brandRoutes } from "./modules/brand.routes";
 import CategoriesRoutes from "./modules/categories.routes";
@@ -10,5 +11,6 @@ export const publicRoutes = [
   ...productRoutes,
   ...brandRoutes,
   ...homeRoutes,
-  ...CategoriesRoutes
+  ...CategoriesRoutes,
+  ...ChatRoutes
 ];
