@@ -1,7 +1,8 @@
 import React from "react";
+import ChatBox from "../../features/ai-chat/components/ChatBox";
 
 const AIChatPage: React.FC = () => {
-  return <div />;
+  return <ChatBox />;
 };
 
 export default AIChatPage;
