@@ -1,6 +1,6 @@
 export default function AiAssistantBanner() {
   return (
-    <section className="bg-[#1E1B4B] rounded-2xl px-6 py-5 mb-8 flex items-center justify-between gap-4 flex-wrap">
+    <section className="bg-[#1E1B4B] rounded-2xl px-5 py-5 sm:px-6 mb-8 flex flex-col sm:flex-row sm:items-center items-start justify-between gap-4">
       <div className="flex items-start gap-3">
         <div className="mt-0.5 w-10 h-10 rounded-xl bg-indigo-400/15 border border-indigo-400/20 flex items-center justify-center shrink-0">
           <svg
@@ -30,7 +30,7 @@ export default function AiAssistantBanner() {
         </div>
       </div>
 
-      <button className="flex items-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl px-5 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors">
+      <button className="flex items-center justify-center gap-2 bg-indigo-500 hover:bg-indigo-600 text-white rounded-xl px-5 py-2.5 text-[13px] font-medium whitespace-nowrap transition-colors w-full sm:w-auto shrink-0">
         <svg
           className="w-4 h-4"
           fill="none"

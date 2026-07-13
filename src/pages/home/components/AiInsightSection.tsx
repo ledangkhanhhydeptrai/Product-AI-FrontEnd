@@ -10,7 +10,7 @@ interface Props {
 
 export default function AiInsightSection({ insights }: Props) {
   return (
-    <div className="max-w-275 mx-auto mt-10 grid grid-cols-3 gap-3 relative z-10">
+    <div className="max-w-275 mx-auto mt-10 grid grid-cols-1 sm:grid-cols-3 gap-3 relative z-10">
       {insights.map((item, index) =>
         <div
           key={index}
@@ -21,7 +21,7 @@ export default function AiInsightSection({ insights }: Props) {
           </p>
 
           <div className="flex items-baseline gap-1.5">
-            <span className="text-indigo-300 text-[28px] font-semibold leading-none">
+            <span className="text-indigo-300 text-2xl sm:text-[28px] font-semibold leading-none">
               {item.value}
             </span>
             <span className="text-slate-500 text-xs">

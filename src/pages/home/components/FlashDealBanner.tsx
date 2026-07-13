@@ -1,6 +1,6 @@
 export default function FlashDealBanner() {
   return (
-    <section className="bg-[#1E1B4B] rounded-2xl px-6 py-6 flex items-center justify-between gap-6 flex-wrap">
+    <section className="bg-[#1E1B4B] rounded-2xl px-5 py-6 sm:px-6 flex flex-col sm:flex-row sm:items-center items-start justify-between gap-6">
       <div>
         <div className="inline-flex items-center gap-1.5 bg-yellow-400/12 border border-yellow-400/20 text-yellow-300 rounded-full px-3 py-1 text-[11px] font-medium tracking-wide mb-3">
           <svg
@@ -18,7 +18,7 @@ export default function FlashDealBanner() {
           </svg>
           Flash deals · ends in 02:47:33
         </div>
-        <h2 className="text-white text-[22px] font-medium mb-1.5">
+        <h2 className="text-white text-lg sm:text-[22px] font-medium mb-1.5">
           Up to 60% off today only
         </h2>
         <p className="text-indigo-300/70 text-[13px] leading-relaxed max-w-xs">
@@ -26,7 +26,7 @@ export default function FlashDealBanner() {
         </p>
       </div>
 
-      <button className="flex items-center gap-2 bg-yellow-300 hover:bg-yellow-200 text-[#1E1B4B] rounded-xl px-6 py-3 text-[13px] font-medium whitespace-nowrap transition-colors">
+      <button className="flex items-center justify-center gap-2 bg-yellow-300 hover:bg-yellow-200 text-[#1E1B4B] rounded-xl px-6 py-3 text-[13px] font-medium whitespace-nowrap transition-colors w-full sm:w-auto shrink-0">
         <svg
           className="w-4 h-4"
           fill="none"

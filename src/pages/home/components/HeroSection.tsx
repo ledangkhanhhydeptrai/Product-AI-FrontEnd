@@ -12,18 +12,18 @@ const valueColors = ["text-indigo-300", "text-emerald-300", "text-pink-300"];
 
 export default function HeroSection({ insights }: Props) {
   return (
-    <section className="relative overflow-hidden bg-[#1E1B4B] px-10 py-12 flex items-center justify-between gap-8">
+    <section className="relative overflow-hidden bg-[#1E1B4B] px-5 py-8 sm:px-8 sm:py-10 lg:px-10 lg:py-12 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
       {/* Decorative rings */}
-      <div className="pointer-events-none absolute -top-16 right-20 w-48 h-48 rounded-full border-40 border-indigo-500/10" />
-      <div className="pointer-events-none absolute -bottom-8 right-52 w-28 h-28 rounded-full border-24 border-indigo-300/[0.07]" />
+      <div className="pointer-events-none absolute -top-16 right-20 w-48 h-48 rounded-full border-40 border-indigo-500/10 hidden sm:block" />
+      <div className="pointer-events-none absolute -bottom-8 right-52 w-28 h-28 rounded-full border-24 border-indigo-300/[0.07] hidden sm:block" />
 
       {/* Left: copy */}
-      <div className="relative z-10">
+      <div className="relative z-10 w-full lg:w-auto">
         <p className="flex items-center gap-2 text-[11px] font-medium uppercase tracking-widest text-indigo-300/65 mb-3.5">
           <span className="inline-block w-4 h-px rounded bg-indigo-300/40" />
           AI-powered shopping
         </p>
-        <h1 className="text-[34px] font-medium text-white leading-tight mb-2.5">
+        <h1 className="text-2xl sm:text-[28px] lg:text-[34px] font-medium text-white leading-tight mb-2.5">
           Discover style
           <br />
           <span className="text-indigo-300">curated for you</span>
@@ -43,18 +43,18 @@ export default function HeroSection({ insights }: Props) {
       </div>
 
       {/* Right: stat cards */}
-      <div className="relative z-10 flex flex-col gap-2.5 shrink-0">
+      <div className="relative z-10 grid grid-cols-1 sm:grid-cols-3 lg:flex lg:flex-col gap-2.5 w-full lg:w-auto lg:shrink-0">
         {insights.map((item, i) => (
           <div
             key={i}
-            className="bg-white/6 border border-white/8 rounded-2xl px-4 py-3.5 min-w-37"
+            className="bg-white/6 border border-white/8 rounded-2xl px-4 py-3.5 w-full lg:min-w-37"
           >
             <div className="w-1.5 h-1.5 rounded-full mb-2.5" />
             <p className="text-[10px] font-medium uppercase tracking-widest text-slate-400/60 mb-1.5">
               {item.label}
             </p>
             <p
-              className={`text-[26px] font-medium leading-none mb-1 ${valueColors[i]}`}
+              className={`text-xl sm:text-[26px] font-medium leading-none mb-1 ${valueColors[i]}`}
             >
               {item.value}
             </p>

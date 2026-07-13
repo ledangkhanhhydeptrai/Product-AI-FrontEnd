@@ -10,7 +10,10 @@ export interface MeResponse {
 }
 export const profileAPI = async (): Promise<ApiResponse<MeResponse>> => {
   const res = await fetchBaseResponse<ApiResponse<MeResponse>>("/me", {
-    method: "GET"
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json"
+    }
   });
 
   console.log("FETCH ME RESULT:", res);

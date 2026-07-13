@@ -25,12 +25,9 @@ export default function BrandContainer() {
 
   const [activeBrand, setActiveBrand] = React.useState("all");
 
-  React.useEffect(
-    () => {
-      dispatch(getBrandRequest());
-    },
-    [dispatch]
-  );
+  React.useEffect(() => {
+    dispatch(getBrandRequest());
+  }, [dispatch]);
 
   const getDotColor = (color: string) => {
     switch (color) {
@@ -49,7 +46,7 @@ export default function BrandContainer() {
 
   return (
     <section className="mb-8">
-      <div className="flex items-center justify-between mb-3.5">
+      <div className="flex items-center justify-between mb-3.5 gap-2">
         <div>
           <h2 className="text-[15px] font-medium text-gray-900">
             Browse brands
@@ -62,20 +59,21 @@ export default function BrandContainer() {
 
         <button
           onClick={() => navigate("/brandAll")}
-          className="flex items-center gap-1 text-[12px] font-medium text-[#534AB7] hover:text-[#3C3489] transition-colors"
+          className="flex items-center gap-1 text-[12px] font-medium text-[#534AB7] hover:text-[#3C3489] transition-colors shrink-0"
         >
           View all
           <ArrowRight size={13} />
         </button>
       </div>
 
-      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
         <button
           onClick={() => setActiveBrand("all")}
-          className={`shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-medium whitespace-nowrap border transition-all ${activeBrand ===
-          "all"
-            ? "bg-[#1E1B4B] text-indigo-200 border-transparent"
-            : "bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-800"}`}
+          className={`shrink-0 rounded-full px-3.5 py-1.5 text-[13px] font-medium whitespace-nowrap border transition-all ${
+            activeBrand === "all"
+              ? "bg-[#1E1B4B] text-indigo-200 border-transparent"
+              : "bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-800"
+          }`}
         >
           All
         </button>
@@ -88,14 +86,16 @@ export default function BrandContainer() {
             <button
               key={brand.id}
               onClick={() => setActiveBrand(brand.id)}
-              className={`shrink-0 flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium whitespace-nowrap border transition-all ${isActive
-                ? "bg-[#1E1B4B] text-indigo-200 border-transparent"
-                : "bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-800"}`}
+              className={`shrink-0 flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-[13px] font-medium whitespace-nowrap border transition-all ${
+                isActive
+                  ? "bg-[#1E1B4B] text-indigo-200 border-transparent"
+                  : "bg-white text-gray-500 border-gray-200 hover:border-gray-300 hover:text-gray-800"
+              }`}
             >
               <span
-                className={`w-1.5 h-1.5 rounded-full shrink-0 ${isActive
-                  ? "bg-indigo-300"
-                  : getDotColor(dotColor)}`}
+                className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+                  isActive ? "bg-indigo-300" : getDotColor(dotColor)
+                }`}
               />
               {brand.name}
             </button>
