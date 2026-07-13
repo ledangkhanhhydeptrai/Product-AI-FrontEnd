@@ -44,18 +44,21 @@ export default function CategorySection({
 
   return (
     <section className="mb-8">
-      <div className="flex items-center justify-between mb-3.5">
+      <div className="flex items-center justify-between mb-3.5 gap-2">
         <h2 className="text-[15px] font-medium text-gray-900">
           Browse categories
         </h2>
 
-        <button onClick={()=>navigate("/categoriesAll")} className="flex items-center gap-1 text-[12px] font-medium text-[#534AB7] hover:text-[#3C3489] transition-colors">
+        <button
+          onClick={() => navigate("/categoriesAll")}
+          className="flex items-center gap-1 text-[12px] font-medium text-[#534AB7] hover:text-[#3C3489] transition-colors shrink-0"
+        >
           View all
           <ArrowRight size={13} />
         </button>
       </div>
 
-      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none">
+      <div className="flex gap-1.5 overflow-x-auto pb-1 scrollbar-none -mx-4 px-4 sm:mx-0 sm:px-0">
         {/* All pill */}
         <button
           onClick={() => handleSelect("all")}
