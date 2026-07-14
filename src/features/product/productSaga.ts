@@ -97,10 +97,16 @@ function* handleCreateProductFormAdmin(
     );
 
     yield put(createProductAdminSuccess(response.data));
-
+    yield put(
+      showNotification({
+        message: "Product created successfully",
+        severity: "success"
+      })
+    );
     if (action.payload.onSuccess) {
       action.payload.onSuccess();
     }
+    yield put(productAdminRequest());
   } catch (err) {
     const error = err as AxiosError<{ message: string }>;
 
