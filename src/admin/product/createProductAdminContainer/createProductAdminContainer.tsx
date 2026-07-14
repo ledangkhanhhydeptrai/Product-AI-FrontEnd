@@ -79,14 +79,7 @@ const CreateProductAdminContainer: React.FC<CloseProps> = ({ onClose }) => {
         file,
         is_active,
         onSuccess: () => {
-          navigate("/productAdmin", {
-            state: {
-              notification: {
-                severity: "success",
-                message: "Product created successfully"
-              }
-            }
-          });
+          navigate("/productAdmin");
           setOpenSnackbar(true);
           onClose();
         },
